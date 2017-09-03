@@ -1,5 +1,4 @@
 /*******************************************************************************************************
-*
 * This code is licensed with the MIT license
 * https://opensource.org/licenses/MIT
 *
@@ -20,4 +19,52 @@
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************************************/
 
-#pragma once
+#include "lib_pvmodel.h"
+
+class mlmodel_module_t : public pvmodule_t
+{
+public:
+	int N_series;
+
+	double Width;
+	double Length;
+
+	double V_mp_ref;
+	double I_mp_ref;
+	double V_oc_ref;
+	double I_sc_ref;
+
+	double S_ref;
+	double T_ref;
+
+	double R_shref;
+	double R_sh0;
+	double R_shexp;
+	double R_s;
+	double alpha_isc;
+	double E_g;
+	double n_0;
+	double mu_n;
+	
+	int T_mode;
+	double T_c_no_tnoct;
+	int T_c_no_mounting;
+	int T_c_no_standoff;
+
+	int AM_mode;
+	double AM_c_sa[5];
+	double AM_c_lp[6];
+
+	int IAM_mode;
+	double IAM_c_as;
+	double IAM_c_sa[6];
+
+	mlmodel_module_t();
+
+	virtual double AreaRef() { return (Width * Length); }
+	virtual double VmpRef() { return V_mp_ref; }
+	virtual double ImpRef() { return I_mp_ref; }
+	virtual double VocRef() { return V_oc_ref; }
+	virtual double IscRef() { return I_sc_ref; }
+	virtual bool operator() (pvinput_t &input, double TcellC, double opvoltage, pvoutput_t &output);
+};
