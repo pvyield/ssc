@@ -24,8 +24,11 @@
 * Implementation of the Mermoud/Thibault single-diode model
 *
 * SOURCES
-* [1] "Performance assessment of a simulation model for PV modules of any available technology",
-*     André Mermoud and Thibault Lejeune, 2010 (https://archive-ouverte.unige.ch/unige:38547)
+* [1] André Mermoud and Thibault Lejeune, "Performance assessment of a simulation model for PV modules
+*     of any available technology", 2010 (https://archive-ouverte.unige.ch/unige:38547)
+* [2] John A. Duffie, "Solar Engineering of Thermal Processes", 4th Edition, 2013 by John Wiley & Sons
+* [3] W. De Soto et al., “Improvement and validation of a model for photovoltaic array performance”,
+*     Solar Energy, vol 80, pp. 78-88, 2006.
 *******************************************************************************************************/
 
 #include "lib_mlmodel.h"
@@ -35,6 +38,8 @@ static const double q = 1.60217662e-19; // Elemenatry charge [C]
 static const double T_0 = 273.15; // 0 degrees Celsius in Kelvin [K]
 static const double PI = 3.1415926535897932; // pi
 
+double amavec[5] = { 0.918093, 0.086257, -0.024459, 0.002816, -0.000126 }; // DeSoto IAM coefficients [3]
+
 // 1: NOCT
 static const int T_MODE_NOCT = 1;
 
@@ -43,7 +48,7 @@ static const int IAM_MODE_ASHRAE = 1;
 static const int IAM_MODE_SANDIA = 2;
 static const int IAM_MODE_SPLINE = 3;
 
-// 1: Use Sandia polynomial [corr=f(AM)], 2: Use standard coefficients from DeSoto model [corr=f(AM)], 3: Use First Solar polynomial [corr=f(AM, p_wat)]
+// 1: Use Sandia polynomial [corr=f(AM)], 2: Use standard coefficients from DeSoto model [3] [corr=f(AM)], 3: Use First Solar polynomial [corr=f(AM, p_wat)]
 static const int AM_MODE_SANDIA = 1;
 static const int AM_MODE_DESOTO = 2;
 static const int AM_MODE_LEE_PANCHULA = 3;
@@ -54,6 +59,18 @@ mlmodel_module_t::mlmodel_module_t()
 		= R_shref = R_sh0 = R_shexp = R_s
 		= alpha_isc = E_g = n_0 = mu_n = T_c_no_tnoct = std::numeric_limits<double>::quiet_NaN();
 }
+
+// IAM functions
+double IAMvalue_ASHRAE(double b0, double theta)
+{
+	return (1 - b0 * (1 / cos(theta) - 1));
+}
+double IAMvalue_SANDIA(double coeff[], double theta)
+{
+	return coeff[0] + coeff[1] * theta + coeff[2] * pow(theta, 2) + coeff[3] * pow(theta, 3) + coeff[4] * pow(theta, 4) + coeff[5] * pow(theta, 5);
+}
+
+// Main module model
 bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltage, pvoutput_t &out)
 {
 	// initialize output first
@@ -75,22 +92,26 @@ bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltag
 	}
 
 	// Incidence Angle Modifier
-	double f_IAM = 0;
-	double IncAngRad = input.IncAng / 180 * PI;
+	double f_IAM_beam = 0, f_IAM_diff = 0, f_IAM_gnd = 0;
+	double theta_beam = input.IncAng / 180 * PI;
+	double theta_diff = (59.7 - 0.1388 * input.Tilt + 0.001497 * pow(input.Tilt, 2)) / 180 * PI; // from [2], equation 5.4.2
+	double theta_gnd = (90.0 - 0.5788 * input.Tilt + 0.002693 * pow(input.Tilt, 2)) / 180 * PI; // from [2], equation 5.4.1
+
 	if (IAM_mode == IAM_MODE_ASHRAE)
 	{
-		f_IAM = 1 - IAM_c_as * (1 / cos(IncAngRad) - 1);
+		f_IAM_beam = IAMvalue_ASHRAE(IAM_c_as, theta_beam);
+		f_IAM_diff = IAMvalue_ASHRAE(IAM_c_as, theta_diff);
+		f_IAM_gnd = IAMvalue_ASHRAE(IAM_c_as, theta_gnd);
 	}
 	else if (IAM_mode == IAM_MODE_SANDIA)
 	{
-		f_IAM = IAM_c_sa[0] + IAM_c_sa[1] * pow(IncAngRad, 1) + IAM_c_sa[2] * pow(IncAngRad, 2) + IAM_c_sa[3] * pow(IncAngRad, 3) + IAM_c_sa[4] * pow(IncAngRad, 4) + IAM_c_sa[5] * pow(IncAngRad, 5);
+		f_IAM_beam = IAMvalue_SANDIA(IAM_c_sa, theta_beam);
+		f_IAM_diff = IAMvalue_SANDIA(IAM_c_sa, theta_diff);
+		f_IAM_gnd = IAMvalue_SANDIA(IAM_c_sa, theta_gnd);		
 	}
 	else if (IAM_mode == IAM_MODE_SPLINE)
 	{
-		// throw std::invalid_argument("IAM_mode to be implemented.");
-	}
-	else {
-		// throw std::invalid_argument("Unknown IAM_mode.");
+		// TO BE ADDED
 	}
 
 	// Spectral correction function
@@ -101,19 +122,14 @@ bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltag
 	}
 	else if (AM_mode == AM_MODE_DESOTO)
 	{
-		double amavec[5] = { 0.918093, 0.086257, -0.024459, 0.002816, -0.000126 };
 		f_AM = air_mass_modifier(input.Zenith, input.Elev, amavec);
 	}
 	else if (AM_mode == AM_MODE_LEE_PANCHULA)
 	{
 		// throw std::invalid_argument("AM_mode to be implemented.");
 	}
-	else
-	{
-		// throw std::invalid_argument("Unknown AM_mode.");
-	}
 
-	double S = Geff_total * f_IAM * f_AM;
+	double S = (f_IAM_beam * input.Ibeam + f_IAM_diff * input.Idiff + f_IAM_gnd * input.Ignd) * f_AM;
 
 	// Single diode model acc. to [1]
 	if (S >= 1)

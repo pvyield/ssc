@@ -1659,7 +1659,7 @@ public:
 		}
 		else if (mod_type == 5)
 		{
-			// Mermoud/Thibault single-diode model
+			// Mermoud/Lejeune single-diode model
 			mlm.N_series = as_integer("mlm_N_series");
 			mlm.Width = as_double("mlm_Width");
 			mlm.Length = as_double("mlm_Length");
