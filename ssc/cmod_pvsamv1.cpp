@@ -417,6 +417,9 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_no_tnoct",                            "NOCT cell temperature",                                   "°C",      "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_no_mounting",                         "NOCT Array mounting height",                              "-",       "0=one story,1=two story",                                           "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_no_standoff",                         "NOCT standoff mode",                                      "-",       "0=bipv,1=>3.5in,2=2.5-3.5in,3=1.5-2.5in,4=0.5-1.5in,5=<0.5in,6=ground/rack",  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_fa_alpha",                            "Extended Faiman model absorptivity",                      "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_fa_U0",                               "Extended Faiman model U_0",                               "W/m²K",   "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_fa_U1",                               "Extended Faiman model U_1",                               "W/m³sK",  "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_AM_mode",                                 "Air-mass modifier mode",                                  "-",       "1: Use Sandia polynomial [corr=f(AM)], 2: Use standard coefficients from DeSoto model [corr=f(AM)], 3: Use First Solar polynomial [corr=f(AM, p_wat)]",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_AM_c_sa0",                                "Coefficient 0 for Sandia Air Mass Modifier",              "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_AM_c_sa1",                                "Coefficient 1 for Sandia Air Mass Modifier",              "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
@@ -437,6 +440,9 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_IAM_c_sa3",                               "Sandia IAM coefficient 3",                                "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_IAM_c_sa4",                               "Sandia IAM coefficient 4",                                "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_IAM_c_sa5",                               "Sandia IAM coefficient 5",                                "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	// { SSC_INPUT,        SSC_ARRAY,       "mlm_IAM_c_cs_elements",                       "Spline IAM - Number of elements",                         "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_ARRAY,       "mlm_IAM_c_cs_incAngle",                       "Spline IAM - Incidence angles",                           "deg",     "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_ARRAY,       "mlm_IAM_c_cs_iamValue",                       "Spline IAM - IAM values",                                 "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 
 // inverter model
 	{ SSC_INPUT,        SSC_NUMBER,      "inverter_model",                              "Inverter model specifier",                                "",        "0=cec,1=datasheet,2=partload,3=coefficientgenerator",        "pvsamv1",               "*",                         "INTEGER,MIN=0,MAX=3",           "" },
@@ -1314,7 +1320,8 @@ public:
 
 		iec61853_module_t sd11; // 11 parameter single diode, uses noct_tc from above
 
-		mlmodel_module_t mlm; // uses noct_tc from above
+		mlmodel_module_t mlm;
+		mock_celltemp_t mock_tc;
 
 		pvcelltemp_t *celltemp_model = 0;
 		pvmodule_t *module_model = 0;		
@@ -1660,6 +1667,11 @@ public:
 		else if (mod_type == 5)
 		{
 			// Mermoud/Lejeune single-diode model
+			size_t elementCount1 = 0;
+			size_t elementCount2 = 0;
+			ssc_number_t *arrayIncAngle = 0;
+			ssc_number_t *arrayIamValue = 0;
+
 			mlm.N_series = as_integer("mlm_N_series");
 			mlm.Width = as_double("mlm_Width");
 			mlm.Length = as_double("mlm_Length");
@@ -1681,6 +1693,9 @@ public:
 			mlm.T_c_no_tnoct = as_double("mlm_T_c_no_tnoct");
 			mlm.T_c_no_mounting = as_integer("mlm_T_c_no_mounting");
 			mlm.T_c_no_standoff = as_integer("mlm_T_c_no_standoff");
+			mlm.T_c_fa_alpha = as_double("mlm_T_c_fa_alpha");
+			mlm.T_c_fa_U0 = as_double("mlm_T_c_fa_U0");
+			mlm.T_c_fa_U1 = as_double("mlm_T_c_fa_U1");
 			mlm.AM_mode = as_integer("mlm_AM_mode");
 			mlm.AM_c_sa[0] = as_double("mlm_AM_c_sa0");
 			mlm.AM_c_sa[1] = as_double("mlm_AM_c_sa1");
@@ -1702,14 +1717,34 @@ public:
 			mlm.IAM_c_sa[4] = as_double("mlm_IAM_c_sa4");
 			mlm.IAM_c_sa[5] = as_double("mlm_IAM_c_sa5");
 
+			arrayIncAngle = as_array("mlm_IAM_c_cs_incAngle", &elementCount1);
+			arrayIamValue = as_array("mlm_IAM_c_cs_iamValue", &elementCount2);
+			mlm.IAM_c_cs_elements = elementCount1; // as_integer("mlm_IAM_c_cs_elements");
+
+			if (mlm.IAM_mode == 3)
+			{
+				if (elementCount1 != elementCount2)
+				{
+					exec_error("pvsamv1", "Spline IAM: Number of entries for incidence angle and IAM value different.");
+				}
+				for (int i = 0; i <= mlm.IAM_c_cs_elements - 1; i = i + 1) {
+					mlm.IAM_c_cs_incAngle[i] = arrayIncAngle[i];
+					mlm.IAM_c_cs_iamValue[i] = arrayIamValue[i];
+				}
+			}
+
 			if (mlm.T_mode == 1) {
 				setup_noct_model("mlm_T_c_no", noct_tc);
 				celltemp_model = &noct_tc;
+			}
+			else if (mlm.T_mode == 2) {
+				celltemp_model = &mock_tc;
 			}
 			else {
 				throw exec_error("pvsamv1", "invalid temperature model type");
 			}
 			
+			mlm.initializeManual();
 			module_model = &mlm;
 			module_watts_stc = mlm.V_oc_ref * mlm.I_mp_ref;
 			ref_area_m2 = mlm.Width * mlm.Length;
