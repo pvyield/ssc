@@ -99,6 +99,7 @@ var_info vtab_battery_inputs[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "batt_Vnom",                                  "Cell voltage at end of nominal zone",                     "V",       "",                     "Battery",       "",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "batt_Vnom_default",                          "Default nominal cell voltage",                            "V",       "",                     "Battery",       "",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "batt_Qfull",                                 "Fully charged cell capacity",                             "Ah",      "",                     "Battery",       "",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "batt_Qfull_flow",                            "Fully charged flow battery capacity",                     "Ah",      "",                     "Battery",       "",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "batt_Qexp",                                  "Cell capacity at end of exponential zone",                "Ah",      "",                     "Battery",       "",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "batt_Qnom",                                  "Cell capacity at end of nominal zone",                    "Ah",      "",                     "Battery",       "",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "batt_C_rate",                                "Rate at which voltage vs. capacity curve input",          "",        "",                     "Battery",       "",                           "",                              "" },
@@ -161,7 +162,8 @@ var_info vtab_battery_outputs[] = {
 	{ SSC_OUTPUT,        SSC_ARRAY,      "batt_SOC",                                   "Battery state of charge",                                "%",        "",                     "Battery",       "",                           "",                              "" },
 	{ SSC_OUTPUT,        SSC_ARRAY,      "batt_DOD",                                   "Battery cycle depth of discharge",                       "%",        "",                     "Battery",       "",                           "",                              "" },
 	{ SSC_OUTPUT,        SSC_ARRAY,      "batt_qmaxI",                                 "Battery maximum capacity at current",                    "Ah",       "",                     "Battery",       "",                           "",                              "" },
-	{ SSC_OUTPUT,        SSC_ARRAY,      "batt_qmax",                                  "Battery maximum charge",                                 "Ah",       "",                     "Battery",       "",                           "",                              "" },
+	{ SSC_OUTPUT,        SSC_ARRAY,      "batt_qmax",                                  "Battery maximum charge with degradation",                "Ah",       "",                     "Battery",       "",                           "",                              "" },
+	{ SSC_OUTPUT,        SSC_ARRAY,      "batt_qmax_thermal",                          "Battery maximum charge at temperature",                  "Ah",       "",                     "Battery",       "",                           "",                              "" },
 	{ SSC_OUTPUT,        SSC_ARRAY,      "batt_I",                                     "Battery current",                                        "A",        "",                     "Battery",       "",                           "",                              "" },
 	{ SSC_OUTPUT,        SSC_ARRAY,      "batt_voltage_cell",                          "Battery cell voltage",                                   "V",        "",                     "Battery",       "",                           "",                              "" },
 	{ SSC_OUTPUT,        SSC_ARRAY,      "batt_voltage",                               "Battery voltage",	                                     "V",        "",                     "Battery",       "",                           "",                              "" },
@@ -281,6 +283,7 @@ battstor::battstor(compute_module &cm, bool setup_model, int replacement_option,
 			batt_vars->batt_Vfull = cm.as_double("batt_Vfull");
 			batt_vars->batt_Vexp = cm.as_double("batt_Vexp");
 			batt_vars->batt_Vnom = cm.as_double("batt_Vnom");
+			batt_vars->batt_Qfull_flow = cm.as_double("batt_Qfull_flow");
 			batt_vars->batt_Qfull = cm.as_double("batt_Qfull");
 			batt_vars->batt_Qexp = cm.as_double("batt_Qexp");
 			batt_vars->batt_Qnom = cm.as_double("batt_Qnom");
@@ -354,6 +357,7 @@ battstor::battstor(compute_module &cm, bool setup_model, int replacement_option,
 	outAvailableCharge = 0;
 	outBoundCharge = 0;
 	outMaxChargeAtCurrent = 0;
+	outMaxChargeThermal = 0;
 	outMaxCharge = 0;
 	outSOC = 0;
 	outDOD = 0;
@@ -531,6 +535,7 @@ battstor::battstor(compute_module &cm, bool setup_model, int replacement_option,
 			outBoundCharge = cm.allocate("batt_q2", nrec*nyears);
 		}
 		outMaxCharge = cm.allocate("batt_qmax", nrec*nyears);
+		outMaxChargeThermal = cm.allocate("batt_qmax_thermal", nrec*nyears);
 		outCurrent = cm.allocate("batt_I", nrec*nyears);
 		outBatteryVoltage = cm.allocate("batt_voltage", nrec*nyears);
 		outBatteryTemperature = cm.allocate("batt_temperature", nrec*nyears);
@@ -630,11 +635,16 @@ battstor::battstor(compute_module &cm, bool setup_model, int replacement_option,
 			batt_vars->batt_maximum_SOC,
 			batt_vars->batt_minimum_SOC);
 	}
-	// for now assume Vanadium Redox responds quickly, like Lithium-ion
-	else if (chem == battery_t::LITHIUM_ION || chem == battery_t::VANADIUM_REDOX || chem == battery_t::IRON_FLOW)
+	else if (chem == battery_t::LITHIUM_ION)
 	{
 		capacity_model = new capacity_lithium_ion_t(
 			batt_vars->batt_Qfull*batt_vars->batt_computed_strings, batt_vars->batt_maximum_SOC, batt_vars->batt_minimum_SOC);
+	}
+	// for now assume Flow Batteries responds quickly, like Lithium-ion, but with an independent capacity/power
+	else if (chem == battery_t::VANADIUM_REDOX || chem == battery_t::IRON_FLOW)
+	{
+		capacity_model = new capacity_lithium_ion_t(
+			batt_vars->batt_Qfull_flow, batt_vars->batt_maximum_SOC, batt_vars->batt_minimum_SOC);
 	}
 
 	// accumulate monthly losses
@@ -877,6 +887,7 @@ void battstor::outputs_fixed(compute_module &cm, size_t year, size_t hour_of_yea
 			outBoundCharge[idx] = (ssc_number_t)(kibam->q2());
 		}
 		outMaxCharge[idx] = (ssc_number_t)(capacity_model->qmax());
+		outMaxChargeThermal[idx] = (ssc_number_t)(capacity_model->qmax_thermal());
 		outTotalCharge[idx] = (ssc_number_t)(capacity_model->q0());
 		outCurrent[idx] = (ssc_number_t)(capacity_model->I());
 		outBatteryVoltage[idx] = (ssc_number_t)(voltage_model->battery_voltage());

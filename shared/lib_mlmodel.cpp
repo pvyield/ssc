@@ -24,10 +24,10 @@
 * Implementation of the Mermoud/Thibault single-diode model
 *
 * SOURCES
-* [1] AndrÈ Mermoud and Thibault Lejeune, "Performance assessment of a simulation model for PV modules
+* [1] Andr√© Mermoud and Thibault Lejeune, "Performance assessment of a simulation model for PV modules
 *     of any available technology", 2010 (https://archive-ouverte.unige.ch/unige:38547)
 * [2] John A. Duffie, "Solar Engineering of Thermal Processes", 4th Edition, 2013 by John Wiley & Sons
-* [3] W. De Soto et al., ìImprovement and validation of a model for photovoltaic array performanceî,
+* [3] W. De Soto et al., ‚ÄúImprovement and validation of a model for photovoltaic array performance‚Äù,
 *     Solar Energy, vol 80, pp. 78-88, 2006.
 *******************************************************************************************************/
 
@@ -71,6 +71,7 @@ mlmodel_module_t::mlmodel_module_t()
 		= R_shref = R_sh0 = R_shexp = R_s
 		= alpha_isc = E_g = n_0 = mu_n = T_c_no_tnoct
 		= T_c_fa_alpha = T_c_fa_U0 = T_c_fa_U1 = std::numeric_limits<double>::quiet_NaN();
+
 }
 
 // IAM functions
@@ -154,25 +155,6 @@ bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltag
 			break;
 	}
 
-	//if (IAM_mode == IAM_MODE_ASHRAE)
-	//{
-	//	f_IAM_beam = IAMvalue_ASHRAE(IAM_c_as, theta_beam / 180 * PI);
-	//	f_IAM_diff = IAMvalue_ASHRAE(IAM_c_as, theta_diff / 180 * PI);
-	//	f_IAM_gnd = IAMvalue_ASHRAE(IAM_c_as, theta_gnd / 180 * PI);
-	//}
-	//else if (IAM_mode == IAM_MODE_SANDIA)
-	//{
-	//	f_IAM_beam = IAMvalue_SANDIA(IAM_c_sa, theta_beam / 180 * PI);
-	//	f_IAM_diff = IAMvalue_SANDIA(IAM_c_sa, theta_diff / 180 * PI);
-	//	f_IAM_gnd = IAMvalue_SANDIA(IAM_c_sa, theta_gnd / 180 * PI);
-	//}
-	//else if (IAM_mode == IAM_MODE_SPLINE)
-	//{
-	//	f_IAM_beam = std::min(iamSpline(theta_beam), 1.0);
-	//	f_IAM_diff = std::min(iamSpline(theta_diff), 1.0);
-	//	f_IAM_gnd = std::min(iamSpline(theta_gnd), 1.0);
-	//}
-
 	// Spectral correction function
 	double f_AM = 0;
 	switch (AM_mode)
@@ -187,19 +169,6 @@ bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltag
 			f_AM = -1; // TO BE ADDED
 			break;
 	}
-
-	//if (AM_mode == AM_MODE_SANDIA)
-	//{
-	//	f_AM = air_mass_modifier(input.Zenith, input.Elev, AM_c_sa);
-	//}
-	//else if (AM_mode == AM_MODE_DESOTO)
-	//{
-	//	f_AM = air_mass_modifier(input.Zenith, input.Elev, amavec);
-	//}
-	//else if (AM_mode == AM_MODE_LEE_PANCHULA)
-	//{
-	//	// throw std::invalid_argument("AM_mode to be implemented.");
-	//}
 
 	double S = (f_IAM_beam * input.Ibeam + f_IAM_diff * input.Idiff + f_IAM_gnd * input.Ignd) * f_AM;
 
@@ -245,6 +214,7 @@ bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltag
 				P = V*I;
 			}
 			eff = P / ((Width * Length) * S);
+
 		}
 
 		out.Power = P;
