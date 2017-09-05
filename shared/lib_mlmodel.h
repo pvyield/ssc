@@ -50,6 +50,9 @@ public:
 	double T_c_no_tnoct;
 	int T_c_no_mounting;
 	int T_c_no_standoff;
+	double T_c_fa_alpha;
+	double T_c_fa_U0;
+	double T_c_fa_U1;
 
 	int AM_mode;
 	double AM_c_sa[5];
@@ -58,6 +61,9 @@ public:
 	int IAM_mode;
 	double IAM_c_as;
 	double IAM_c_sa[6];
+	int IAM_c_cs_elements;
+	double IAM_c_cs_incAngle[100];
+	double IAM_c_cs_iamValue[100];
 
 	mlmodel_module_t();
 
@@ -67,4 +73,11 @@ public:
 	virtual double VocRef() { return V_oc_ref; }
 	virtual double IscRef() { return I_sc_ref; }
 	virtual bool operator() (pvinput_t &input, double TcellC, double opvoltage, pvoutput_t &output);
+	virtual void initializeManual();
+};
+
+class mock_celltemp_t : public pvcelltemp_t
+{
+public:
+	virtual bool operator() (pvinput_t &input, pvmodule_t &module, double opvoltage, double &Tcell);
 };

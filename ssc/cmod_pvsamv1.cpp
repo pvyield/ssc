@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (â€œAllianceâ€) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as â€œSystem Advisor Modelâ€ or â€œSAMâ€. Except
+*  to comply with the foregoing, the terms â€œSystem Advisor Modelâ€, â€œSAMâ€, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -403,8 +403,8 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_I_mp_ref",                                "I_mp at STC",                                             "A",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_V_oc_ref",                                "V_oc at STC",                                             "V",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_I_sc_ref",                                "I_sc at STC",                                             "A",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "mlm_S_ref",                                   "Reference irradiance (Typically 1000W/m²)",               "W/m²",    "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_ref",                                   "Reference temperature (Typically 25°C)",                  "°C",      "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_S_ref",                                   "Reference irradiance (Typically 1000W/mÂ²)",               "W/mÂ²",    "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_ref",                                   "Reference temperature (Typically 25Â°C)",                  "Â°C",      "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_R_shref",                                 "Reference shunt resistance",                              "V/A",     "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_R_sh0",                                   "Rsh,0",                                                   "V/A",     "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_R_shexp",                                 "Rsh exponential coefficient",                             "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
@@ -414,9 +414,12 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_n_0",                                     "Gamma",                                                   "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_mu_n",                                    "Temperature coefficient of gamma",                        "1/K",     "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_mode",                                  "Cell temperature model mode",                             "-",       "1: NOCT",                                                           "pvsamv1",       "module_model=5",                           "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_no_tnoct",                            "NOCT cell temperature",                                   "°C",      "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_no_tnoct",                            "NOCT cell temperature",                                   "Â°C",      "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_no_mounting",                         "NOCT Array mounting height",                              "-",       "0=one story,1=two story",                                           "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_no_standoff",                         "NOCT standoff mode",                                      "-",       "0=bipv,1=>3.5in,2=2.5-3.5in,3=1.5-2.5in,4=0.5-1.5in,5=<0.5in,6=ground/rack",  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_fa_alpha",                            "Extended Faiman model absorptivity",                      "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_fa_U0",                               "Extended Faiman model U_0",                               "W/mÂ²K",   "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_fa_U1",                               "Extended Faiman model U_1",                               "W/mÂ³sK",  "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_AM_mode",                                 "Air-mass modifier mode",                                  "-",       "1: Use Sandia polynomial [corr=f(AM)], 2: Use standard coefficients from DeSoto model [corr=f(AM)], 3: Use First Solar polynomial [corr=f(AM, p_wat)]",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_AM_c_sa0",                                "Coefficient 0 for Sandia Air Mass Modifier",              "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_AM_c_sa1",                                "Coefficient 1 for Sandia Air Mass Modifier",              "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
@@ -437,6 +440,8 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_IAM_c_sa3",                               "Sandia IAM coefficient 3",                                "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_IAM_c_sa4",                               "Sandia IAM coefficient 4",                                "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_IAM_c_sa5",                               "Sandia IAM coefficient 5",                                "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_ARRAY,       "mlm_IAM_c_cs_incAngle",                       "Spline IAM - Incidence angles",                           "deg",     "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_ARRAY,       "mlm_IAM_c_cs_iamValue",                       "Spline IAM - IAM values",                                 "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 
 // inverter model
 	{ SSC_INPUT,        SSC_NUMBER,      "inverter_model",                              "Inverter model specifier",                                "",        "0=cec,1=datasheet,2=partload,3=coefficientgenerator",        "pvsamv1",               "*",                         "INTEGER,MIN=0,MAX=3",           "" },
@@ -1314,7 +1319,8 @@ public:
 
 		iec61853_module_t sd11; // 11 parameter single diode, uses noct_tc from above
 
-		mlmodel_module_t mlm; // uses noct_tc from above
+		mlmodel_module_t mlm;
+		mock_celltemp_t mock_tc;
 
 		pvcelltemp_t *celltemp_model = 0;
 		pvmodule_t *module_model = 0;		
@@ -1660,6 +1666,11 @@ public:
 		else if (mod_type == 5)
 		{
 			// Mermoud/Lejeune single-diode model
+			size_t elementCount1 = 0;
+			size_t elementCount2 = 0;
+			ssc_number_t *arrayIncAngle = 0;
+			ssc_number_t *arrayIamValue = 0;
+
 			mlm.N_series = as_integer("mlm_N_series");
 			mlm.Width = as_double("mlm_Width");
 			mlm.Length = as_double("mlm_Length");
@@ -1681,6 +1692,9 @@ public:
 			mlm.T_c_no_tnoct = as_double("mlm_T_c_no_tnoct");
 			mlm.T_c_no_mounting = as_integer("mlm_T_c_no_mounting");
 			mlm.T_c_no_standoff = as_integer("mlm_T_c_no_standoff");
+			mlm.T_c_fa_alpha = as_double("mlm_T_c_fa_alpha");
+			mlm.T_c_fa_U0 = as_double("mlm_T_c_fa_U0");
+			mlm.T_c_fa_U1 = as_double("mlm_T_c_fa_U1");
 			mlm.AM_mode = as_integer("mlm_AM_mode");
 			mlm.AM_c_sa[0] = as_double("mlm_AM_c_sa0");
 			mlm.AM_c_sa[1] = as_double("mlm_AM_c_sa1");
@@ -1702,14 +1716,35 @@ public:
 			mlm.IAM_c_sa[4] = as_double("mlm_IAM_c_sa4");
 			mlm.IAM_c_sa[5] = as_double("mlm_IAM_c_sa5");
 
+			arrayIncAngle = as_array("mlm_IAM_c_cs_incAngle", &elementCount1);
+			arrayIamValue = as_array("mlm_IAM_c_cs_iamValue", &elementCount2);
+			mlm.IAM_c_cs_elements = elementCount1; // as_integer("mlm_IAM_c_cs_elements");
+
+			if (mlm.IAM_mode == 3)
+			{
+				if (elementCount1 != elementCount2)
+				{
+					exec_error("pvsamv1", "Spline IAM: Number of entries for incidence angle and IAM value different.");
+				}
+				for (int i = 0; i <= mlm.IAM_c_cs_elements - 1; i = i + 1) {
+					mlm.IAM_c_cs_incAngle[i] = arrayIncAngle[i];
+					mlm.IAM_c_cs_iamValue[i] = arrayIamValue[i];
+				}
+			}
+
 			if (mlm.T_mode == 1) {
 				setup_noct_model("mlm_T_c_no", noct_tc);
 				celltemp_model = &noct_tc;
+			}
+			else if (mlm.T_mode == 2) {
+				celltemp_model = &mock_tc;
 			}
 			else {
 				throw exec_error("pvsamv1", "invalid temperature model type");
 			}
 			
+			mlm.initializeManual();
+
 			module_model = &mlm;
 			module_watts_stc = mlm.V_oc_ref * mlm.I_mp_ref;
 			ref_area_m2 = mlm.Width * mlm.Length;
