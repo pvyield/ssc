@@ -60,10 +60,11 @@ static const int IAM_MODE_ASHRAE = 1;
 static const int IAM_MODE_SANDIA = 2;
 static const int IAM_MODE_SPLINE = 3;
 
-// 1: Use Sandia polynomial [corr=f(AM)], 2: Use standard coefficients from DeSoto model [3] [corr=f(AM)], 3: Use First Solar polynomial [corr=f(AM, p_wat)]
-static const int AM_MODE_SANDIA = 1;
-static const int AM_MODE_DESOTO = 2;
-static const int AM_MODE_LEE_PANCHULA = 3;
+// 1: Do not use AM correction 1: Use Sandia polynomial [corr=f(AM)], 2: Use standard coefficients from DeSoto model [3] [corr=f(AM)], 3: Use First Solar polynomial [corr=f(AM, p_wat)]
+static const int AM_MODE_OFF = 1;
+static const int AM_MODE_SANDIA = 2;
+static const int AM_MODE_DESOTO = 3;
+static const int AM_MODE_LEE_PANCHULA = 4;
 
 mlmodel_module_t::mlmodel_module_t()
 {
@@ -91,9 +92,10 @@ void mlmodel_module_t::initializeManual()
 	{
 		isInitialized = true;
 		// Calculate values of constant reference values.
+		double R_sh_STC = R_shref + (R_sh0 - R_shref) * exp(-R_shexp * (S_ref / S_ref));
 		nVT = N_series * n_0 * k * (T_ref + T_0) / q;
-		I_0ref = (I_sc_ref + (I_sc_ref * R_s + V_oc_ref) / R_shref) / (exp(V_oc_ref / nVT - 1) - exp((I_sc_ref * R_s) / nVT - 1));
-		I_Lref = I_0ref * exp(V_oc_ref / nVT - 1) + V_oc_ref / R_shref;
+		I_0ref = (I_sc_ref + (I_sc_ref * R_s - V_oc_ref) / R_sh_STC) / ((exp(V_oc_ref / nVT) - 1) - (exp((I_sc_ref * R_s) / nVT) - 1));
+		I_Lref = I_0ref * (exp(V_oc_ref / nVT) - 1) + V_oc_ref / R_sh_STC;
 
 		// set up IAM spline
 		if (IAM_mode == IAM_MODE_SPLINE)
@@ -159,6 +161,9 @@ bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltag
 	double f_AM = 0;
 	switch (AM_mode)
 	{
+	case AM_MODE_OFF:
+			f_AM = 1.0;
+			break;
 		case AM_MODE_SANDIA:
 			f_AM = air_mass_modifier(input.Zenith, input.Elev, AM_c_sa);
 			break;
@@ -214,7 +219,6 @@ bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltag
 				P = V*I;
 			}
 			eff = P / ((Width * Length) * S);
-
 		}
 
 		out.Power = P;
