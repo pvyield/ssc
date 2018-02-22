@@ -49,43 +49,6 @@
 
 #include "cmod_pvsamv1.h"
 
-<<<<<<< HEAD
-#include <string>
-#include <cmath>
-#include <limits>
-#include <vector>
-#include <memory>
-
-#include "core.h"
-// for adjustment factors
-#include "common.h"
-
-// for battery model, leverage common code with standalone compute module.
-#include "cmod_battery.h"
-#include "lib_power_electronics.h"
-
-#include "lib_weatherfile.h"
-#include "lib_irradproc.h"
-#include "lib_cec6par.h"
-#include "lib_sandia.h"
-#include "lib_pvinv.h"
-#include "6par_jacobian.h"
-#include "6par_lu.h"
-#include "6par_search.h"
-#include "6par_newton.h"
-#include "6par_gamma.h"
-#include "6par_solve.h"
-#include "lib_pvshade.h"
-#include "lib_snowmodel.h"
-#include "lib_iec61853.h"
-#include "lib_mlmodel.h"
-
-#include "lib_util.h"
-
-// non linear shading database
-#include "lib_pv_shade_loss_mpp.h"
-=======
->>>>>>> upstream/develop
 // comment following define if do not want shading database validation outputs
 //#define SHADE_DB_OUTPUTS
 
@@ -1125,16 +1088,11 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 	iec61853_module_t sd11; // 11 parameter single diode, uses noct_tc from above
 
-<<<<<<< HEAD
-		mlmodel_module_t mlm;
-		mock_celltemp_t mock_tc;
+	mlmodel_module_t mlm;
+	mock_celltemp_t mock_tc;
 
-		pvcelltemp_t *celltemp_model = 0;
-		pvmodule_t *module_model = 0;		
-=======
 	pvcelltemp_t *celltemp_model = 0;
 	pvmodule_t *module_model = 0;		
->>>>>>> upstream/develop
 
 	double ref_area_m2 = 0;
 
@@ -1451,121 +1409,6 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 		setup_noct_model( "sd11par", noct_tc );
 			
-<<<<<<< HEAD
-			sd11.Vmp0 = as_double( "sd11par_Vmp0" ); 
-			sd11.Imp0 = as_double( "sd11par_Imp0" );
-			sd11.Voc0 = as_double( "sd11par_Voc0" );
-			sd11.Isc0 = as_double( "sd11par_Isc0" );
-			sd11.alphaIsc = as_double( "sd11par_alphaIsc" );
-			sd11.n = as_double("sd11par_n" );
-			sd11.Il = as_double("sd11par_Il");
-			sd11.Io = as_double("sd11par_Io");
-			sd11.Egref = as_double("sd11par_Egref");
-			sd11.D1 = as_double("sd11par_d1");
-			sd11.D2 = as_double("sd11par_d2");
-			sd11.D3 = as_double("sd11par_d3");
-			sd11.C1 = as_double("sd11par_c1");
-			sd11.C2 = as_double("sd11par_c2");
-			sd11.C3 = as_double("sd11par_c3");
-
-			celltemp_model = &noct_tc;
-			module_model = &sd11;
-			module_watts_stc = sd11.Vmp0 * sd11.Imp0;
-			ref_area_m2 = sd11.Area;			
-			self_shading_fill_factor = sd11.Vmp0 * sd11.Imp0 / sd11.Voc0 / sd11.Isc0;
-			ssVmp = sd11.Vmp0;
-		}
-		else if (mod_type == 5)
-		{
-			// Mermoud/Lejeune single-diode model
-			size_t elementCount1 = 0;
-			size_t elementCount2 = 0;
-			ssc_number_t *arrayIncAngle = 0;
-			ssc_number_t *arrayIamValue = 0;
-
-			mlm.N_series = as_integer("mlm_N_series");
-			mlm.Width = as_double("mlm_Width");
-			mlm.Length = as_double("mlm_Length");
-			mlm.V_mp_ref = as_double("mlm_V_mp_ref");
-			mlm.I_mp_ref = as_double("mlm_I_mp_ref");
-			mlm.V_oc_ref = as_double("mlm_V_oc_ref");
-			mlm.I_sc_ref = as_double("mlm_I_sc_ref");
-			mlm.S_ref = as_double("mlm_S_ref");
-			mlm.T_ref = as_double("mlm_T_ref");
-			mlm.R_shref = as_double("mlm_R_shref");
-			mlm.R_sh0 = as_double("mlm_R_sh0");
-			mlm.R_shexp = as_double("mlm_R_shexp");
-			mlm.R_s = as_double("mlm_R_s");
-			mlm.alpha_isc = as_double("mlm_alpha_isc");
-			mlm.E_g = as_double("mlm_E_g");
-			mlm.n_0 = as_double("mlm_n_0");
-			mlm.mu_n = as_double("mlm_mu_n");
-			mlm.T_mode = as_integer("mlm_T_mode");
-			mlm.T_c_no_tnoct = as_double("mlm_T_c_no_tnoct");
-			mlm.T_c_no_mounting = as_integer("mlm_T_c_no_mounting");
-			mlm.T_c_no_standoff = as_integer("mlm_T_c_no_standoff");
-			mlm.T_c_fa_alpha = as_double("mlm_T_c_fa_alpha");
-			mlm.T_c_fa_U0 = as_double("mlm_T_c_fa_U0");
-			mlm.T_c_fa_U1 = as_double("mlm_T_c_fa_U1");
-			mlm.AM_mode = as_integer("mlm_AM_mode");
-			mlm.AM_c_sa[0] = as_double("mlm_AM_c_sa0");
-			mlm.AM_c_sa[1] = as_double("mlm_AM_c_sa1");
-			mlm.AM_c_sa[2] = as_double("mlm_AM_c_sa2");
-			mlm.AM_c_sa[3] = as_double("mlm_AM_c_sa3");
-			mlm.AM_c_sa[4] = as_double("mlm_AM_c_sa4");
-			mlm.AM_c_lp[0] = as_double("mlm_AM_c_lp0");
-			mlm.AM_c_lp[1] = as_double("mlm_AM_c_lp0");
-			mlm.AM_c_lp[2] = as_double("mlm_AM_c_lp0");
-			mlm.AM_c_lp[3] = as_double("mlm_AM_c_lp0");
-			mlm.AM_c_lp[4] = as_double("mlm_AM_c_lp0");
-			mlm.AM_c_lp[5] = as_double("mlm_AM_c_lp0");
-			mlm.IAM_mode = as_integer("mlm_IAM_mode");
-			mlm.IAM_c_as = as_double("mlm_IAM_c_as");
-			mlm.IAM_c_sa[0] = as_double("mlm_IAM_c_sa0");
-			mlm.IAM_c_sa[1] = as_double("mlm_IAM_c_sa1");
-			mlm.IAM_c_sa[2] = as_double("mlm_IAM_c_sa2");
-			mlm.IAM_c_sa[3] = as_double("mlm_IAM_c_sa3");
-			mlm.IAM_c_sa[4] = as_double("mlm_IAM_c_sa4");
-			mlm.IAM_c_sa[5] = as_double("mlm_IAM_c_sa5");
-
-			arrayIncAngle = as_array("mlm_IAM_c_cs_incAngle", &elementCount1);
-			arrayIamValue = as_array("mlm_IAM_c_cs_iamValue", &elementCount2);
-			mlm.IAM_c_cs_elements = elementCount1; // as_integer("mlm_IAM_c_cs_elements");
-
-			if (mlm.IAM_mode == 3)
-			{
-				if (elementCount1 != elementCount2)
-				{
-					exec_error("pvsamv1", "Spline IAM: Number of entries for incidence angle and IAM value different.");
-				}
-				for (int i = 0; i <= mlm.IAM_c_cs_elements - 1; i = i + 1) {
-					mlm.IAM_c_cs_incAngle[i] = arrayIncAngle[i];
-					mlm.IAM_c_cs_iamValue[i] = arrayIamValue[i];
-				}
-			}
-
-			if (mlm.T_mode == 1) {
-				setup_noct_model("mlm_T_c_no", noct_tc);
-				celltemp_model = &noct_tc;
-			}
-			else if (mlm.T_mode == 2) {
-				celltemp_model = &mock_tc;
-			}
-			else {
-				throw exec_error("pvsamv1", "invalid temperature model type");
-			}
-			
-			mlm.initializeManual();
-
-			module_model = &mlm;
-			module_watts_stc = mlm.V_oc_ref * mlm.I_mp_ref;
-			ref_area_m2 = mlm.Width * mlm.Length;
-			self_shading_fill_factor = mlm.V_mp_ref * mlm.I_mp_ref / mlm.V_oc_ref / mlm.I_sc_ref;
-			ssVmp = mlm.V_mp_ref;
-		}
-		else
-			throw exec_error("pvsamv1", "invalid pv module model type");
-=======
 		sd11.Vmp0 = as_double( "sd11par_Vmp0" ); 
 		sd11.Imp0 = as_double( "sd11par_Imp0" );
 		sd11.Voc0 = as_double( "sd11par_Voc0" );
@@ -1589,9 +1432,95 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		self_shading_fill_factor = sd11.Vmp0 * sd11.Imp0 / sd11.Voc0 / sd11.Isc0;
 		ssVmp = sd11.Vmp0;
 	}
+	else if (mod_type == 5)
+	{
+		// Mermoud/Lejeune single-diode model
+		size_t elementCount1 = 0;
+		size_t elementCount2 = 0;
+		ssc_number_t *arrayIncAngle = 0;
+		ssc_number_t *arrayIamValue = 0;
+
+		mlm.N_series = as_integer("mlm_N_series");
+		mlm.Width = as_double("mlm_Width");
+		mlm.Length = as_double("mlm_Length");
+		mlm.V_mp_ref = as_double("mlm_V_mp_ref");
+		mlm.I_mp_ref = as_double("mlm_I_mp_ref");
+		mlm.V_oc_ref = as_double("mlm_V_oc_ref");
+		mlm.I_sc_ref = as_double("mlm_I_sc_ref");
+		mlm.S_ref = as_double("mlm_S_ref");
+		mlm.T_ref = as_double("mlm_T_ref");
+		mlm.R_shref = as_double("mlm_R_shref");
+		mlm.R_sh0 = as_double("mlm_R_sh0");
+		mlm.R_shexp = as_double("mlm_R_shexp");
+		mlm.R_s = as_double("mlm_R_s");
+		mlm.alpha_isc = as_double("mlm_alpha_isc");
+		mlm.E_g = as_double("mlm_E_g");
+		mlm.n_0 = as_double("mlm_n_0");
+		mlm.mu_n = as_double("mlm_mu_n");
+		mlm.T_mode = as_integer("mlm_T_mode");
+		mlm.T_c_no_tnoct = as_double("mlm_T_c_no_tnoct");
+		mlm.T_c_no_mounting = as_integer("mlm_T_c_no_mounting");
+		mlm.T_c_no_standoff = as_integer("mlm_T_c_no_standoff");
+		mlm.T_c_fa_alpha = as_double("mlm_T_c_fa_alpha");
+		mlm.T_c_fa_U0 = as_double("mlm_T_c_fa_U0");
+		mlm.T_c_fa_U1 = as_double("mlm_T_c_fa_U1");
+		mlm.AM_mode = as_integer("mlm_AM_mode");
+		mlm.AM_c_sa[0] = as_double("mlm_AM_c_sa0");
+		mlm.AM_c_sa[1] = as_double("mlm_AM_c_sa1");
+		mlm.AM_c_sa[2] = as_double("mlm_AM_c_sa2");
+		mlm.AM_c_sa[3] = as_double("mlm_AM_c_sa3");
+		mlm.AM_c_sa[4] = as_double("mlm_AM_c_sa4");
+		mlm.AM_c_lp[0] = as_double("mlm_AM_c_lp0");
+		mlm.AM_c_lp[1] = as_double("mlm_AM_c_lp0");
+		mlm.AM_c_lp[2] = as_double("mlm_AM_c_lp0");
+		mlm.AM_c_lp[3] = as_double("mlm_AM_c_lp0");
+		mlm.AM_c_lp[4] = as_double("mlm_AM_c_lp0");
+		mlm.AM_c_lp[5] = as_double("mlm_AM_c_lp0");
+		mlm.IAM_mode = as_integer("mlm_IAM_mode");
+		mlm.IAM_c_as = as_double("mlm_IAM_c_as");
+		mlm.IAM_c_sa[0] = as_double("mlm_IAM_c_sa0");
+		mlm.IAM_c_sa[1] = as_double("mlm_IAM_c_sa1");
+		mlm.IAM_c_sa[2] = as_double("mlm_IAM_c_sa2");
+		mlm.IAM_c_sa[3] = as_double("mlm_IAM_c_sa3");
+		mlm.IAM_c_sa[4] = as_double("mlm_IAM_c_sa4");
+		mlm.IAM_c_sa[5] = as_double("mlm_IAM_c_sa5");
+
+		arrayIncAngle = as_array("mlm_IAM_c_cs_incAngle", &elementCount1);
+		arrayIamValue = as_array("mlm_IAM_c_cs_iamValue", &elementCount2);
+		mlm.IAM_c_cs_elements = elementCount1; // as_integer("mlm_IAM_c_cs_elements");
+
+		if (mlm.IAM_mode == 3)
+		{
+			if (elementCount1 != elementCount2)
+			{
+				exec_error("pvsamv1", "Spline IAM: Number of entries for incidence angle and IAM value different.");
+			}
+			for (int i = 0; i <= mlm.IAM_c_cs_elements - 1; i = i + 1) {
+				mlm.IAM_c_cs_incAngle[i] = arrayIncAngle[i];
+				mlm.IAM_c_cs_iamValue[i] = arrayIamValue[i];
+			}
+		}
+			if (mlm.T_mode == 1) {
+			setup_noct_model("mlm_T_c_no", noct_tc);
+			celltemp_model = &noct_tc;
+		}
+		else if (mlm.T_mode == 2) {
+			celltemp_model = &mock_tc;
+		}
+		else {
+			throw exec_error("pvsamv1", "invalid temperature model type");
+		}
+		
+		mlm.initializeManual();
+
+		module_model = &mlm;
+		module_watts_stc = mlm.V_oc_ref * mlm.I_mp_ref;
+		ref_area_m2 = mlm.Width * mlm.Length;
+		self_shading_fill_factor = mlm.V_mp_ref * mlm.I_mp_ref / mlm.V_oc_ref / mlm.I_sc_ref;
+		ssVmp = mlm.V_mp_ref;
+	}
 	else
 		throw exec_error("pvsamv1", "invalid pv module model type");
->>>>>>> upstream/develop
 
 	//boolean to determine if the sandia model is being used for CPV
 	bool is_cpv = false;
@@ -1631,23 +1560,10 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	{
 		if ( mod_type == 1     // cec with database
 			|| mod_type == 2   // cec with user specs
-			|| mod_type == 4 ) // iec61853 single diode
+			|| mod_type == 4   // iec61853 single diode
+			|| mod_type == 5 ) // ml single diode model
 		{
-<<<<<<< HEAD
-			if ( mod_type == 1     // cec with database
-				|| mod_type == 2   // cec with user specs
-				|| mod_type == 4   // iec61853 single diode
-				|| mod_type == 5 ) // ml single diode model
-			{
-				clip_mppt_window = true;
-			}
-			else
-			{
-				log( "The simple efficiency and Sandia module models do not allow limiting module voltage to the MPPT tracking range of the inverter.", SSC_NOTICE );
-			}
-=======
 			clip_mppt_window = true;
->>>>>>> upstream/develop
 		}
 		else
 		{

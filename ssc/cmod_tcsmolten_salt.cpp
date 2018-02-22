@@ -982,17 +982,9 @@ public:
 				double T_htf_hot_des_input = as_double("T_htf_hot_des");
 				if (!std::isfinite(_sco2_T_htf_hot_des) || _sco2_T_htf_hot_des != T_htf_hot_des_input)
 				{
-<<<<<<< HEAD
-					log(util::format("The user input cutoff fraction, %lg, was reset to the minimum allowable cutoff fraction"
-						" for this sCO2 %s cycle off-design model, %lg\n", cycle_f_min, cycle_type.c_str(), sco2_f_min), SSC_WARNING);
-					update("Preprocessing cycle off-design...", 0.0);
-					cycle_f_min = sco2_f_min;
-					assign("cycle_cutoff", cycle_f_min);
-=======
 					throw exec_error("tcsmolten_salt", util::format("The HTF hot temperature uesd to generate"
 						" the preprocessed sCO2 cycle data, %lg [C], is not equal to the input HTF hot temperature",
 						_sco2_T_htf_hot_des, T_htf_hot_des_input));
->>>>>>> upstream/develop
 				}
 
 				double _sco2_deltaT_PHX = as_double("_sco2_deltaT_PHX");
