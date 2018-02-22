@@ -54,8 +54,10 @@
 #include "sscapi.h"
 
 SSCEXPORT int ssc_version()
+{
+	return 184;
+}
 
-return 184;
 
 
 SSCEXPORT const char *ssc_build_info()
