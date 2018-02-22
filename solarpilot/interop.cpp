@@ -131,9 +131,9 @@ void interop::GenerateSimulationWeatherData(var_map &V, int design_method, Array
 
 	{		//Subset of days/hours
 		//Need to add this still
-		throw spexception("Simulation with a user-specified list of days/hours is not currently supported. Please use another option.");
 		V.amb.sim_time_step.Setval(0.);
-		break;
+		throw spexception("Simulation with a user-specified list of days/hours is not currently supported. Please use another option.");
+		//break;
 	}
 	//case LAYOUT_DETAIL::SINGLE_POINT:
     case var_solarfield::DES_SIM_DETAIL::SINGLE_SIMULATION_POINT:
@@ -275,15 +275,10 @@ void interop::GenerateSimulationWeatherData(var_map &V, int design_method, Array
 					
 
 			//Add up the total and average DNI's
-			double dni, dni_tot = 0., dni_peak = 0.;
-			(void*)&dni_peak;
-			(void*)&dni_tot;
-			double tdry, pres, wind;
+			double dni, tdry, pres, wind;
 			
 			double hrmid = (hrs[0] + hrs[1])/2. + hoy;
 			int nhrs = (int)(floor((hrs[1] - hrs[0])/(double)nskip))*nskip;
-			int nsteps = nhrs/nskip + 1; //total number of simulation points in the day
-			(void*)&nsteps;
 
 			//make sure the start and end hours are symmetric about solar noon
 			double nmidspan = (double)nhrs/2.;
@@ -987,8 +982,6 @@ void sim_result::process_field_stats(){
 
 void sim_result::process_flux_stats(SolarField &SF){
 	//Determine the flux info
-	double atot = SF.calcReceiverTotalArea();
-	(void*)&atot;
 	double fave=0., fave2=0., fmax = -9.e9, fmin = 9.e9;
 	int nf = 0;
 	vector<Receiver*> *recs = SF.getReceivers();
@@ -1067,7 +1060,7 @@ void sim_result::process_analytical_simulation(SolarField &SF, int nsim_type, do
 			add_heliostat(*helios.at(i));
 		process_field_stats();
 		total_receiver_area = SF.calcReceiverTotalArea();
-		dni =  SF.getVarMap()->sf.dni_des.val/1000.;
+		dni =  SF.getVarMap()->flux.flux_dni.val/1000.;
 		power_on_field = total_heliostat_area * dni;	//[kW]
 		power_absorbed = power_on_field * eff_total_sf.ave;
         power_thermal_loss = SF.getReceiverTotalHeatLoss();
@@ -1112,7 +1105,7 @@ void sim_result::process_raytrace_simulation(SolarField &SF, int nsim_type, doub
 
 
 		//Process the ray data
-		int st, st0=0, ray, ray0=0, el, el0=0;
+		int st, st0=0, ray, ray0=0, el;
 		int nhin=0, nhout=0, nhblock=0, nhabs=0, nrin=0, nrspill=0, nrabs=0;
 
 		for(int i=0; i<ntot; i++){ //for each ray hit
@@ -1133,7 +1126,6 @@ void sim_result::process_raytrace_simulation(SolarField &SF, int nsim_type, doub
 				}
 				ray0 = 0;
 				st0 = 0;
-				el0 = 0;
 			}
 
 			if(el < 0){
@@ -1149,21 +1141,18 @@ void sim_result::process_raytrace_simulation(SolarField &SF, int nsim_type, doub
 					nrin++;
 					nrabs++;
 				}
-				el0 = 0;
 				ray0 = 0;
 				st0 = 0;
 			}
 			else if( el == 0 ){ //Element map is 0 - a ray missed the receiver
 				nrspill++;
 
-				el0 = 0;
 				ray0 = 0;
 				st0 = 0;
 			}
 			else{
 				st0 = st;
 				ray0 = ray;
-				el0 = el;
 			}
 		}
 

@@ -188,11 +188,12 @@ std::string ioutil::get_cwd()
 {
 	char buf[2048];
 #ifdef _WIN32
-	::GetCurrentDirectoryA( 2047, buf );
+	if (::GetCurrentDirectoryA(sizeof(buf), buf) == 0)
+	  return std::string();
 #else
-	::getcwd(buf, 2047);
+	if (::getcwd(buf, sizeof(buf)) == NULL)
+	  return std::string();
 #endif
-	buf[2047] = 0;
 	return std::string(buf);
 }
 
@@ -409,7 +410,7 @@ void ioutil::parseXMLInputFile(const string &fname,var_map &V, parametric &par_d
             {
                 std::string selection = var_node->first_node("value")->value();
                 std::vector< std::string > cbchoices = v->second->combo_get_choices();
-                if( find( cbchoices.begin(), cbchoices.end(), selection ) != cbchoices.end() )
+                if(varname == "temp_which" || find( cbchoices.begin(), cbchoices.end(), selection ) != cbchoices.end() )
                     v->second->set_from_string( selection.c_str() );
             }
             else

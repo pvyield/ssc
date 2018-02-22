@@ -225,7 +225,6 @@ tree_node *tree_node::m_proc(string &key, int index){
 	}
 	
 	throw spexception("Invalid key index while parsing optical mesh.");
-	return 0;
 }
 vector<tree_node*> tree_node::m_get_children(){
 	vector<tree_node*> kids;
@@ -421,7 +420,7 @@ void optical_hash_tree::create_node(opt_element &node, bool rad_direction, int r
 				
             m0->set_range(xr0, xr1, yr0, yr1);  //keep current range
     
-            node.setup(m0=m0);
+            node.setup(m0);
     
             create_node(*m0, !rad_direction, rec_level_r, rec_level_a);
             return;
@@ -477,9 +476,7 @@ void optical_hash_tree::create_node(opt_element &node, bool rad_direction, int r
 	}
 }
 void optical_hash_tree::update_divisions(double res){
-	double *az = Data->extents_az;
     double *r = Data->extents_r; 
-	(void*)&az;
         
     //calculate the number of divisions required to achieve the required resolution
  	nr_req = int(ceil( log((r[1]-r[0])/res)/log(2.)));
