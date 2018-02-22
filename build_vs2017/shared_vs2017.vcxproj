@@ -51,6 +51,7 @@
     <ClInclude Include="..\shared\lib_windwatts.h" />
     <ClInclude Include="..\shared\lib_wind_obos.h" />
     <ClInclude Include="..\shared\lsqfit.h" />
+    <ClInclude Include="..\shared\mlm_spline.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\shared\lib_battery.cpp" />
