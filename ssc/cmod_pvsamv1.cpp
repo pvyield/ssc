@@ -3564,5 +3564,4 @@ void cm_pvsamv1::inverter_size_check()
 			SSC_WARNING);
 }
 
-
 DEFINE_MODULE_ENTRY( pvsamv1, "Photovoltaic performance model, SAM component models V.1", 1 )
