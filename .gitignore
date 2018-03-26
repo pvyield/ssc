@@ -337,3 +337,5 @@ build_linux/Test
 build_linux/config.status
 
 linux_test\.txt
+/shared/lib_ondinv.cpp
+/shared/lib_ondinv.h
