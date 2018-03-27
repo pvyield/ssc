@@ -1549,6 +1549,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	double nameplate_kw = modules_per_string * strings_in_parallel * module_watts_stc * util::watt_to_kilowatt;
 
 	::sandia_inverter_t snlinv;
+	::ond_inverter ondinv;
 	::partload_inverter_t plinv;
 
 	int inv_type = as_integer("inverter_model");
@@ -1631,6 +1632,10 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		snlinv.C2 = as_double("inv_cec_cg_c2");
 		snlinv.C3 = as_double("inv_cec_cg_c3");
 		ratedACOutput = snlinv.Paco;
+	}
+	else if (inv_type == 4) // ond inverter
+	{
+
 	}
 	else
 	{
@@ -2531,8 +2536,6 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 						p_surftilt[nn][idx] = (ssc_number_t)stilt;
 						p_surfazi[nn][idx] = (ssc_number_t)sazi;
 						p_soiling[nn][idx] = (ssc_number_t)soiling_factor;
-
-
 					}
 
 					// accumulate incident total radiation (W) in this timestep (all subarrays)
@@ -2896,6 +2899,16 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					{
 						double _par, _plr;
 						plinv.acpower(dcpwr_net / num_inverters, &acpwr_gross, &_par, &_plr, &aceff, &cliploss, &pntloss);
+						acpwr_gross *= num_inverters;
+						cliploss *= num_inverters;
+						psoloss *= num_inverters;
+						pntloss *= num_inverters;
+						aceff *= 100;
+					}
+					else if (inv_type == 4) // ond
+					{
+						double _par, _plr;
+						ondinv.acpower(dcpwr_net / num_inverters, &acpwr_gross, &_par, &_plr, &aceff, &cliploss, &pntloss);
 						acpwr_gross *= num_inverters;
 						cliploss *= num_inverters;
 						psoloss *= num_inverters;

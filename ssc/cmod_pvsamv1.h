@@ -65,6 +65,7 @@
 #include "lib_cec6par.h"
 #include "lib_sandia.h"
 #include "lib_mlmodel.h"
+#include "lib_ondinv.h"
 #include "lib_pvinv.h"
 #include "6par_jacobian.h"
 #include "6par_lu.h"

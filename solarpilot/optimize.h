@@ -51,7 +51,7 @@
 #include <time.h>
 #include <math.h>
 #include <vector>
-#include "nlopt.hpp"
+#include "../nlopt/nlopt.h"
 
 class testoptclass
 {
