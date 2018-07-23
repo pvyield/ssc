@@ -50,11 +50,14 @@
 *******************************************************************************************************/
 
 #include "lib_pvmodel.h"
+#include "mlm_spline.h"
 
 class mlmodel_module_t : public pvmodule_t
 {
 public:
 	int N_series;
+	int N_parallel;
+	int N_diodes;
 
 	double Width;
 	double Length;
@@ -72,9 +75,11 @@ public:
 	double R_shexp;
 	double R_s;
 	double alpha_isc;
+	double beta_voc_spec;
 	double E_g;
 	double n_0;
 	double mu_n;
+	double D2MuTau;
 	
 	int T_mode;
 	double T_c_no_tnoct;
@@ -95,6 +100,8 @@ public:
 	double IAM_c_cs_incAngle[100];
 	double IAM_c_cs_iamValue[100];
 
+	double groundRelfectionFraction;
+
 	mlmodel_module_t();
 
 	virtual double AreaRef() { return (Width * Length); }
@@ -104,6 +111,14 @@ public:
 	virtual double IscRef() { return I_sc_ref; }
 	virtual bool operator() (pvinput_t &input, double TcellC, double opvoltage, pvoutput_t &output);
 	virtual void initializeManual();
+
+private:
+	bool isInitialized;
+	double nVT;
+	double I_0ref;
+	double I_Lref;
+	double Vbi;
+	tk::spline iamSpline;
 };
 
 class mock_celltemp_t : public pvcelltemp_t

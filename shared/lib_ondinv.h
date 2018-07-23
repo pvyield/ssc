@@ -48,6 +48,8 @@
 *******************************************************************************************************/
 
 #include <string>
+#include <vector>
+#include "mlm_spline.h" // spline interpolator for efficiency curves
 using namespace std;
 
 #ifndef __lib_ondinv_h
@@ -58,74 +60,42 @@ class ond_inverter
 public:
 	ond_inverter();
 
-	//double Paco;    /* Maximum AC power rating, upper limit value  (Wac) */
-	//double Pdco;    /* DC power level at which Paco is achieved (Wdc) */
-	//double Vdco;    /* DC voltage level at which Paco is achieved (Vdc) */
-	//double Pso;     /* DC power require to start inversion process, or self-consumption by inverter (Wdc) */
-	//double Pntare;  /* AC power consumed by inverter at night as parasitic load (Wac) */
-	//double C0;      /* (1/W, empirical, default 0) Defines parabolic curvature of relationship between ac power and dc power at reference conditions */
-	//double C1;      /* (1/V, empirical, default 0) Parameter allowing Pdco to vary linearly with dc voltage input */
-	//double C2;      /* (1/V, empirical, default 0) Parameter allowing Pso to vary linearly with dc voltage input */
-	//double C3;      /* (1/V, empirical, default 0) Parameter allowing C0 to vary linearly with dc voltage input */
-
-	string Manufacturer;
-	string Model;
-	string Transfo;
-	double PNomConv;
-	double PMaxOUT;
-	double VOutConv;
-	double VMppMin;
-	double VMPPMax;
-	double VAbsMax;
-	double PSeuil;
-	double EfficMax;
-	double EfficEuro;
-	double FResNorm;
-	string ModeOper;
-	string CompPMax;
-	string CompVMax;
-	string MonoTri;
-	string ModeAffEnum;
-	double PNomDC;
-	double PMaxDC;
-	double IDCMax;
-	double IMaxDC;
-	double INomDC;
-	double INomAC;
-	double IMaxAC;
-	double TPNom;
-	double TPMax;
-	double TPLim1;
-	double TPLimAbs;
-	double PLim1;
-	double PInEffMax;
-	double ModeAff;
-	double UnitAff;
-	double VNomEff[3];
-
-	int effCurve_mode;
-	int effCurve_elements;
-	double effCurve_P[3][100];
-	double effCurve_eta[3][100];
-
-	double NbInputs;
-	double NbMPPT;
-	double TanPhiMin;
-	double TanPhiMax;
-	double NbMSInterne;
-	string MasterSlave;
-	string IsolSurvey;
-	string DC_Switch;
-	string AC_Switch;
-	string DiscAdjust;
-	double MS_Thresh;
-	double Aux_Loss;
-	double Night_Loss;
-
-
-
-	// additional parameters for voltage drop calculation
-	double dV_nom;
+	double PNomConv; // [W]
+	double PMaxOUT; // [W]
+	double VOutConv; // [W]
+	double VMppMin; // [V]
+	double VMPPMax; // [V]
+	double VAbsMax; // [V]
+	double PSeuil; // [W]
+	string ModeOper; // [-]
+	string CompPMax; // [-]
+	string CompVMax; // [-]
+	string ModeAffEnum; // [-]
+	double PNomDC; // [W]
+	double PMaxDC; // [W]
+	double IMaxDC; // [A]
+	double INomDC; // [A]
+	double INomAC; // [A]
+	double IMaxAC; // [A]
+	double TPNom; // [°C]
+	double TPMax; // [°C]
+	double TPLim1; // [°C]
+	double TPLimAbs; // [°C]
+	double PLim1; // [kW]
+	double PLimAbs; // [kW]
+	double VNomEff[3]; // [V]
+	int NbInputs; // [-]
+	int NbMPPT; // [-]
+	double Aux_Loss; // [W]
+	double Night_Loss; // [W]
+	double lossRDc; // [V/A]
+	double lossRAc; // [A]
+	int effCurve_elements; // [-]
+	double effCurve_Pdc[3][100]; // [W]
+	double effCurve_Pac[3][100]; // [W]
+	double effCurve_eta[3][100]; // [-]
+	int doAllowOverpower; // [-] // ADDED TO CONSIDER MAX POWER USAGE [2018-06-23, TR]
+	int doUseTemperatureLimit; // [-] // ADDED TO CONSIDER TEMPERATURE LIMIT USAGE [2018-06-23, TR]
 
 	bool acpower(	
 		/* inputs */
@@ -140,9 +110,40 @@ public:
 		double *Eff,		/* Conversion efficiency (0..1) */
 		double *Pcliploss,	/* Power loss due to clipping loss (Wac) */
 		double *Psoloss,	/* Power loss due to operating power consumption (Wdc) */
-		double *Pntloss		/* Power loss due to night time tare loss (Wac) */
+		double *Pntloss,	/* Power loss due to night time tare loss (Wac) */
+		double *dcloss,		/* DC power loss (Wdc) */
+		double *acloss		/* AC power loss (Wac) */
+	);
+	double calcEfficiency(
+		double Pdc,
+		int index_eta
+	);
+	double tempDerateAC(
+		double arrayT[],
+		double arrayPAC[],
+		double T
 	);
 	virtual void initializeManual();
+
+private:
+	bool ondIsInitialized;
+
+	int noOfEfficiencyCurves;
+	tk::spline effSpline[2][3];
+	double x_lim[3];
+	double Pdc_threshold;
+	double a[3];
+	double b[3];
+
+	double PNomDC_eff;
+	double PMaxDC_eff;
+	double INomDC_eff;
+	double IMaxDC_eff;
+	double T_array[6];
+	double PAC_array[6];
+
+
+
 };
 
 #endif

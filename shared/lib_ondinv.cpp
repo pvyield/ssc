@@ -1,4 +1,5 @@
 /*******************************************************************************************************
+*  Copyright 2018 - pvyield GmbH / Timo Richert
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
@@ -47,72 +48,285 @@
 *  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************************************/
 
+/*******************************************************************************************************
+* Implementation of an inverter model based on OND files
+*******************************************************************************************************/
+
 #include <math.h>
 #include <cmath>
 #include <limits>
+#include <vector>
 #include "lib_ondinv.h"
-#include "mlm_spline.h" // spline interpolator for efficiency curves
 
-bool isInitialized = false;
-
-// efficiency spline variables
-std::vector<double> X[2];
-std::vector<double> Y[2];
-tk::spline effSpline[2];
-
+const int TEMP_DERATE_ARRAY_LENGTH = 6;
 
 ond_inverter::ond_inverter()
 {
-	//Paco = Pdco = Vdco = Pso = Pntare = C0 = C1 = C2 = C3 = std::numeric_limits<double>::quiet_NaN();
+	PNomConv = PMaxOUT = VOutConv = VMppMin = VMPPMax = VAbsMax = PSeuil = PNomDC = PMaxDC =
+		IMaxDC = INomDC = INomAC = IMaxAC = TPNom = TPMax = TPLim1 = TPLimAbs = PLim1 = PLimAbs = Aux_Loss =
+		Night_Loss = lossRDc = lossRAc = std::numeric_limits<double>::quiet_NaN();
+	ModeOper = CompPMax = CompVMax = ModeAffEnum = "";
+	NbInputs = NbMPPT = 0;
+	ondIsInitialized = false;
+	doAllowOverpower = doUseTemperatureLimit = true;
 }
 
 // Initialize - Calculates values that only need calculation once
 void ond_inverter::initializeManual()
 {
-	if (!isInitialized)
+	if (!ondIsInitialized)
 	{
-		isInitialized = true;
+		// Check inverter configuration
+		if (ModeOper != "MPPT") {
+			throw std::invalid_argument("Invalid ModeOper, only 'MPPT' is supported.");
+		}
+		if (CompPMax != "Lim") {
+			throw std::invalid_argument("Invalid CompPMax, only 'Lim' is supported.");
+		}
+		if (CompVMax != "Lim") {
+			throw std::invalid_argument("Invalid CompVMax, only 'Lim' is supported.");
+		}
+		if (ModeAffEnum != "Efficiencyf_PIn") {
+			throw std::invalid_argument("Invalid ModeAffEnum, only 'Efficiencyf_PIn' is supported.");
+		}
+
+		// Set up temperature limit array
+		double PlimAbs_eff, PLim1_eff, PMaxOUT_eff;
+		if (PLimAbs < 0.001 * PNomConv) {
+			PlimAbs_eff = 0;
+		}
+		else {
+			PlimAbs_eff = PLimAbs;
+		}
+		if (PLim1 < 0.001 * PNomConv) {
+			PLim1_eff = 0;
+		}
+		else {
+			PLim1_eff = PLim1;
+		}
+		if (PMaxOUT < 0.001 * PNomConv) {
+			PMaxOUT_eff = PNomConv;
+		}
+		else {
+			PMaxOUT_eff = PMaxOUT;
+		}
+		double T_array_init[] = { -300, TPMax, TPNom, TPLim1, TPLimAbs, TPLimAbs };
+		double PAC_array_init[] = { PMaxOUT_eff, PMaxOUT_eff, PNomConv, PLim1_eff, PlimAbs_eff, 0 };
+		for (int j = 0; j <= TEMP_DERATE_ARRAY_LENGTH - 1; j = j + 1) {
+			T_array[j] = T_array_init[j];
+			PAC_array[j] = PAC_array_init[j];
+		}
+
 		// Convert P_AC efficiency curve to P_DC
 
-		// set up efficiency splines
-		for (int j = 0; j <= 2; j = j + 1) {
-			X[j].clear();
-			Y[j].clear();
-			for (int i = 0; i <= effCurve_elements - 1; i = i + 1) {
-				X[j].push_back(effCurve_P[j][i]);
-				Y[j].push_back(effCurve_eta[j][i]);
-			}
-			effSpline[j].set_points(X[j], Y[j]);
+		// Set missing DC values if missing from OND file
+		if (PNomDC < 0.0001 * PNomConv) {
+			PNomDC_eff = PNomConv;
 		}
+		else {
+			PNomDC_eff = PNomDC;
+		}
+		if (PMaxDC < 0.0001 * PMaxOUT) {
+			PMaxDC_eff = PMaxOUT;
+		}
+		else {
+			PMaxDC_eff = PMaxDC;
+		}
+		if (INomDC < 0.0001 * (PNomConv / VMPPMax)) {
+			INomDC_eff = PNomDC_eff / VMppMin;
+		}
+		else {
+			INomDC_eff = INomDC;
+		}
+		if (IMaxDC < 0.0001 * (PNomConv / VMPPMax)) {
+			IMaxDC_eff = INomDC_eff * (PMaxDC_eff / PNomDC_eff);
+		}
+		else {
+			IMaxDC_eff = IMaxDC;
+		}
+
+		// set up efficiency splines with linear interpolation for the first point
+		//Pdc_threshold = 2;
+		//std::vector<double> ondspl_X[2][3];
+		//std::vector<double> ondspl_Y[2][3];
+		//int splineIndex;
+		//bool switchoverDone;
+
+		//if (VNomEff[2] > 0) {
+		//	noOfEfficiencyCurves = 3;
+		//}
+		//else {
+		//	noOfEfficiencyCurves = 1;
+		//}
+
+		//for (int j = 0; j <= noOfEfficiencyCurves - 1; j = j + 1) {
+		//	splineIndex = 0;
+		//	switchoverDone = false;
+		//	ondspl_X[0][j].clear();
+		//	ondspl_Y[0][j].clear();
+		//	ondspl_X[1][j].clear();
+		//	ondspl_Y[1][j].clear();
+		//	double atX[3];
+		//	double atY[3];
+		//	const int MAX_ELEMENTS = 100; // = effCurve_elements + 5;
+		//	for (int i = 0; i <= MAX_ELEMENTS - 1; i = i + 1) {
+		//		if (i <= 2) { // atan
+		//			// atan
+		//			atX[i] = effCurve_Pdc[j][i];
+		//			atY[i] = effCurve_eta[j][i];
+
+		//			if (i == 2) {
+		//				x_lim[j] = effCurve_Pdc[j][i];
+
+		//				double adder;
+		//				double err;
+		//				b[j] = 10;
+		//				adder = 40;
+
+		//				for (int k = 0; k <= 100; k = k + 1) {
+		//					a[j] = atY[2] / atan(b[j] * atX[2] / PNomDC_eff);
+		//					err = (a[j] * atan(b[j] * atX[1] / PNomDC_eff)) - atY[1];
+		//					if (err > 0) {
+		//						b[j] = b[j] - adder;
+		//						adder = adder / 2;
+		//					}
+		//					else {
+		//						b[j] = b[j] + adder;
+		//					}
+		//				}
+		//			}
+		//		}
+		//		if (i >= 2 && i <= 99 && (effCurve_Pdc[j][i] > 0 || effCurve_eta[j][i] > 0)) { // spline
+		//			ondspl_X[splineIndex][j].push_back(effCurve_Pdc[j][i]);
+		//			ondspl_Y[splineIndex][j].push_back(effCurve_eta[j][i]);
+		//		}
+		//	}
+		//	bool doCubicSpline[2];
+		//	doCubicSpline[0] = true;
+		//	doCubicSpline[1] = true;
+		//	for (int i = 0; i <= 1; i = i + 1) {
+		//		if (i == 0 || (i == 1 && Pdc_threshold < 0.8)) {
+		//			effSpline[i][j].set_points(ondspl_X[i][j], ondspl_Y[i][j], doCubicSpline[i]);
+		//		}
+		//	}
+		//}
+		Pdc_threshold = 2;
+		std::vector<double> ondspl_X[2];
+		std::vector<double> ondspl_Y[2];
+		int splineIndex;
+		bool switchoverDone;
+
+		if (VNomEff[2] > 0) {
+			noOfEfficiencyCurves = 3;
+		}
+		else {
+			noOfEfficiencyCurves = 1;
+		}
+
+		for (int j = 0; j <= noOfEfficiencyCurves - 1; j = j + 1) {
+			splineIndex = 0;
+			switchoverDone = false;
+			ondspl_X[0].clear();
+			ondspl_Y[0].clear();
+			ondspl_X[1].clear();
+			ondspl_Y[1].clear();
+			double atX[3];
+			double atY[3];
+			const int MAX_ELEMENTS = 100; // = effCurve_elements + 5;
+			for (int i = 0; i <= MAX_ELEMENTS - 1; i = i + 1) {
+				if (i <= 2) { // atan
+							  // atan
+					atX[i] = effCurve_Pdc[j][i];
+					atY[i] = effCurve_eta[j][i];
+
+					if (i == 2) {
+						x_lim[j] = effCurve_Pdc[j][i];
+
+						double adder;
+						double err;
+						b[j] = 10;
+						adder = 40;
+
+						for (int k = 0; k <= 100; k = k + 1) {
+							a[j] = atY[2] / atan(b[j] * atX[2] / PNomDC_eff);
+							err = (a[j] * atan(b[j] * atX[1] / PNomDC_eff)) - atY[1];
+							if (err > 0) {
+								b[j] = b[j] - adder;
+								adder = adder / 2;
+							}
+							else {
+								b[j] = b[j] + adder;
+							}
+						}
+					}
+				}
+				if (i >= 2 && i <= 99 && (effCurve_Pdc[j][i] > 0 && effCurve_eta[j][i] > 0)) { // spline
+					ondspl_X[splineIndex].push_back(effCurve_Pdc[j][i]);
+					ondspl_Y[splineIndex].push_back(effCurve_eta[j][i]);
+				}
+			}
+			bool doCubicSpline[2];
+			doCubicSpline[0] = true;
+			doCubicSpline[1] = true;
+			for (int i = 0; i <= 1; i = i + 1) {
+				if (i == 0 || (i == 1 && Pdc_threshold < 0.8)) {
+					effSpline[i][j].set_points(ondspl_X[i], ondspl_Y[i], doCubicSpline[i]);
+				}
+			}
+		}
+		ondIsInitialized = true;
 	}
 }
 
-double tempDerateAC(double arrayT[], double arrayPAC[], double T) {
+double ond_inverter::calcEfficiency(double Pdc, int index_eta) {
+	double eta;
+	int splineIndex;
+	if (Pdc > (Pdc_threshold * PNomDC_eff)) {
+		splineIndex = 1;
+	}
+	else {
+		splineIndex = 0;
+	}
+	if (Pdc > PMaxDC_eff) {
+		Pdc = PMaxDC_eff;
+	}
+	if (Pdc <= 0) {
+		eta = 0;
+	}
+	else if (Pdc >= x_lim[index_eta]) {
+		eta = effSpline[splineIndex][index_eta](Pdc);
+	}
+	else {
+		eta = a[index_eta] * atan(b[index_eta] * Pdc / PNomDC_eff);
+	}
+	return eta;
+}
+
+// return maximum AC power based on inverter temperature [W]
+// arrayPAC values must be in [kW] as in OND file
+double ond_inverter::tempDerateAC(double arrayT[], double arrayPAC[], double T) {
 	double PAC_max;
 	double T_low;
 	double T_high;
 	double PAC_low;
 	double PAC_high;
-	int arrayLength;
+	const double PAC_MAX_INIT = -10 ^ 10;
 
-	PAC_max = -10 ^ 10;
-	arrayLength = sizeof(arrayT);
+	PAC_max = PAC_MAX_INIT;
 
-	for (int i = 0; i <= arrayLength + 1; i = i + 1) {
-		if (i = 0) {
-			if (T <= arrayT[i]) {
-				PAC_max = arrayPAC[i];
+	for (int i = 0; i <= TEMP_DERATE_ARRAY_LENGTH - 1; i = i + 1) {
+		if (i == 0) {
+			if (T <= arrayT[0]) {
+				PAC_max = arrayPAC[0];
 				break;
 			}
-		}
-		else if (i = arrayLength + 1) {
-			if (T > arrayT[i]) {
-				PAC_max = arrayPAC[i];
+			else if (T > arrayT[TEMP_DERATE_ARRAY_LENGTH - 1]) {
+				PAC_max = arrayPAC[TEMP_DERATE_ARRAY_LENGTH - 1];
 				break;
 			}
 		}
 		else {
-			if (arrayT[i] > T && arrayT[i - 1] <= T) {
+			if (T > arrayT[i - 1] && T <= arrayT[i]) {
 				T_low = arrayT[i - 1];
 				T_high = arrayT[i];
 				PAC_low = arrayPAC[i - 1];
@@ -122,10 +336,24 @@ double tempDerateAC(double arrayT[], double arrayPAC[], double T) {
 			}
 		}
 	}
-	if (PAC_max < 0) {
-		throw std::invalid_argument("PAC_max is negative.");
+
+	if (doAllowOverpower == 0 && doUseTemperatureLimit == 0) {
+		PAC_max = PNomConv;
 	}
-	return PAC_max;
+	else if (doAllowOverpower == 1 && doUseTemperatureLimit == 0) {
+		PAC_max = max(PAC_max, PNomConv);
+	}
+	else if (doAllowOverpower == 0 && doUseTemperatureLimit == 1) {
+		PAC_max = min(PAC_max, PNomConv);
+	}
+	else if (doAllowOverpower && doUseTemperatureLimit) {
+		// Do nothing, keep PAC_max
+	}
+
+	if (PAC_max == PAC_MAX_INIT) {
+		throw std::invalid_argument("PAC_max has not been set.");
+	}
+	return (PAC_max);
 }
 
 bool ond_inverter::acpower(
@@ -141,65 +369,80 @@ bool ond_inverter::acpower(
 	double *Eff,	    /* Conversion efficiency (0..1) */
 	double *Pcliploss, /* Power loss due to clipping loss (Wac) */
 	double *Psoloss, /* Power loss due to operating power consumption (Wdc) */
-	double *Pntloss /* Power loss due to night time tare loss (Wac) */
+	double *Pntloss, /* Power loss due to night time tare loss (Wac) */
+	double *dcloss,		/* DC power loss (Wdc) */
+	double *acloss		/* AC power loss (Wac) */
 )
 {
-	// calculate voltage drop in DC cabling
-	double dV;
-	double Vdc_eff;
-	double Pdc_eff;
-	dV = dV_nom * (Pdc / PNomDC);
-	Vdc_eff = Vdc - dV;
-	Pdc_eff = Pdc * (Vdc_eff / Vdc);
-
-	// determine efficiency from splines
-	double V_eta_low;
-	double V_eta_high;
-	double eta_low;
-	double eta_high;
-	int index_eta;
-
-	if (Vdc_eff < VNomEff[1]) {
-		index_eta = 0;
-	}
-	else {
-		index_eta = 1;
-	}
-
-	V_eta_low = VNomEff[index_eta];
-	V_eta_high = VNomEff[index_eta + 1];
-	eta_low = effSpline[index_eta](Pdc_eff);
-	eta_high = effSpline[index_eta + 1](Pdc_eff);
-	*Eff = eta_low + (eta_high - eta_low) * (Vdc_eff - V_eta_low) / (V_eta_high - V_eta_low);
-
-	//double etaArray[2];
-	//for (int i = 0; i <= 2; i = i + 1) {
-	//	etaArray[i] = effSpline[i](Pdc_eff);
-	//}
-	//*Eff = etaArray[1];
-
-	if (*Eff < 0.0) *Eff = 0.0;
-	*Pac = *Eff * Pdc_eff;
-
 	// Limit Pac to temperature limit
 	double Pac_max_T;
-	double T_array[5] = {0, TPMax, TPNom, TPLim1, TPLimAbs};
-	double PAC_array[5] = {PMaxOUT, PMaxOUT, PNomConv, PLim1, 0};
 	Pac_max_T = tempDerateAC(T_array, PAC_array, Tamb);
 
 	// Limit Pac to current limit
 	double Pac_max_I;
-	double Idc;
-	Idc = Pdc_eff / Vdc_eff;
-	Pac_max_I = Vdc_eff * min(Idc, INomDC);
 
-	// Calculate clipping/limiting losses
-	*Pcliploss = 0.0;
-	double PacNoClip = *Pac;
-	if (*Pac > Pac_max_T || *Pac > Pac_max_I)
-	{
-		*Pac = min(Pac_max_T, Pac_max_I);
-		*Pcliploss = PacNoClip - *Pac;
+	// calculate voltage drop in DC cabling
+	double dV_dcLoss;
+	double Vdc_eff;
+	double Pdc_eff;
+	double Idc_eff;
+
+	Pdc_eff = min(Pdc, Pac_max_T); // Limit Pdc to temperature limit
+	Vdc_eff = Vdc;
+	dV_dcLoss = 0;
+	if (Vdc > 0 && Pdc > 0) {
+		for (int i = 0; i <= 2; i = i + 1) {
+			Idc_eff = Pdc_eff / Vdc_eff;
+			dV_dcLoss = lossRDc * Idc_eff;
+			*dcloss = dV_dcLoss * Idc_eff;
+			Vdc_eff = Vdc - dV_dcLoss;
+			Pac_max_I = Vdc_eff * IMaxDC_eff;
+			if (Pdc > Pac_max_I) {
+				Pdc = Pac_max_I; // Limit Pdc to current limit
+			}
+			Pdc_eff = Pdc - *dcloss;
+		}
+	}
+
+	// determine efficiency from splines
+	double V_eta_arr[2];
+	double eta_arr[2];
+	int index_shift;
+	int index_eta;
+	if (Pdc > 0) {
+		if (noOfEfficiencyCurves == 3) {
+			if (Vdc_eff < VNomEff[1]) {
+				index_shift = 0;
+			}
+			else {
+				index_shift = 1;
+			}
+			for (int i = 0; i <= 1; i = i + 1) {
+				index_eta = index_shift + i;
+				V_eta_arr[i] = VNomEff[index_eta];
+				eta_arr[i] = calcEfficiency(Pdc_eff, index_eta); // effSpline[splineIndex][index_eta](Pdc_eff);
+			}
+			*Eff = eta_arr[0] + (eta_arr[1] - eta_arr[0]) * (Vdc_eff - V_eta_arr[0]) / (V_eta_arr[1] - V_eta_arr[0]);
+		}
+		else if (noOfEfficiencyCurves == 1) {
+			*Eff = calcEfficiency(Pdc_eff, 0);
+		}
+
+		if (*Eff < 0.0) *Eff = 0.0;
+		*Pac = *Eff * Pdc_eff;
+
+		// Calculate clipping/limiting losses
+		*Pcliploss = 0.0;
+		double PacNoClip = *Pac;
+		if (*Pac > Pac_max_T || *Pac > Pac_max_I)
+		{
+			*Pac = min(Pac_max_T, Pac_max_I);
+			*Pcliploss = PacNoClip - *Pac;
+		}
+	}
+	else {
+		*Eff = 0;
+		*Pac = 0;
 	}
 
 	// night time power loss Wac (note that if PacNoPso > Pso and Pac < Pso then the night time loss could be considered an operating power loss)
@@ -216,13 +459,21 @@ bool ond_inverter::acpower(
 	else
 	{
 		// Power consumption during operation only occurs
-		// when inverter is operating during the day 
+		// when inverter is operating during the day
 		// calculate by setting B to zero (ie. Pso = 0 );
 		double PacNoPso = *Pac + Aux_Loss;
 		*Psoloss = PacNoPso - *Pac;
 	}
 
+	// calculate voltage drop in AC cabling
+	double Iac;
+
+	// calculate AC loss, but do not subtract from Pac (will be done in pvsamv1)
+	Iac = *Pac / VOutConv;
+	*acloss = lossRAc * Iac * Iac;
+	//*Pac = *Pac - *acloss;
+
 	// Final calculations and returning true
-	*Plr = Pdc_eff / PNomDC;
+	*Plr = Pdc_eff / PNomDC_eff;
 	return true;
 }

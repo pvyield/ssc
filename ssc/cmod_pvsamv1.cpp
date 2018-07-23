@@ -217,7 +217,7 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_nmody",                             "Sub-array 4 no. of modules along side for self-shading",  "",       "",                              "pvsamv1",              "subarray4_shade_mode>0", "INTEGER,POSITIVE",              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_backtrack",                         "Sub-array 4 Backtracking enabled",                        "",       "0=no backtracking,1=backtrack", "pvsamv1",              "subarray4_track_mode=1",   "BOOLEAN",                       "" },
 
-	{ SSC_INPUT,        SSC_NUMBER,      "module_model",                                "Photovoltaic module model specifier",                     "",       "0=spe,1=cec,2=6par_user,3=snl,4=sd11-iec61853", "pvsamv1",              "*",                        "INTEGER,MIN=0,MAX=4",           "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "module_model",                                "Photovoltaic module model specifier",                     "",       "0=spe,1=cec,2=6par_user,3=snl,4=sd11-iec61853", "pvsamv1",              "*",                        "INTEGER,MIN=0,MAX=5",           "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "module_aspect_ratio",                         "Module aspect ratio",                                     "",       "",                              "pvsamv1",              "?=1.7",                    "",                              "POSITIVE" },
 	{ SSC_INPUT,        SSC_NUMBER,      "spe_area",                                    "Module area",                                             "m2",     "",                              "pvsamv1",              "module_model=0",           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "spe_rad0",                                    "Irradiance level 0",                                      "W/m2",   "",                              "pvsamv1",              "module_model=0",           "",                              "" },
@@ -358,6 +358,8 @@ static var_info _cm_vtab_pvsamv1[] = {
 	
 
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_N_series",                                "Number of cells in series",                               "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_N_parallel",                              "Number of cells in parallel",						       "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_N_diodes",                                "Number of diodes",									       "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_Width",                                   "Module width (short side)",						       "m",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_Length",                                  "Module length (long side)",							   "m",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_V_mp_ref",                                "V_mp at STC",                                             "V",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
@@ -371,9 +373,11 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_R_shexp",                                 "Rsh exponential coefficient",                             "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_R_s",                                     "Series resistance",                                       "V/A",     "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_alpha_isc",                               "Temperature coefficient for I_sc",                        "A/K",     "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_beta_voc_spec",                           "Temperature coefficient for V_oc",                        "V/K",     "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_E_g",                                     "Reference bandgap energy",                                "eV",      "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_n_0",                                     "Gamma",                                                   "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_mu_n",                                    "Temperature coefficient of gamma",                        "1/K",     "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_D2MuTau",                                 "Coefficient for recombination losses",                    "V",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_mode",                                  "Cell temperature model mode",                             "-",       "1: NOCT",                                                           "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_no_tnoct",                            "NOCT cell temperature",                                   "°C",      "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_T_c_no_mounting",                         "NOCT Array mounting height",                              "-",       "0=one story,1=two story",                                           "pvsamv1",       "module_model=5",                           "",                              "" },
@@ -403,9 +407,10 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_IAM_c_sa5",                               "Sandia IAM coefficient 5",                                "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_ARRAY,       "mlm_IAM_c_cs_incAngle",                       "Spline IAM - Incidence angles",                           "deg",     "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_ARRAY,       "mlm_IAM_c_cs_iamValue",                       "Spline IAM - IAM values",                                 "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "mlm_groundRelfectionFraction",                "Ground reflection fraction",                              "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 
 // inverter model
-	{ SSC_INPUT,        SSC_NUMBER,      "inverter_model",                              "Inverter model specifier",                                "",        "0=cec,1=datasheet,2=partload,3=coefficientgenerator",        "pvsamv1",               "*",                         "INTEGER,MIN=0,MAX=3",           "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "inverter_model",                              "Inverter model specifier",                                "",        "0=cec,1=datasheet,2=partload,3=coefficientgenerator",        "pvsamv1",               "*",                         "INTEGER,MIN=0,MAX=4",           "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mppt_low_inverter",                           "Minimum inverter MPPT voltage window",                    "Vdc",     "",                     "pvsamv1",       "",                    "?=0",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mppt_hi_inverter",                            "Maximum inverter MPPT voltage window",                    "Vdc",     "",                     "pvsamv1",       "",                    "?=0",                              "" },
 
@@ -446,6 +451,45 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "inv_pd_vdco",                                "DC input voltage for the rated AC power rating",          "Vdc",     "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "inv_pd_vdcmax",                              "Maximum DC input operating voltage",                      "Vdc",     "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
 	
+	{ SSC_INPUT, SSC_NUMBER, "ond_PNomConv", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_PMaxOUT", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_VOutConv", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_VMppMin", "", "V", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_VMPPMax", "", "V", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_VAbsMax", "", "V", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_PSeuil", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_STRING, "ond_ModeOper", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_STRING, "ond_CompPMax", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_STRING, "ond_CompVMax", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_STRING, "ond_ModeAffEnum", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_PNomDC", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_PMaxDC", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_IMaxDC", "", "A", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_INomDC", "", "A", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_INomAC", "", "A", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_IMaxAC", "", "A", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_TPNom", "", "°C", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_TPMax", "", "°C", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_TPLim1", "", "°C", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_TPLimAbs", "", "°C", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_PLim1", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_PLimAbs", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_ARRAY,  "ond_VNomEff", "", "V", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_NbInputs", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_NbMPPT", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_Aux_Loss", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_Night_Loss", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_lossRDc", "", "V/A", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_lossRAc", "", "A", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_effCurve_elements", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_MATRIX, "ond_effCurve_Pdc", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_MATRIX, "ond_effCurve_Pac", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_MATRIX, "ond_effCurve_eta", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_Aux_Loss", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_Aux_Loss", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_doAllowOverpower", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
+	{ SSC_INPUT, SSC_NUMBER, "ond_doUseTemperatureLimit", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
+
 	// battery storage and dispatch
 	{ SSC_INPUT,        SSC_NUMBER,      "en_batt",                                    "Enable battery storage model",                            "0/1",     "",                     "Battery",       "?=0",                                 "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "batt_replacement_option",                    "Enable battery replacement?",                             "0=none,1=capacity based,2=user schedule", "", "Battery", "?=0", "INTEGER,MIN=0,MAX=2", "" },
@@ -651,6 +695,9 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_OUTPUT,        SSC_NUMBER,     "annual_dc_net",                               "Annual DC energy",                                   "kWh/yr",    "",                      "Annual (Year 1)",       "*",                    "",                              "" },
 	{ SSC_OUTPUT,        SSC_NUMBER,     "annual_ac_gross",                             "Annual AC energy gross",                               "kWh/yr",    "",                      "Annual (Year 1)",       "*",                    "",                              "" },
 
+	// OND inverter model AC and DC loss reporting
+	{ SSC_OUTPUT,        SSC_NUMBER,     "annual_dc_loss_ond",                          "Annual DC loss OND model",                           "kWh/yr",    "",                      "Annual (Year 1)",       "*",                    "",                              "" },
+	{ SSC_OUTPUT,        SSC_NUMBER,     "annual_ac_loss_ond",                          "Annual AC loss OND model",                           "kWh/yr",    "",                      "Annual (Year 1)",       "*",                    "",                              "" },
 
 	//SEV: total dc snow loss monthy array and annual value (not a required output) 
 	{ SSC_OUTPUT,        SSC_ARRAY,      "monthly_snow_loss",                    "Snow DC energy loss",					       "kWh/mo",    "",                       "Monthly",       "",                    "",                              "" },
@@ -843,43 +890,43 @@ void cm_pvsamv1::setup_noct_model( const std::string &prefix, noct_celltemp_t &n
 	}
 }
 	
-void cm_pvsamv1::exec( ) throw (compute_module::general_error)
-{		
+void cm_pvsamv1::exec() throw (compute_module::general_error)
+{
 	smart_ptr<weather_data_provider>::ptr wdprov;
-	if ( is_assigned( "solar_resource_file" ) )
+	if (is_assigned("solar_resource_file"))
 	{
 		const char *file = as_string("solar_resource_file");
-		wdprov = smart_ptr<weather_data_provider>::ptr( new weatherfile( file ) );
+		wdprov = smart_ptr<weather_data_provider>::ptr(new weatherfile(file));
 
 		weatherfile *wfile = dynamic_cast<weatherfile*>(wdprov.get());
 		if (!wfile->ok()) throw exec_error("pvsamv1", wfile->message());
-		if( wfile->has_message() ) log( wfile->message(), SSC_WARNING);
+		if (wfile->has_message()) log(wfile->message(), SSC_WARNING);
 	}
-	else if ( is_assigned( "solar_resource_data" ) )
+	else if (is_assigned("solar_resource_data"))
 	{
-		wdprov = smart_ptr<weather_data_provider>::ptr( new weatherdata( lookup("solar_resource_data") ) );
+		wdprov = smart_ptr<weather_data_provider>::ptr(new weatherdata(lookup("solar_resource_data")));
 		if (wdprov->has_message()) log(wdprov->message(), SSC_WARNING);
 	}
 	else
 		throw exec_error("pvsamv1", "no weather data supplied");
-		
-								
+
+
 	// assumes instantaneous values, unless hourly file with no minute column specified
 	double ts_shift_hours = 0.0;
 	bool instantaneous = true;
-	if ( wdprov->has_data_column( weather_data_provider::MINUTE ) )
+	if (wdprov->has_data_column(weather_data_provider::MINUTE))
 	{
 		// if we have an file with a minute column, then
 		// the starting time offset equals the time 
 		// of the first record (for correct plotting)
 		// this holds true even for hourly data with a minute column
 		weather_record rec;
-		if ( wdprov->read( &rec ) )
-			ts_shift_hours = rec.minute/60.0;
+		if (wdprov->read(&rec))
+			ts_shift_hours = rec.minute / 60.0;
 
 		wdprov->rewind();
 	}
-	else if ( wdprov->nrecords() == 8760 )
+	else if (wdprov->nrecords() == 8760)
 	{
 		// hourly file with no minute data column.  assume
 		// integrated/averaged values and use mid point convention for interpreting results
@@ -887,22 +934,22 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		ts_shift_hours = 0.5;
 	}
 	else
-		throw exec_error("pvsamv1", "subhourly weather files must specify the minute for each record" );
+		throw exec_error("pvsamv1", "subhourly weather files must specify the minute for each record");
 
-	assign( "ts_shift_hours", var_data( (ssc_number_t)ts_shift_hours ) );
+	assign("ts_shift_hours", var_data((ssc_number_t)ts_shift_hours));
 
 	weather_header hdr;
-	wdprov->header( &hdr );
+	wdprov->header(&hdr);
 
-	weather_record wf;		
+	weather_record wf;
 
 	//total number of records in the weather file (i.e. 8760 * timestep)
 	size_t nrec = wdprov->nrecords();
-	size_t step_per_hour = nrec/8760;
-	if ( step_per_hour < 1 || step_per_hour > 60 || step_per_hour*8760 != nrec )
-		throw exec_error( "pvsamv1", util::format("invalid number of data records (%d): must be an integer multiple of 8760", (int)nrec ) );
-		
-	double ts_hour = 1.0/step_per_hour;
+	size_t step_per_hour = nrec / 8760;
+	if (step_per_hour < 1 || step_per_hour > 60 || step_per_hour * 8760 != nrec)
+		throw exec_error("pvsamv1", util::format("invalid number of data records (%d): must be an integer multiple of 8760", (int)nrec));
+
+	double ts_hour = 1.0 / step_per_hour;
 	// shading database if necessary
 	smart_ptr<ShadeDB8_mpp>::ptr  p_shade_db; // (new ShadeDB8_mpp());
 
@@ -912,7 +959,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	int modules_per_string = as_integer("modules_per_string");
 	int strings_in_parallel = as_integer("strings_in_parallel");
 	int num_inverters = as_integer("inverter_count");
-//		double ac_derate = (1 - as_double("acwiring_loss") / 100) * (1 - as_double("transformer_loss") / 100);	//calculate using ac wiring and step up transformer losses
+	//		double ac_derate = (1 - as_double("acwiring_loss") / 100) * (1 - as_double("transformer_loss") / 100);	//calculate using ac wiring and step up transformer losses
 	double ac_derate = 1 - as_double("acwiring_loss") / 100;	//calculate using ac wiring 
 	double ac_loss_percent = (1 - ac_derate) * 100;
 	assign("ac_loss", var_data((ssc_number_t)ac_loss_percent));
@@ -926,42 +973,42 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	int skymodel = as_integer("sky_model"); // 0=isotropic, 1=hdkr, 2=perez
 
 	// load the subarray parameter information
-	subarray sa[4];		
+	subarray sa[4];
 	int num_subarrays = 1;
 
 
 	// check to see if shading database needs to be created; updated 4/19/16
 	bool create_shade_db = false;
 	// loop over subarrays
-	for ( size_t nn=0;nn<4;nn++ )
+	for (size_t nn = 0; nn < 4; nn++)
 	{
 		sa[nn].enable = true;
 		sa[nn].nstrings = strings_in_parallel;
-		std::string prefix = "subarray" + util::to_string( (int)(nn+1) ) + "_";
+		std::string prefix = "subarray" + util::to_string((int)(nn + 1)) + "_";
 
 		if (nn > 0)
 		{
 			sa[nn].nstrings = 0;
-			sa[nn].enable = as_boolean( prefix+"enable" );
-			if (sa[nn].enable) sa[nn].nstrings = as_integer( prefix+"nstrings" );
+			sa[nn].enable = as_boolean(prefix + "enable");
+			if (sa[nn].enable) sa[nn].nstrings = as_integer(prefix + "nstrings");
 
 			sa[0].nstrings -= sa[nn].nstrings;
-				
+
 			if (sa[nn].nstrings > 0 && sa[nn].enable)
 				num_subarrays++;
 		}
 
 		// don't read in all the other variables
 		// if the subarrays are disabled.
-		if ( !sa[nn].enable )
+		if (!sa[nn].enable)
 			continue;
-			
+
 		size_t soil_len = 0;
-		ssc_number_t *soiling = as_array(prefix+"soiling", &soil_len); // monthly soiling array
-		if (soil_len != 12) throw exec_error( "pvsamv1", "soiling loss array must have 12 values: subarray " + util::to_string((int)(nn+1)) );
-		for (int k=0;k<12;k++)
-			sa[nn].soiling[k] = 1- (double) soiling[k]/100; //convert from % to derate
-	
+		ssc_number_t *soiling = as_array(prefix + "soiling", &soil_len); // monthly soiling array
+		if (soil_len != 12) throw exec_error("pvsamv1", "soiling loss array must have 12 values: subarray " + util::to_string((int)(nn + 1)));
+		for (int k = 0; k < 12; k++)
+			sa[nn].soiling[k] = 1 - (double)soiling[k] / 100; //convert from % to derate
+
 		sa[nn].derate =  /* combine all input losses into one derate, not a percentage */
 			(1 - as_double(prefix + "mismatch_loss") / 100) *
 			(1 - as_double(prefix + "diodeconn_loss") / 100) *
@@ -973,7 +1020,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		double temploss = (1 - sa[nn].derate) * 100;
 		assign(prefix + "dcloss", var_data((ssc_number_t)temploss));
 
-		sa[nn].track_mode = as_integer( prefix+"track_mode"); // 0=fixed, 1=1axis, 2=2axis, 3=aziaxis, 4=timeseries
+		sa[nn].track_mode = as_integer(prefix + "track_mode"); // 0=fixed, 1=1axis, 2=2axis, 3=aziaxis, 4=timeseries
 
 		sa[nn].tilt = fabs(hdr.lat);
 		if (sa[nn].track_mode == 4) //timeseries tilt input
@@ -981,19 +1028,19 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 			size_t monthly_tilt_count = 0;
 			sa[nn].monthly_tilt = as_array(prefix + "monthly_tilt", &monthly_tilt_count);
 		}
-	
-		if ( !lookup( prefix+"tilt_eq_lat" ) || !as_boolean( prefix+"tilt_eq_lat" ) )
-			sa[nn].tilt = fabs( as_double( prefix+"tilt" ) );
 
-		sa[nn].azimuth = as_double( prefix+"azimuth" );
-		sa[nn].rotlim = as_double( prefix+"rotlim" );
+		if (!lookup(prefix + "tilt_eq_lat") || !as_boolean(prefix + "tilt_eq_lat"))
+			sa[nn].tilt = fabs(as_double(prefix + "tilt"));
+
+		sa[nn].azimuth = as_double(prefix + "azimuth");
+		sa[nn].rotlim = as_double(prefix + "rotlim");
 
 		sa[nn].gcr = as_double(prefix + "gcr");
 		if (sa[nn].gcr < 0.01)
 			throw exec_error("pvsamv1", "array ground coverage ratio must obey 0.01 < gcr");
-			
-		if (!sa[nn].shad.setup( this, prefix ))
-			throw exec_error("pvsamv1", prefix + "_shading: " + sa[nn].shad.get_error() );
+
+		if (!sa[nn].shad.setup(this, prefix))
+			throw exec_error("pvsamv1", prefix + "_shading: " + sa[nn].shad.get_error());
 
 		create_shade_db = (create_shade_db || sa[nn].shad.use_shade_db());
 
@@ -1008,9 +1055,9 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		{
 			if (sa[nn].track_mode == 4) //timeseries tilt input
 				throw exec_error("pvsamv1", "Time-series tilt input may not be used with the snow model at this time: subarray " + util::to_string((int)(nn + 1)));
-			if (!sa[nn].sm.setup(as_integer(prefix + "nmody"), (float)sa[nn].tilt)){
+			if (!sa[nn].sm.setup(as_integer(prefix + "nmody"), (float)sa[nn].tilt)) {
 				if (sa[nn].sm.good)log(sa[nn].sm.msg, SSC_WARNING);
-				else{
+				else {
 					log(sa[nn].sm.msg, SSC_ERROR);
 					return;
 				}
@@ -1034,7 +1081,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		std::string prefix = "subarray" + util::to_string((int)(nn + 1)) + "_";
 
 		// shading mode- only required for fixed tilt/timeseries tilt or one-axis, not backtracking systems
-		if ( (sa[nn].track_mode == 0 || sa[nn].track_mode == 4) || (sa[nn].track_mode == 1 && sa[nn].backtrack == 0) )
+		if ((sa[nn].track_mode == 0 || sa[nn].track_mode == 4) || (sa[nn].track_mode == 1 && sa[nn].backtrack == 0))
 		{
 			sa[nn].shade_mode = as_integer(prefix + "shade_mode");
 			if (!sa[nn].enable) continue; //skip disabled subarrays
@@ -1067,7 +1114,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 			}
 		}
 	}
-		
+
 	double aspect_ratio = as_double("module_aspect_ratio");
 
 	if (sa[0].nstrings < 0)
@@ -1076,7 +1123,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	// run some preliminary checks on inputs
 
 	int mod_type = as_integer("module_model");
-		
+
 	spe_module_t spe;
 	sandia_celltemp_t spe_tc;
 
@@ -1093,7 +1140,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	mock_celltemp_t mock_tc;
 
 	pvcelltemp_t *celltemp_model = 0;
-	pvmodule_t *module_model = 0;		
+	pvmodule_t *module_model = 0;
 
 	double ref_area_m2 = 0;
 
@@ -1104,33 +1151,33 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 	//"0=spe,1=cec,2=6par_user,3=snl,4=sd11-iec61853"
 	bool enable_mismatch_vmax_calc = as_boolean("enable_mismatch_vmax_calc");
-	if (enable_mismatch_vmax_calc 
-		&& mod_type != 1 && mod_type != 2 && mod_type != 4 )
-		throw exec_error( "pvsamv1", "String level subarray mismatch can only be calculated using a single-diode based module model.");
+	if (enable_mismatch_vmax_calc
+		&& mod_type != 1 && mod_type != 2 && mod_type != 4)
+		throw exec_error("pvsamv1", "String level subarray mismatch can only be calculated using a single-diode based module model.");
 
 
 	bool speForceNoPOA = false;		// SEV 151002 - Set these flags to avoid calling as_integer(...) repeatedly later on
 	bool mcspForceNoPOA = false;    //   These flags are used to ensure that the usePOAFromWF flag for each sub array will be force
 									//   to false
 
-	if ( mod_type == 0 )
+	if (mod_type == 0)
 	{
 		spe.VmpNominal = as_double("spe_vmp");
 		spe.VocNominal = as_double("spe_voc");
 		spe.Area = as_double("spe_area");
 		ref_area_m2 = spe.Area;
-		for (int i=0;i<5;i++)
+		for (int i = 0; i < 5; i++)
 		{
-			spe.Rad[i] = as_double( util::format("spe_rad%d", i));
-			spe.Eff[i] = 0.01*as_double( util::format("spe_eff%d", i));
-			if (i > 0 && spe.Rad[i] <= spe.Rad[i-1])
-				throw exec_error( "pvsamv1", "SPE model radiation levels must increase monotonically");
+			spe.Rad[i] = as_double(util::format("spe_rad%d", i));
+			spe.Eff[i] = 0.01*as_double(util::format("spe_eff%d", i));
+			if (i > 0 && spe.Rad[i] <= spe.Rad[i - 1])
+				throw exec_error("pvsamv1", "SPE model radiation levels must increase monotonically");
 		}
-		
+
 		spe.Gamma = as_double("spe_temp_coeff");
 		spe.Reference = as_integer("spe_reference");
-		
-		switch(as_integer("spe_module_structure"))
+
+		switch (as_integer("spe_module_structure"))
 		{
 		case 0: //glass/cell/polymer sheet - open rack
 			spe_tc.a = -3.56;
@@ -1168,8 +1215,8 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 		spe.fd = as_double("spe_fd");
 		spe_tc.fd = spe.fd;
-			
-		if(spe.fd < 1.0)
+
+		if (spe.fd < 1.0)
 			speForceNoPOA = true;
 
 		celltemp_model = &spe_tc;
@@ -1177,7 +1224,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		module_watts_stc = spe.WattsStc();
 		ssVmp = spe.VmpNominal;
 	}
-	else if ( mod_type == 1 )
+	else if (mod_type == 1)
 	{
 		cec.Area = as_double("cec_area");
 		ref_area_m2 = cec.Area;
@@ -1197,12 +1244,12 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		self_shading_fill_factor = cec.Vmp * cec.Imp / cec.Voc / cec.Isc;
 		ssVmp = cec.Vmp;
 
-		if ( as_integer("cec_temp_corr_mode") == 0 )
+		if (as_integer("cec_temp_corr_mode") == 0)
 		{
 			noct_tc.Tnoct = as_double("cec_t_noct");
 			int standoff = as_integer("cec_standoff");
 			noct_tc.standoff_tnoct_adj = 0;
-			switch(standoff)
+			switch (standoff)
 			{
 			case 2: noct_tc.standoff_tnoct_adj = 2; break; // between 2.5 and 3.5 inches
 			case 3: noct_tc.standoff_tnoct_adj = 6; break; // between 1.5 and 2.5 inches
@@ -1213,7 +1260,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 			int height = as_integer("cec_height");
 			noct_tc.ffv_wind = 0.51;
-			if ( height == 1 )
+			if (height == 1)
 				noct_tc.ffv_wind = 0.61;
 
 			celltemp_model = &noct_tc;
@@ -1230,9 +1277,9 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				double TbackInteg; */
 
 			mcsp_tc.DcDerate = sa[0].derate;  // TODO dc_derate needs to updated for each subarray
-			mcsp_tc.MC = as_integer("cec_mounting_config")+1;
-			mcsp_tc.HTD = as_integer("cec_heat_transfer")+1;
-			mcsp_tc.MSO = as_integer("cec_mounting_orientation")+1;
+			mcsp_tc.MC = as_integer("cec_mounting_config") + 1;
+			mcsp_tc.HTD = as_integer("cec_heat_transfer") + 1;
+			mcsp_tc.MSO = as_integer("cec_mounting_orientation") + 1;
 			mcsp_tc.Wgap = as_double("cec_gap_spacing");
 			mcsp_tc.Length = as_double("cec_module_length");
 			mcsp_tc.Width = as_double("cec_module_width");
@@ -1243,11 +1290,11 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 			celltemp_model = &mcsp_tc;
 			mcspForceNoPOA = true;
 		}
-			
+
 		module_model = &cec;
 		module_watts_stc = cec.Vmp * cec.Imp;
 	}
-	else if ( mod_type == 3 )
+	else if (mod_type == 3)
 	{
 		snl.A0 = as_double("snl_a0");
 		snl.A1 = as_double("snl_a1");
@@ -1293,8 +1340,8 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		double A = as_double("snl_a");
 		double B = as_double("snl_b");
 		double DT = as_double("snl_dtc");
-	
-		switch(as_integer("snl_module_structure"))
+
+		switch (as_integer("snl_module_structure"))
 		{
 		case 1: //glass/cell/polymer sheet - open rack
 			A = -3.56;
@@ -1330,24 +1377,24 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		default:
 			break;
 		}
-		
+
 		snl_tc.a = A;
 		snl_tc.b = B;
 		snl_tc.DT0 = DT;
 		snl_tc.fd = snl.fd;
-			
+
 		celltemp_model = &snl_tc;
 		module_model = &snl;
 		module_watts_stc = snl.Vmp0 * snl.Imp0;
 	}
-	else if ( mod_type == 2 )
+	else if (mod_type == 2)
 	{
 		// calculate the 6 parameters
 		// adjust TNOCT and FFV_wind
 
 		int tech_id = module6par::monoSi;
 		int type = as_integer("6par_celltech"); // "monoSi,multiSi,CdTe,CIS,CIGS,Amorphous"
-		switch( type )
+		switch (type)
 		{
 		case 0: tech_id = module6par::monoSi; break;
 		case 1: tech_id = module6par::multiSi; break;
@@ -1365,12 +1412,12 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		double beta = as_double("6par_bvoc");
 		double gamma = as_double("6par_gpmp");
 		int nser = as_integer("6par_nser");
-		
+
 		module6par m(tech_id, Vmp, Imp, Voc, Isc, beta, alpha, gamma, nser, 298.15);
-		int err = m.solve_with_sanity_and_heuristics<double>( 300, 1e-7 );
+		int err = m.solve_with_sanity_and_heuristics<double>(300, 1e-7);
 
 		if (err != 0)
-			throw exec_error( "pvsamv1", "CEC 6 parameter model:  Could not solve for normalized coefficients.  Please check your inputs.");
+			throw exec_error("pvsamv1", "CEC 6 parameter model:  Could not solve for normalized coefficients.  Please check your inputs.");
 
 		cec.Area = as_double("6par_area");
 		ref_area_m2 = cec.Area;
@@ -1386,36 +1433,36 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		cec.Rs = m.Rs;
 		cec.Rsh = m.Rsh;
 		cec.Adj = m.Adj;
-		
+
 		self_shading_fill_factor = cec.Vmp * cec.Imp / cec.Voc / cec.Isc;
 		ssVmp = cec.Vmp;
 
-		setup_noct_model( "6par", noct_tc );
-			
+		setup_noct_model("6par", noct_tc);
+
 		celltemp_model = &noct_tc;
 		module_model = &cec;
 		module_watts_stc = cec.Vmp * cec.Imp;
 	}
-	else if ( mod_type == 4 )
+	else if (mod_type == 4)
 	{
 		// IEC 61853 model
 		sd11.NcellSer = as_integer("sd11par_nser");
 		sd11.Area = as_double("sd11par_area");
 		sd11.AMA[0] = as_double("sd11par_AMa0");
 		sd11.AMA[1] = as_double("sd11par_AMa1");
-		sd11.AMA[2] = as_double("sd11par_AMa2");    
-		sd11.AMA[3] = as_double("sd11par_AMa3");    
-		sd11.AMA[4] = as_double("sd11par_AMa4");  
-		sd11.GlassAR = as_boolean("sd11par_glass");  
+		sd11.AMA[2] = as_double("sd11par_AMa2");
+		sd11.AMA[3] = as_double("sd11par_AMa3");
+		sd11.AMA[4] = as_double("sd11par_AMa4");
+		sd11.GlassAR = as_boolean("sd11par_glass");
 
-		setup_noct_model( "sd11par", noct_tc );
-			
-		sd11.Vmp0 = as_double( "sd11par_Vmp0" ); 
-		sd11.Imp0 = as_double( "sd11par_Imp0" );
-		sd11.Voc0 = as_double( "sd11par_Voc0" );
-		sd11.Isc0 = as_double( "sd11par_Isc0" );
-		sd11.alphaIsc = as_double( "sd11par_alphaIsc" );
-		sd11.n = as_double("sd11par_n" );
+		setup_noct_model("sd11par", noct_tc);
+
+		sd11.Vmp0 = as_double("sd11par_Vmp0");
+		sd11.Imp0 = as_double("sd11par_Imp0");
+		sd11.Voc0 = as_double("sd11par_Voc0");
+		sd11.Isc0 = as_double("sd11par_Isc0");
+		sd11.alphaIsc = as_double("sd11par_alphaIsc");
+		sd11.n = as_double("sd11par_n");
 		sd11.Il = as_double("sd11par_Il");
 		sd11.Io = as_double("sd11par_Io");
 		sd11.Egref = as_double("sd11par_Egref");
@@ -1429,7 +1476,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		celltemp_model = &noct_tc;
 		module_model = &sd11;
 		module_watts_stc = sd11.Vmp0 * sd11.Imp0;
-		ref_area_m2 = sd11.Area;			
+		ref_area_m2 = sd11.Area;
 		self_shading_fill_factor = sd11.Vmp0 * sd11.Imp0 / sd11.Voc0 / sd11.Isc0;
 		ssVmp = sd11.Vmp0;
 	}
@@ -1442,6 +1489,8 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		ssc_number_t *arrayIamValue = 0;
 
 		mlm.N_series = as_integer("mlm_N_series");
+		mlm.N_parallel = as_integer("mlm_N_parallel");
+		mlm.N_diodes = as_integer("mlm_N_diodes");
 		mlm.Width = as_double("mlm_Width");
 		mlm.Length = as_double("mlm_Length");
 		mlm.V_mp_ref = as_double("mlm_V_mp_ref");
@@ -1455,9 +1504,11 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		mlm.R_shexp = as_double("mlm_R_shexp");
 		mlm.R_s = as_double("mlm_R_s");
 		mlm.alpha_isc = as_double("mlm_alpha_isc");
+		mlm.beta_voc_spec = as_double("mlm_beta_voc_spec");
 		mlm.E_g = as_double("mlm_E_g");
 		mlm.n_0 = as_double("mlm_n_0");
 		mlm.mu_n = as_double("mlm_mu_n");
+		mlm.D2MuTau = as_double("mlm_D2MuTau");
 		mlm.T_mode = as_integer("mlm_T_mode");
 		mlm.T_c_no_tnoct = as_double("mlm_T_c_no_tnoct");
 		mlm.T_c_no_mounting = as_integer("mlm_T_c_no_mounting");
@@ -1485,6 +1536,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		mlm.IAM_c_sa[3] = as_double("mlm_IAM_c_sa3");
 		mlm.IAM_c_sa[4] = as_double("mlm_IAM_c_sa4");
 		mlm.IAM_c_sa[5] = as_double("mlm_IAM_c_sa5");
+		mlm.groundRelfectionFraction = as_double("mlm_groundRelfectionFraction");
 
 		arrayIncAngle = as_array("mlm_IAM_c_cs_incAngle", &elementCount1);
 		arrayIamValue = as_array("mlm_IAM_c_cs_iamValue", &elementCount2);
@@ -1501,7 +1553,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				mlm.IAM_c_cs_iamValue[i] = arrayIamValue[i];
 			}
 		}
-			if (mlm.T_mode == 1) {
+		if (mlm.T_mode == 1) {
 			setup_noct_model("mlm_T_c_no", noct_tc);
 			celltemp_model = &noct_tc;
 		}
@@ -1511,7 +1563,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		else {
 			throw exec_error("pvsamv1", "invalid temperature model type");
 		}
-		
+
 		mlm.initializeManual();
 
 		module_model = &mlm;
@@ -1545,7 +1597,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 			b = sa[nn].sscalc.nmody * sa[nn].sscalc.width;
 		sa[nn].sscalc.row_space = b / sa[nn].gcr;
 	}
-		
+
 	double nameplate_kw = modules_per_string * strings_in_parallel * module_watts_stc * util::watt_to_kilowatt;
 
 	::sandia_inverter_t snlinv;
@@ -1553,8 +1605,17 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	::partload_inverter_t plinv;
 
 	int inv_type = as_integer("inverter_model");
-	double V_mppt_lo_1module = as_double("mppt_low_inverter") / modules_per_string;
-	double V_mppt_hi_1module = as_double("mppt_hi_inverter") / modules_per_string;
+	double V_mppt_lo_1module;
+	double V_mppt_hi_1module;
+	if (inv_type == 4) {
+		V_mppt_lo_1module = as_double("ond_VMppMin") / modules_per_string;
+		V_mppt_hi_1module = as_double("ond_VMppMax") / modules_per_string;
+	}
+	else {
+		V_mppt_lo_1module = as_double("mppt_low_inverter") / modules_per_string;
+		V_mppt_hi_1module = as_double("mppt_hi_inverter") / modules_per_string;
+	}
+
 	bool clip_mppt_window = false;
 	double ratedACOutput = 0;
 
@@ -1635,15 +1696,71 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	}
 	else if (inv_type == 4) // ond inverter
 	{
+		size_t elementCount = 0;
+		size_t rows = 0;
+		size_t cols = 0;
+		ssc_number_t *VNomEffArray;
+		ssc_number_t *effCurve_PdcArray;
+		ssc_number_t *effCurve_PacArray;
+		ssc_number_t *effCurve_etaArray;
+		
+		ondinv.PNomConv = as_double("ond_PNomConv");
+		ondinv.PMaxOUT = as_double("ond_PMaxOUT");
+		ondinv.VOutConv = as_double("ond_VOutConv");
+		ondinv.VMppMin = as_double("ond_VMppMin");
+		ondinv.VMPPMax = as_double("ond_VMPPMax");
+		ondinv.VAbsMax = as_double("ond_VAbsMax");
+		ondinv.PSeuil = as_double("ond_PSeuil");
+		ondinv.ModeOper = as_string("ond_ModeOper");
+		ondinv.CompPMax = as_string("ond_CompPMax");
+		ondinv.CompVMax = as_string("ond_CompVMax");
+		ondinv.ModeAffEnum = as_string("ond_ModeAffEnum");
+		ondinv.PNomDC = as_double("ond_PNomDC");
+		ondinv.PMaxDC = as_double("ond_PMaxDC");
+		ondinv.IMaxDC = as_double("ond_IMaxDC");
+		ondinv.INomDC = as_double("ond_INomDC");
+		ondinv.INomAC = as_double("ond_INomAC");
+		ondinv.IMaxAC = as_double("ond_IMaxAC");
+		ondinv.TPNom = as_double("ond_TPNom");
+		ondinv.TPMax = as_double("ond_TPMax");
+		ondinv.TPLim1 = as_double("ond_TPLim1");
+		ondinv.TPLimAbs = as_double("ond_TPLimAbs");
+		ondinv.PLim1 = as_double("ond_PLim1");
+		ondinv.PLimAbs = as_double("ond_PLimAbs");
+		VNomEffArray = as_array("ond_VNomEff", &elementCount);
+		ondinv.NbInputs = as_integer("ond_NbInputs");
+		ondinv.NbMPPT = as_integer("ond_NbMPPT");
+		ondinv.Aux_Loss = as_double("ond_Aux_Loss");
+		ondinv.Night_Loss = as_double("ond_Night_Loss");
+		ondinv.lossRDc = as_double("ond_lossRDc");
+		ondinv.lossRAc = as_double("ond_lossRAc");
+		ondinv.effCurve_elements = as_integer("ond_effCurve_elements");
+		effCurve_PdcArray = as_matrix("ond_effCurve_Pdc", &rows, &cols);
+		effCurve_PacArray = as_matrix("ond_effCurve_Pac", &rows, &cols);
+		effCurve_etaArray = as_matrix("ond_effCurve_eta", &rows, &cols);
+		ondinv.doAllowOverpower = as_integer("ond_doAllowOverpower");
+		ondinv.doUseTemperatureLimit = as_integer("ond_doUseTemperatureLimit");
 
+		int matrixIndex;
+		const int MAX_ELEMENTS = 100;
+		for (int i = 0; i <= 2; i = i + 1) {
+			ondinv.VNomEff[i] = VNomEffArray[i];
+			for (int j = 0; j <= MAX_ELEMENTS - 1; j = j + 1) {
+				matrixIndex = i * MAX_ELEMENTS + j;
+				ondinv.effCurve_Pdc[i][j] = effCurve_PdcArray[matrixIndex];
+				ondinv.effCurve_Pac[i][j] = effCurve_PacArray[matrixIndex];
+				ondinv.effCurve_eta[i][j] = effCurve_etaArray[matrixIndex];
+			}
+		}
+
+		ondinv.initializeManual();
+		ratedACOutput = ondinv.PNomConv;
 	}
 	else
 	{
 		throw exec_error("pvsamv1", "invalid inverter model type");
 	}
 	ratedACOutput *= num_inverters;
-
-
 
 	// lifetime control variables - used to set array sizes
 	int system_use_lifetime_output = as_integer("system_use_lifetime_output");
@@ -1926,6 +2043,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 	// variables used to calculate loss diagram
 	double annual_energy = 0, annual_ac_gross = 0, annual_ac_pre_avail = 0, dc_gross[4] = { 0, 0, 0, 0 }, annual_mppt_window_clipping = 0, annual_dc_adjust_loss = 0, annual_dc_lifetime_loss = 0, annual_ac_lifetime_loss = 0, annual_ac_battery_loss = 0, annual_xfmr_nll = 0, annual_xfmr_ll = 0, annual_xfmr_loss = 0;
+	double annual_dc_loss = 0; // Added to account for DC losses (TR)
 
 	// Check if a POA model is used, if so load all POA data into the poaData struct
 	if (radmode == POA_R || radmode == POA_P ){
@@ -2096,7 +2214,6 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 							sa[nn].poa.poaAll.dayStart = idx;
 							sa[nn].poa.poaAll.doy += 1;
 						}
-
 					}
 				}
 
@@ -2825,6 +2942,9 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	*********************************************************************************************** */
 	idx = 0; ireport = 0; ireplast = 0; percent_baseline = percent_complete;
 	double annual_dc_power_before_battery = 0, annual_dc_power_after_battery = 0;
+
+	double annual_dc_loss_ond = 0, annual_ac_loss_ond = 0; // (TR)
+
 	for (size_t iyear = 0; iyear < nyears; iyear++)
 	{
 		for (hour = 0; hour < 8760; hour++)
@@ -2852,8 +2972,9 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				// Iterative loop over DC battery
 				size_t dc_count = 0; bool iterate_dc = false;
 				double dcpwr_net = 0, acpwr_gross = 0, aceff = 0, pntloss = 0, psoloss = 0, cliploss = 0, ac_wiringloss = 0;
-				do {
+				double dc_wiringloss = 0; // Added by TR for OND model
 
+				do {
 					cur_load = p_load_full[idx];
 					dcpwr_net = util::kilowatt_to_watt * p_dcpwr[idx];
 					double dc_string_voltage = p_inv_dc_voltage[idx];
@@ -2908,11 +3029,14 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					else if (inv_type == 4) // ond
 					{
 						double _par, _plr;
-						ondinv.acpower(dcpwr_net / num_inverters, &acpwr_gross, &_par, &_plr, &aceff, &cliploss, &pntloss);
+						ondinv.acpower(dcpwr_net / num_inverters, dc_string_voltage, p_tdry[idx],
+							&acpwr_gross, &_par, &_plr, &aceff, &cliploss, &psoloss, &pntloss, &dc_wiringloss, &ac_wiringloss);
 						acpwr_gross *= num_inverters;
 						cliploss *= num_inverters;
 						psoloss *= num_inverters;
 						pntloss *= num_inverters;
+						dc_wiringloss *= num_inverters;
+						ac_wiringloss *= num_inverters;
 						aceff *= 100;
 					}
 
@@ -2932,7 +3056,9 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					dc_count++;
 				} while (iterate_dc);
 
-				ac_wiringloss = fabs(acpwr_gross) * ac_loss_percent * 0.01;
+				if (inv_type != 4) { // losses calculated above for OND model
+					ac_wiringloss = fabs(acpwr_gross) * ac_loss_percent * 0.01;
+				}
 
 				// accumulate first year annual energy
 				if (iyear == 0)
@@ -2941,13 +3067,16 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 							annual_dc_power_after_battery += batt.outGenPower[idx] * ts_hour;
 
 					annual_ac_gross += acpwr_gross * util::watt_to_kilowatt * ts_hour;
+					annual_dc_loss_ond += dc_wiringloss * util::watt_to_kilowatt * ts_hour; // (TR)
+					annual_ac_loss_ond += ac_wiringloss * util::watt_to_kilowatt * ts_hour; // (TR)
+					
 					p_inveff[idx] = (ssc_number_t)(aceff);
 					p_invcliploss[idx] = (ssc_number_t)(cliploss * util::watt_to_kilowatt);
 					p_invpsoloss[idx] = (ssc_number_t)(psoloss * util::watt_to_kilowatt);
 					p_invpntloss[idx] = (ssc_number_t)(pntloss * util::watt_to_kilowatt);
 					p_ac_wiringloss[idx] = (ssc_number_t)(ac_wiringloss * util::watt_to_kilowatt);
 				}
-				p_dcpwr[idx] = (ssc_number_t)(dcpwr_net * util::watt_to_kilowatt);
+				p_dcpwr[idx] = (ssc_number_t)((dcpwr_net - dc_wiringloss) * util::watt_to_kilowatt); // added dc_wiringloss-term to consider DC losses here (TR)
 					
 				//ac losses should always be subtracted, this means you can't just multiply by the derate because at nighttime it will add power
 				p_gen[idx] = (ssc_number_t)((acpwr_gross - ac_wiringloss) * util::watt_to_kilowatt);
@@ -3022,7 +3151,6 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				// accumulate system generation before curtailment and availability
 				if (iyear == 0)
 					annual_ac_pre_avail += p_gen[idx] * ts_hour;
-		
 
 				//apply availability and curtailment
 				p_gen[idx] *= haf(hour);
@@ -3123,7 +3251,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 	double annual_mismatch_loss = 0, annual_diode_loss = 0, annual_wiring_loss = 0, annual_tracking_loss = 0, annual_nameplate_loss = 0, annual_dcopt_loss = 0;
 	double annual_dc_gross = 0;
-		
+
 	//dc optimizer losses are the same for all four subarrays, assign outside of subarray loop but calculate inside loop
 	double dc_opt = as_double("dcoptimizer_loss");
 	// loop over subarrays
@@ -3170,6 +3298,10 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 	assign("annual_dc_gross", var_data((ssc_number_t)annual_dc_gross));
 	assign("annual_ac_gross", var_data((ssc_number_t)annual_ac_gross));
+
+	// AC/DC loss reporting OND model
+	assign("annual_dc_loss_ond", var_data((ssc_number_t)annual_dc_loss_ond));
+	assign("annual_ac_loss_ond", var_data((ssc_number_t)annual_ac_loss_ond));
 
 	assign("xfmr_nll_year1", (ssc_number_t)annual_xfmr_nll);
 	assign("xfmr_ll_year1", (ssc_number_t)annual_xfmr_ll);
@@ -3445,6 +3577,15 @@ double cm_pvsamv1::module_eff(int mod_type)
 			eff = 100.0 * ((vmp*imp)/area)/1000.0;
 		}
 		break;
+	case 5: // ML model
+		{
+			double Width = as_double("mlm_Width");
+			double Length = as_double("mlm_Length");
+			double vmp = as_double("mlm_V_mp_ref");
+			double imp = as_double("mlm_I_mp_ref");
+			double Sref = as_double("mlm_S_ref");
+			eff = 100.0 * ((vmp*imp) / (Width*Length)) / Sref;
+		}
 	}
 
 	if (eff == 0.0) eff = -1;
@@ -3473,6 +3614,9 @@ void cm_pvsamv1::inverter_vdcmax_check()
 			break;
 		case 3: // coefficient generator
 			vdcmax = as_double("inv_cec_cg_vdcmax");
+			break;
+		case 4:
+			vdcmax = as_double("ond_VAbsMax");
 			break;
 		default:
 			// message
