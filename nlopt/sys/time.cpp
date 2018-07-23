@@ -1,4 +1,4 @@
-#include "sys/times.h"
+#include "times.h"
  
 int gettimeofday(struct timeval* t,void*)
 {       struct _timeb timebuffer;
