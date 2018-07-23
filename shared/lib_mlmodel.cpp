@@ -1,5 +1,4 @@
 /*******************************************************************************************************
-*
 *  Copyright 2017 - pvyield GmbH / Timo Richert
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
@@ -61,24 +60,14 @@
 *******************************************************************************************************/
 
 #include "lib_mlmodel.h"
-#include "mlm_spline.h"
+// #include "mlm_spline.h"
 
 static const double k = 1.38064852e-23; // Boltzmann constant [J/K]
 static const double q = 1.60217662e-19; // Elemenatry charge [C]
 static const double T_0 = 273.15; // 0 degrees Celsius in Kelvin [K]
 static const double PI = 3.1415926535897932; // pi
 
-bool isInitialized = false;
-
-double nVT = 0;
-double I_0ref = 0;
-double I_Lref = 0;
-
 double amavec[5] = { 0.918093, 0.086257, -0.024459, 0.002816, -0.000126 }; // DeSoto IAM coefficients [3]
-
-std::vector<double> X;
-std::vector<double> Y;
-tk::spline iamSpline;
 
 // 1: NOCT, 2: Extended Faiman
 static const int T_MODE_NOCT = 1;
@@ -99,8 +88,14 @@ mlmodel_module_t::mlmodel_module_t()
 {
 	Width = Length = V_mp_ref = I_mp_ref = V_oc_ref = I_sc_ref = S_ref = T_ref
 		= R_shref = R_sh0 = R_shexp = R_s
-		= alpha_isc = E_g = n_0 = mu_n = T_c_no_tnoct
-		= T_c_fa_alpha = T_c_fa_U0 = T_c_fa_U1 = std::numeric_limits<double>::quiet_NaN();
+		= alpha_isc = beta_voc_spec = E_g = n_0 = mu_n = D2MuTau = T_c_no_tnoct
+		= T_c_fa_alpha = T_c_fa_U0 = T_c_fa_U1
+		= groundRelfectionFraction = std::numeric_limits<double>::quiet_NaN();
+
+	nVT = I_0ref = I_Lref = Vbi = 0;
+	N_series = N_parallel = N_diodes = 0;
+
+	isInitialized = false;
 
 }
 
@@ -119,16 +114,24 @@ void mlmodel_module_t::initializeManual()
 {
 	if (!isInitialized)
 	{
-		isInitialized = true;
+		Vbi = 0.9 * N_series;
 		// Calculate values of constant reference values.
 		double R_sh_STC = R_shref + (R_sh0 - R_shref) * exp(-R_shexp * (S_ref / S_ref));
+		
 		nVT = N_series * n_0 * k * (T_ref + T_0) / q;
+
 		I_0ref = (I_sc_ref + (I_sc_ref * R_s - V_oc_ref) / R_sh_STC) / ((exp(V_oc_ref / nVT) - 1) - (exp((I_sc_ref * R_s) / nVT) - 1));
 		I_Lref = I_0ref * (exp(V_oc_ref / nVT) - 1) + V_oc_ref / R_sh_STC;
+				
+		//double I_sc_ref_string = I_sc_ref; // / N_parallel;
+		//I_0ref = (I_sc_ref_string + (I_sc_ref_string * R_s - V_oc_ref) / R_sh_STC) / ((exp(V_oc_ref / nVT) - 1) - (exp((I_sc_ref_string * R_s) / nVT) - 1));
+		//I_Lref = I_0ref * (exp(V_oc_ref / nVT) - 1) + V_oc_ref / R_sh_STC;
 
 		// set up IAM spline
 		if (IAM_mode == IAM_MODE_SPLINE)
 		{
+			std::vector<double> X;
+			std::vector<double> Y;
 			X.clear();
 			Y.clear();
 			for (int i = 0; i <= IAM_c_cs_elements - 1; i = i + 1) {
@@ -137,6 +140,8 @@ void mlmodel_module_t::initializeManual()
 			}
 			iamSpline.set_points(X, Y);
 		}
+
+		isInitialized = true;
 	}
 }
 
@@ -146,21 +151,6 @@ bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltag
 	// initialize output first
 	out.Power = out.Voltage = out.Current = out.Efficiency = out.Voc_oper = out.Isc_oper = 0.0;
 	
-	// Irradiance calculation
-	double G_total, Geff_total;
-	if (input.radmode != 3) { // Determine if the model needs to skip the cover effects (will only be skipped if the user is using POA reference cell data) 
-		G_total = input.Ibeam + input.Idiff + input.Ignd; // total incident irradiance on tilted surface, W/m2
-		Geff_total = G_total;
-	}
-	else { // Even though we're using POA ref. data, we may still need to use the decomposed poa
-		if (input.usePOAFromWF)
-			G_total = Geff_total = input.poaIrr;
-		else {
-			G_total = input.poaIrr;
-			Geff_total = input.Ibeam + input.Idiff + input.Ignd;
-		}
-	}
-
 	// Incidence Angle Modifier
 	double f_IAM_beam = 0, f_IAM_diff = 0, f_IAM_gnd = 0;
 	double theta_beam = input.IncAng;
@@ -204,7 +194,8 @@ bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltag
 			break;
 	}
 
-	double S = (f_IAM_beam * input.Ibeam + f_IAM_diff * input.Idiff + f_IAM_gnd * input.Ignd) * f_AM;
+	// Total effective irradiance
+	double S = (f_IAM_beam * input.Ibeam + f_IAM_diff * input.Idiff + groundRelfectionFraction * f_IAM_gnd * input.Ignd) * f_AM;
 
 	// Single diode model acc. to [1]
 	if (S >= 1)
@@ -213,38 +204,43 @@ bool mlmodel_module_t::operator() (pvinput_t &input, double T_C, double opvoltag
 		double V_oc = V_oc_ref; // V_oc_ref as initial guess
 		double P, V, I, eff;
 		double T_cell = T_C;
+		int iterations;
 
-		int iterations = 1;
-		if (T_mode == T_MODE_FAIMAN)
-		{
-			iterations = 2; // two iterations, 1st with guessed eff, 2nd with calculated efficiency
+		if (T_mode == T_MODE_FAIMAN) {
+			iterations = 1; // 2; // two iterations, 1st with guessed eff, 2nd with calculated efficiency
 			eff = (I_mp_ref * V_mp_ref) / ((Width * Length) * S_ref); // efficiency guess for initial run
+		}
+		else {
+			iterations = 1;
 		}
 
 		for (int i = 1; i <= iterations; i = i + 1) {
-			if (T_mode == T_MODE_FAIMAN)
-			{
-				T_cell = input.Tdry + (T_c_fa_alpha * G_total * (1 - eff)) / (T_c_fa_U0 + input.Wspd * T_c_fa_U1);
+			if (T_mode == T_MODE_FAIMAN) {
+				// T_cell = input.Tdry + (T_c_fa_alpha * G_total * (1 - eff)) / (T_c_fa_U0 + input.Wspd * T_c_fa_U1);
+				T_cell = input.Tdry + (T_c_fa_alpha * S * (1 - eff)) / (T_c_fa_U0 + input.Wspd * T_c_fa_U1);
 			}
 
 			n = n_0 + mu_n * (T_cell - T_ref);
 			a = N_series * k * (T_cell + T_0) * n / q;
-			I_L = (S / S_ref) * (I_Lref + alpha_isc *(T_cell - T_ref));
-			I_0 = I_0ref * pow(((T_cell + T_0) / (T_ref + T_0)), 3) * exp((q * E_g) / (n * k)* (1 / (T_ref + T_0) - 1 / (T_cell + T_0)));
+			I_L = (S / S_ref) * (I_Lref + alpha_isc * (T_cell - T_ref));
+			//I_L = (S / S_ref) * (I_Lref + alpha_isc / N_parallel * (T_cell - T_ref));
+			I_0 = I_0ref * pow(((T_cell + T_0) / (T_ref + T_0)), 3) * exp((q * E_g) / (n * k) * (1 / (T_ref + T_0) - 1 / (T_cell + T_0)));
+
 			R_sh = R_shref + (R_sh0 - R_shref) * exp(-R_shexp * (S / S_ref));
 
-			V_oc = openvoltage_5par(V_oc, a, I_L, I_0, R_sh);
+			V_oc = openvoltage_5par_rec(V_oc, a, I_L, I_0, R_sh, D2MuTau, Vbi);
 			I_sc = I_L / (1 + R_s / R_sh);
 
 			if (opvoltage < 0)
 			{
-				P = maxpower_5par(V_oc, a, I_L, I_0, R_s, R_sh, &V, &I);
+				P = maxpower_5par_rec(V_oc, a, I_L, I_0, R_s, R_sh, D2MuTau, Vbi, &V, &I);
 			}
 			else
 			{ // calculate power at specified operating voltage
 				V = opvoltage;
+
 				if (V >= V_oc) I = 0;
-				else I = current_5par(V, 0.9*I_L, a, I_L, I_0, R_s, R_sh);
+				else I = current_5par_rec(V, 0.9*I_L, a, I_L, I_0, R_s, R_sh, D2MuTau, Vbi);
 				P = V*I;
 			}
 			eff = P / ((Width * Length) * S);

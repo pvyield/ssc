@@ -160,8 +160,11 @@ public:
 #define AOI_MAX 89.5
 
 double current_5par( double V, double IMR, double A, double IL, double IO, double RS, double RSH );
+double current_5par_rec(double V, double IMR, double A, double IL, double IO, double RS, double RSH, double D2MuTau, double Vbi);
 double openvoltage_5par( double Voc0, double a, double IL, double IO, double Rsh );
-double maxpower_5par( double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double *Vmp=0, double *Imp=0 );
+double openvoltage_5par_rec(double Voc0, double a, double IL, double IO, double Rsh, double D2MuTau, double Vbi);
+double maxpower_5par( double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double *Vmp=0, double *Imp=0);
+double maxpower_5par_rec(double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double D2MuTau, double Vbi, double *__Vmp=0, double *__Imp=0);
 double air_mass_modifier( double Zenith_deg, double Elev_m, double a[5] );
 double transmittance( double theta1_deg, /* incidence angle of incoming radiation (deg) */
 		double n_cover,  /* refractive index of cover material, n_glass = 1.586 */
@@ -171,6 +174,5 @@ double transmittance( double theta1_deg, /* incidence angle of incoming radiatio
 		double *_theta2_deg = 0 ); /* thickness of cover material (m), usually 2 mm for typical module */
 double iam( double theta_deg, bool ar_glass ); // incidence angle modifier factor relative to normal incidence
 double iam_nonorm( double theta_deg, bool ar_glass );  // non-normalized cover loss (typically use one above!)
-
 
 #endif

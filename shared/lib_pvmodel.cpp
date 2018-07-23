@@ -325,16 +325,52 @@ double current_5par( double V, double IMR, double A, double IL, double IO, doubl
 	double INEW = IMR;
 	const int maxit = 4000;
 	int it = 0;
+
 	while( fabs(INEW-IOLD) > 0.0001)
 	{
 		IOLD = INEW;
-		double F = IL-IOLD-IO*(exp((V_MODULE+IOLD*RS)/A)-1.0) - (V_MODULE+IOLD*RS)/RSH;
-		double FPRIME = -1.0-IO*(RS/A)*exp((V_MODULE+IOLD*RS)/A)-(RS/RSH);
+		double F = IL-IOLD-IO*(exp((V_MODULE+IOLD*RS)/A)-1.0) - (V_MODULE+IOLD*RS)/RSH; // commeted out TR
+		double FPRIME = -1.0 - IO * (RS / A)*exp((V_MODULE + IOLD * RS) / A) - (RS / RSH);
 		INEW = max(0.0,(IOLD-(F/FPRIME)));
 		if ( it++ == maxit ) 
 			return -1.0;
 	}
 	
+	return INEW;
+}
+
+double current_5par_rec(double V, double IMR, double A, double IL, double IO, double RS, double RSH, double D2MuTau, double Vbi)
+{
+	/*
+	C     Iterative solution for current as a function of voltage using
+	C     equations from the five-parameter model.  Newton's method is used
+	C     to converge on a value.  Max power at reference conditions is initial
+	C     guess.
+	C     2018-04-15 (TR): Added functionality to consider recombination losses
+	*/
+	double IOLD = 0.0;
+	double V_MODULE = V;
+
+	//C**** first guess is max.power point current
+	double INEW = IMR;
+	const int maxit = 4000;
+	int it = 0;
+
+	while (fabs(INEW - IOLD) > 0.0001)
+	{
+		IOLD = INEW;
+
+		double IREC = IL * D2MuTau / (Vbi - (V_MODULE + IOLD * RS));
+		double IREC_DER = (IL * D2MuTau * RS) / pow((Vbi - (V_MODULE + IOLD * RS)), 2);
+
+		double F = IL - IOLD - IO * (exp((V_MODULE + IOLD * RS) / A) - 1.0) - (V_MODULE + IOLD * RS) / RSH - IREC;
+		double FPRIME = -1.0 - IO * (RS / A)*exp((V_MODULE + IOLD * RS) / A) - (RS / RSH) - IREC_DER;
+
+		INEW = max(0.0, (IOLD - (F / FPRIME)));
+		if (it++ == maxit)
+			return -1.0;
+	}
+
 	return INEW;
 }
 
@@ -353,6 +389,7 @@ double openvoltage_5par( double Voc0, double a, double IL, double IO, double Rsh
 	while( fabs(VocHigh-VocLow) > 0.001 )
 	{
 		double I = IL - IO*(exp(Voc/a)-1) - Voc/Rsh;
+
 		if (I < 0) VocHigh = Voc;
 		if (I > 0) VocLow = Voc;
 		Voc = (VocHigh+VocLow)/2;
@@ -363,8 +400,35 @@ double openvoltage_5par( double Voc0, double a, double IL, double IO, double Rsh
 	return Voc;	
 }
 
+double openvoltage_5par_rec(double Voc0, double a, double IL, double IO, double Rsh, double D2MuTau, double Vbi)
+{
+	/*
+	C     Iterative solution for open-circuit voltage.  Explicit algebraic solution
+	C     not possible in 5-parameter model
+	C     2018-04-15 (TR): Added functionality to consider recombination losses
+	*/
+	double VocLow = 0;
+	double VocHigh = Voc0 * 1.5;
+
+	double Voc = Voc0; // initial guess
+
+	int niter = 0;
+	while (fabs(VocHigh - VocLow) > 0.001)
+	{
+		double I = IL - IO * (exp(Voc / a) - 1) - Voc / Rsh - IL * D2MuTau / (Vbi - Voc);
+
+		if (I < 0) VocHigh = Voc;
+		if (I > 0) VocLow = Voc;
+		Voc = (VocHigh + VocLow) / 2;
+
+		if (++niter > 5000)
+			return -1.0;
+	}
+	return Voc;
+}
 
 struct refparm { double a, Il, Io, Rs, Rsh; };
+struct refparm_rec { double a, Il, Io, Rs, Rsh, D2MuTau, Vbi; };
 
 static double powerfunc( double V, void *_d )
 {
@@ -372,7 +436,13 @@ static double powerfunc( double V, void *_d )
 	return -V*current_5par( V, 0.9*r->Il, r->a, r->Il, r->Io, r->Rs, r->Rsh );
 }
 
-double maxpower_5par( double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double *__Vmp, double *__Imp )
+static double powerfunc_rec(double V, void *_d)
+{
+	struct refparm_rec *r = (struct refparm_rec*)_d;
+	return -V * current_5par_rec(V, 0.9*r->Il, r->a, r->Il, r->Io, r->Rs, r->Rsh, r->D2MuTau, r->Vbi);
+}
+
+double maxpower_5par(double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double *__Vmp, double *__Imp)
 {
 	double P, V, I;
 	struct refparm refdata;
@@ -383,8 +453,36 @@ double maxpower_5par( double Voc_ubound, double a, double Il, double Io, double 
 	refdata.Rsh = Rsh;
 
 	int maxiter = 5000;
+
+	if (golden(0, Voc_ubound, powerfunc, &refdata, 1e-4, &V, &P, maxiter))
+	{
+		P = -P;
+		I = 0;
+		if (V != 0) I = P / V;
+	}
+	else
+		P = V = I = -999;
+
+	if (__Vmp) *__Vmp = V;
+	if (__Imp) *__Imp = I;
+	return P;
+}
+
+double maxpower_5par_rec( double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double D2MuTau, double Vbi, double *__Vmp, double *__Imp )
+{
+	double P, V, I;
+	struct refparm_rec refdata;
+	refdata.a = a;
+	refdata.Il = Il;
+	refdata.Io = Io;
+	refdata.Rs = Rs;
+	refdata.Rsh = Rsh;
+	refdata.D2MuTau = D2MuTau;
+	refdata.Vbi = Vbi;
+
+	int maxiter = 5000;
 				
-	if (golden( 0, Voc_ubound, powerfunc, &refdata, 1e-4, &V, &P, maxiter))
+	if (golden( 0, Voc_ubound, powerfunc_rec, &refdata, 1e-4, &V, &P, maxiter))
 	{
 		P = -P;				
 		I = 0;

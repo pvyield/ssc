@@ -181,21 +181,21 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(Platform)\$(Configuration)\BUILT\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>sscx32</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(Platform)\$(Configuration)\BUILT\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>ssc</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(Platform)\$(Configuration)\BUILT\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(Platform)\$(Configuration)\BUILT\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
@@ -294,17 +294,8 @@
       <ProgramDatabaseFile>$(OutDir)\$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
-      <Command>robocopy $(WEXDIR)\build_vs2017\libcurl_ssl_$(Platform)\bin $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\ /E /XC /XN /XO /XX /NP /NS /NJS /NJH /NC  
-
-if NOT "$(SAMNTDIR)" == "" (
-copy $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\sscx32.dll $(SAMNTDIR)\deploy\$(Platform)
-copy $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\sscx32.pdb $(SAMNTDIR)\deploy\$(Platform)\
-)
-
-if %ERRORLEVEL% GEQ 8 (
-exit) else (
-exit 0    
-)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -330,17 +321,8 @@ exit 0
       </StackReserveSize>
     </Link>
     <PostBuildEvent>
-      <Command>robocopy $(WEXDIR)\build_vs2017\libcurl_ssl_$(Platform)\bin $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\ /E /XC /XN /XO /XX /NP /NS /NJS /NJH /NC  
-
-if NOT "$(SAMNTDIR)" == "" (
-copy $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\ssc.dll $(SAMNTDIR)\deploy\$(Platform)
-copy $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\ssc.pdb $(SAMNTDIR)\deploy\$(Platform)\
-)
-
-if %ERRORLEVEL% GEQ 8 (
-exit) else (
-exit 0    
-)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -356,17 +338,8 @@ exit 0
       <ProgramDatabaseFile>$(OutDir)\$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
-      <Command>robocopy $(WEXDIR)\build_vs2017\libcurl_ssl_$(Platform)\bin $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\ /E /XC /XN /XO /XX /NP /NS /NJS /NJH /NC  
-
-if NOT "$(SAMNTDIR)" == "" (
-copy $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\sscdx32.dll $(SAMNTDIR)\deploy\$(Platform)
-copy $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\sscdx32.pdb $(SAMNTDIR)\deploy\$(Platform)\
-)
-
-if %ERRORLEVEL% GEQ 8 (
-exit) else (
-exit 0    
-)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -383,16 +356,8 @@ exit 0
       </StackReserveSize>
     </Link>
     <PostBuildEvent>
-      <Command>robocopy $(WEXDIR)\build_vs2017\libcurl_ssl_$(Platform)\bin $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\ /E /XC /XN /XO /XX /NP /NS /NJS /NJH /NC  
-
-if NOT "$(SAMNTDIR)" == "" (
-copy $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\sscd.dll $(SAMNTDIR)\deploy\$(Platform)
-copy $(SSCDIR)\build_vs2017\$(Platform)\$(Configuration)\sscd.pdb $(SAMNTDIR)\deploy\$(Platform)\
-)
-if %ERRORLEVEL% GEQ 8 (
-exit) else (
-exit 0    
-)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug32|Win32'">

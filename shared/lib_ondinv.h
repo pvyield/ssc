@@ -47,29 +47,103 @@
 *  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************************************/
 
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
+#include <string>
 #include <vector>
-#include "../nlopt/nlopt.h"
+#include "mlm_spline.h" // spline interpolator for efficiency curves
+using namespace std;
 
-class testoptclass
+#ifndef __lib_ondinv_h
+#define __lib_ondinv_h
+
+class ond_inverter
 {
-	int call_count;
 public:
-	testoptclass();
+	ond_inverter();
 
-	void reset_counter();
+	double PNomConv; // [W]
+	double PMaxOUT; // [W]
+	double VOutConv; // [W]
+	double VMppMin; // [V]
+	double VMPPMax; // [V]
+	double VAbsMax; // [V]
+	double PSeuil; // [W]
+	string ModeOper; // [-]
+	string CompPMax; // [-]
+	string CompVMax; // [-]
+	string ModeAffEnum; // [-]
+	double PNomDC; // [W]
+	double PMaxDC; // [W]
+	double IMaxDC; // [A]
+	double INomDC; // [A]
+	double INomAC; // [A]
+	double IMaxAC; // [A]
+	double TPNom; // [°C]
+	double TPMax; // [°C]
+	double TPLim1; // [°C]
+	double TPLimAbs; // [°C]
+	double PLim1; // [kW]
+	double PLimAbs; // [kW]
+	double VNomEff[3]; // [V]
+	int NbInputs; // [-]
+	int NbMPPT; // [-]
+	double Aux_Loss; // [W]
+	double Night_Loss; // [W]
+	double lossRDc; // [V/A]
+	double lossRAc; // [A]
+	int effCurve_elements; // [-]
+	double effCurve_Pdc[3][100]; // [W]
+	double effCurve_Pac[3][100]; // [W]
+	double effCurve_eta[3][100]; // [-]
+	int doAllowOverpower; // [-] // ADDED TO CONSIDER MAX POWER USAGE [2018-06-23, TR]
+	int doUseTemperatureLimit; // [-] // ADDED TO CONSIDER TEMPERATURE LIMIT USAGE [2018-06-23, TR]
 
-	void random_start(std::vector<double> &x, std::vector<std::vector<double> > &range);
+	bool acpower(	
+		/* inputs */
+		double Pdc,			/* Input power to inverter (Wdc) */
+		double Vdc,			/* Voltage input to inverter (Vdc) */
+		double Tamb,		/* Ambient temperature (°C) */
 
-	double memfunc(unsigned n, const double *x, double *grad, void *my_func_data);
-	
-	double styb_tang_test(unsigned n, const double *x, double *grad, void *data);
+		/* outputs */
+		double *Pac,		/* AC output power (Wac) */
+		double *Ppar,		/* AC parasitic power consumption (Wac) */
+		double *Plr,		/* Part load ratio (Pdc_in/Pdc_rated, 0..1) */
+		double *Eff,		/* Conversion efficiency (0..1) */
+		double *Pcliploss,	/* Power loss due to clipping loss (Wac) */
+		double *Psoloss,	/* Power loss due to operating power consumption (Wdc) */
+		double *Pntloss,	/* Power loss due to night time tare loss (Wac) */
+		double *dcloss,		/* DC power loss (Wdc) */
+		double *acloss		/* AC power loss (Wac) */
+	);
+	double calcEfficiency(
+		double Pdc,
+		int index_eta
+	);
+	double tempDerateAC(
+		double arrayT[],
+		double arrayPAC[],
+		double T
+	);
+	virtual void initializeManual();
 
-	double rosenbrock_test(unsigned n, const double *x, double *grad, void *data);
+private:
+	bool ondIsInitialized;
 
-	double matyas_test(unsigned n, const double *x, double *grad, void *data);
+	int noOfEfficiencyCurves;
+	tk::spline effSpline[2][3];
+	double x_lim[3];
+	double Pdc_threshold;
+	double a[3];
+	double b[3];
 
-	int get_call_count();
+	double PNomDC_eff;
+	double PMaxDC_eff;
+	double INomDC_eff;
+	double IMaxDC_eff;
+	double T_array[6];
+	double PAC_array[6];
+
+
+
 };
+
+#endif

@@ -34,6 +34,7 @@
     <ClInclude Include="..\shared\lib_irradproc.h" />
     <ClInclude Include="..\shared\lib_miniz.h" />
     <ClInclude Include="..\shared\lib_mlmodel.h" />
+    <ClInclude Include="..\shared\lib_ondinv.h" />
     <ClInclude Include="..\shared\lib_physics.h" />
     <ClInclude Include="..\shared\lib_powerblock.h" />
     <ClInclude Include="..\shared\lib_power_electronics.h" />
@@ -63,6 +64,7 @@
     <ClCompile Include="..\shared\lib_irradproc.cpp" />
     <ClCompile Include="..\shared\lib_miniz.cpp" />
     <ClCompile Include="..\shared\lib_mlmodel.cpp" />
+    <ClCompile Include="..\shared\lib_ondinv.cpp" />
     <ClCompile Include="..\shared\lib_physics.cpp" />
     <ClCompile Include="..\shared\lib_powerblock.cpp" />
     <ClCompile Include="..\shared\lib_power_electronics.cpp" />

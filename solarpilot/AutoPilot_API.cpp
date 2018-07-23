@@ -52,7 +52,7 @@
 #include <algorithm>
 #include <iomanip> 
 
-#include <nlopt.hpp>
+#include <../nlopt/nlopt.hpp>
 
 #include "AutoPilot_API.h"
 #include "LayoutSimulateThread.h"

@@ -55,7 +55,7 @@
 #include "Ambient.h"
 #include "solpos00.h"
 #include "Toolbox.h"
-#include <shared/lib_weatherfile.h>
+#include <../shared/lib_weatherfile.h>
 
 #include "definitions.h"
 
