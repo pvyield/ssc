@@ -51,7 +51,11 @@
 #include <time.h>
 #include <math.h>
 #include <vector>
+<<<<<<< HEAD
 #include "../nlopt/nlopt.h"
+=======
+#include "nlopt.hpp"
+>>>>>>> pr/11
 
 class testoptclass
 {

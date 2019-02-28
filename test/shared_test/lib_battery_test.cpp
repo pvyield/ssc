@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <lib_battery.h>
 
+<<<<<<< HEAD
 class BatteryProperties : public ::testing::Test
 {
 protected:
@@ -19,75 +19,82 @@ protected:
 		SOC_max = 100;
 	}
 };
+=======
+#include <lib_battery.h>
 
-class LithiumIonBattery : public BatteryProperties
+#include "lib_battery_test.h"
+>>>>>>> pr/11
+
+/// Test  lithium ion battery capacity response
+TEST_F(BatteryTest, LithiumIonCapacityTest)
 {
-protected:
-	capacity_lithium_ion_t * capacity_model; 
+	q = 100;
+	SOC_init = 100;
+	SOC_min = 20;
+	SOC_max = 100;
 
+<<<<<<< HEAD
 	void SetUp()
 	{
 		BatteryProperties::SetUp();
 		capacity_model = new capacity_lithium_ion_t(q, SOC_init, SOC_max, SOC_min);
+=======
+	if (capacityModel) {
+		delete capacityModel;
+>>>>>>> pr/11
 	}
-	void TearDown()
-	{
-		if (capacity_model)
-			delete capacity_model;
-	}
-};
+	capacityModel = new capacity_lithium_ion_t(q, SOC_init, SOC_max, SOC_min);
 
-TEST_F(LithiumIonBattery, LithiumIonCapacityUnitTest_lib_battery)
-{
 	// Check that initial capacity is equal to max
-	EXPECT_EQ(capacity_model->SOC(), SOC_max);
+	EXPECT_EQ(capacityModel->SOC(), SOC_max);
 
 	// Check that discharge of battery results in correct capacity
-	capacity_model->updateCapacity(10, 1);
-	EXPECT_EQ(capacity_model->SOC(), 90);
-	EXPECT_EQ(capacity_model->q0(), 90);
+	double I = 10;
+	capacityModel->updateCapacity(I, 1);
+	EXPECT_EQ(capacityModel->SOC(), 90);
+	EXPECT_EQ(capacityModel->q0(), 90);
 
 	// check that charge of battery results in correct capacity
-	capacity_model->updateCapacity(-10, 1);
-	EXPECT_EQ(capacity_model->SOC(), 100);
-	EXPECT_EQ(capacity_model->q0(), 100);
+	I = -10;
+	capacityModel->updateCapacity(I, 1);
+	EXPECT_EQ(capacityModel->SOC(), 100);
+	EXPECT_EQ(capacityModel->q0(), 100);
 
 	// check that updating thermal behavior changes capacity as expected
-	capacity_model->updateCapacityForThermal(95);
-	capacity_model->check_SOC();
-	EXPECT_EQ(capacity_model->q0(), 95);
-	EXPECT_EQ(capacity_model->qmax(), 100);
-	capacity_model->updateCapacityForThermal(100);
-	capacity_model->check_SOC();
+	capacityModel->updateCapacityForThermal(95);
+	capacityModel->check_SOC();
+	EXPECT_EQ(capacityModel->q0(), 95);
+	EXPECT_EQ(capacityModel->qmax(), 100);
+	capacityModel->updateCapacityForThermal(100);
+	capacityModel->check_SOC();
 
 	// check that updating lifetime degradation changes capacity
-	capacity_model->updateCapacityForLifetime(95);
-	EXPECT_EQ(capacity_model->q0(), 95);
-	EXPECT_EQ(capacity_model->qmax(), 95);
+	capacityModel->updateCapacityForLifetime(95);
+	EXPECT_EQ(capacityModel->q0(), 95);
+	EXPECT_EQ(capacityModel->qmax(), 95);
 
 	// check that battery replacement works
-	capacity_model->replace_battery();
-	EXPECT_EQ(capacity_model->SOC(), SOC_max);
-	EXPECT_EQ(capacity_model->q0(), 100);
-	EXPECT_EQ(capacity_model->qmax(), 100);
+	capacityModel->replace_battery();
+	EXPECT_EQ(capacityModel->SOC(), SOC_max);
+	EXPECT_EQ(capacityModel->q0(), 100);
+	EXPECT_EQ(capacityModel->qmax(), 100);
 
 	// check that model correctly detects overcharge, undercharge
-	capacity_model->updateCapacity(-10, 1);
-	EXPECT_EQ(capacity_model->q0(), 100);
-	EXPECT_EQ(capacity_model->SOC(), SOC_max);
-	capacity_model->updateCapacity(110, 1);
-	EXPECT_EQ(capacity_model->q0(), 20);
-	EXPECT_EQ(capacity_model->SOC(), SOC_min);
+	capacityModel->updateCapacity(I, 1);
+	EXPECT_EQ(capacityModel->q0(), 100);
+	EXPECT_EQ(capacityModel->SOC(), SOC_max);
+
+	I = 110;
+	capacityModel->updateCapacity(I, 1);
+	EXPECT_EQ(capacityModel->q0(), 20);
+	EXPECT_EQ(capacityModel->SOC(), SOC_min);
 }
 
-class LeadAcidDC4006 : public BatteryProperties
+TEST_F(BatteryTest, LossesModel)
 {
-protected:
-	double q20;
-	double t1;
-	double q1;
-	double q10;
+	size_t idx = 1000;
 
+<<<<<<< HEAD
 	void SetUp()
 	{
 		BatteryProperties::SetUp();
@@ -160,5 +167,10 @@ TEST_F(LeadAcidBattery, LeadAcidCapacityUnitTest_lib_battery)
 	EXPECT_EQ(capacity_model->SOC(), SOC_min);
 	*/
 	
+=======
+	// Return loss for february
+	lossModel->run_losses(idx);
+	EXPECT_EQ(lossModel->getLoss(idx), 1);
+>>>>>>> pr/11
 
 }

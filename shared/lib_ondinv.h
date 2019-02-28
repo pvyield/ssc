@@ -46,9 +46,12 @@
 *  IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 *  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************************************/
+#ifndef __lib_ondinv_h
+#define __lib_ondinv_h
 
 #include <string>
 #include <vector>
+<<<<<<< HEAD:shared/lib_ondinv.h
 #include "mlm_spline.h" // spline interpolator for efficiency curves
 using namespace std;
 
@@ -59,6 +62,19 @@ class ond_inverter
 {
 public:
 	ond_inverter();
+=======
+//#include "mlm_spline.h" // spline interpolator for efficiency curves
+#include "bspline.h"
+using namespace std;
+using namespace SPLINTER;
+
+class ond_inverter
+{
+public:
+	ond_inverter();
+	virtual ~ond_inverter() {};
+
+>>>>>>> pr/11:shared/lib_ondinv.h
 
 	double PNomConv; // [W]
 	double PMaxOUT; // [W]
@@ -129,7 +145,14 @@ private:
 	bool ondIsInitialized;
 
 	int noOfEfficiencyCurves;
+<<<<<<< HEAD:shared/lib_ondinv.h
 	tk::spline effSpline[2][3];
+=======
+//	tk::spline effSpline[2][3];
+//	BSpline m_bspline3[2][3];
+	BSpline m_bspline3[3];
+	double x_max[3];
+>>>>>>> pr/11:shared/lib_ondinv.h
 	double x_lim[3];
 	double Pdc_threshold;
 	double a[3];

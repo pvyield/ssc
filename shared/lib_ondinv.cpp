@@ -56,9 +56,21 @@
 #include <cmath>
 #include <limits>
 #include <vector>
+<<<<<<< HEAD
 #include "lib_ondinv.h"
 
 const int TEMP_DERATE_ARRAY_LENGTH = 6;
+=======
+#include <stdexcept>
+
+#include "lib_ondinv.h"
+#include "bsplinebuilder.h"
+#include "datatable.h"
+
+
+const int TEMP_DERATE_ARRAY_LENGTH = 6;
+// test commit
+>>>>>>> pr/11
 
 ond_inverter::ond_inverter()
 {
@@ -211,10 +223,19 @@ void ond_inverter::initializeManual()
 		//	}
 		//}
 		Pdc_threshold = 2;
+<<<<<<< HEAD
 		std::vector<double> ondspl_X[2];
 		std::vector<double> ondspl_Y[2];
 		int splineIndex;
 		bool switchoverDone;
+=======
+		std::vector<double> ondspl_X;
+		std::vector<double> ondspl_Y;
+		DenseVector xSamples(1);
+		DataTable samples;
+//		int splineIndex;
+//		bool switchoverDone;
+>>>>>>> pr/11
 
 		if (VNomEff[2] > 0) {
 			noOfEfficiencyCurves = 3;
@@ -224,6 +245,7 @@ void ond_inverter::initializeManual()
 		}
 
 		for (int j = 0; j <= noOfEfficiencyCurves - 1; j = j + 1) {
+<<<<<<< HEAD
 			splineIndex = 0;
 			switchoverDone = false;
 			ondspl_X[0].clear();
@@ -234,6 +256,19 @@ void ond_inverter::initializeManual()
 			double atY[3];
 			const int MAX_ELEMENTS = 100; // = effCurve_elements + 5;
 			for (int i = 0; i <= MAX_ELEMENTS - 1; i = i + 1) {
+=======
+//			splineIndex = 0;
+//			switchoverDone = false;
+			ondspl_X.clear();
+			ondspl_Y.clear();
+			double atX[3];
+			double atY[3];
+			const int MAX_ELEMENTS = 100; // = effCurve_elements + 5;
+//			x_lim[j] = effCurve_Pdc[j][0];
+			for (int i = 0; i <= MAX_ELEMENTS - 1; i++) 
+			{
+				
+>>>>>>> pr/11
 				if (i <= 2) { // atan
 							  // atan
 					atX[i] = effCurve_Pdc[j][i];
@@ -260,11 +295,22 @@ void ond_inverter::initializeManual()
 						}
 					}
 				}
+<<<<<<< HEAD
 				if (i >= 2 && i <= 99 && (effCurve_Pdc[j][i] > 0 && effCurve_eta[j][i] > 0)) { // spline
 					ondspl_X[splineIndex].push_back(effCurve_Pdc[j][i]);
 					ondspl_Y[splineIndex].push_back(effCurve_eta[j][i]);
 				}
 			}
+=======
+				// include overlap at i=2
+				if ((i >=2 && i < MAX_ELEMENTS) && (effCurve_Pdc[j][i] > 0))// && effCurve_eta[j][i] > 0)) 
+				{ // spline
+					ondspl_X.push_back(effCurve_Pdc[j][i]);
+					ondspl_Y.push_back(effCurve_eta[j][i]);
+				}
+			}
+			/* Spline
+>>>>>>> pr/11
 			bool doCubicSpline[2];
 			doCubicSpline[0] = true;
 			doCubicSpline[1] = true;
@@ -273,6 +319,20 @@ void ond_inverter::initializeManual()
 					effSpline[i][j].set_points(ondspl_X[i], ondspl_Y[i], doCubicSpline[i]);
 				}
 			}
+<<<<<<< HEAD
+=======
+			*/
+			// SPLINTER
+			samples.clear();
+			x_max[j] = ondspl_X.back();
+			for (size_t k = 0; k < ondspl_X.size() && k < ondspl_Y.size(); k++)
+			{
+				xSamples(0) = ondspl_X[k];
+				samples.addSample(xSamples, ondspl_Y[k]);
+			}
+			m_bspline3[j] = BSpline::Builder(samples).degree(3).build();
+
+>>>>>>> pr/11
 		}
 		ondIsInitialized = true;
 	}
@@ -280,6 +340,7 @@ void ond_inverter::initializeManual()
 
 double ond_inverter::calcEfficiency(double Pdc, int index_eta) {
 	double eta;
+<<<<<<< HEAD
 	int splineIndex;
 	if (Pdc > (Pdc_threshold * PNomDC_eff)) {
 		splineIndex = 1;
@@ -289,14 +350,42 @@ double ond_inverter::calcEfficiency(double Pdc, int index_eta) {
 	}
 	if (Pdc > PMaxDC_eff) {
 		Pdc = PMaxDC_eff;
+=======
+//	int splineIndex;
+	DenseVector x(1);
+//	if (Pdc > (Pdc_threshold * PNomDC_eff)) {
+//		splineIndex = 1;
+//	}
+//	else {
+//		splineIndex = 0;
+//	}
+//	if (Pdc > PMaxDC_eff)
+//	{
+//		Pdc = PMaxDC_eff;
+//	}
+	if (Pdc > x_max[index_eta])
+	{
+		Pdc = x_max[index_eta];
+>>>>>>> pr/11
 	}
 	if (Pdc <= 0) {
 		eta = 0;
 	}
+<<<<<<< HEAD
 	else if (Pdc >= x_lim[index_eta]) {
 		eta = effSpline[splineIndex][index_eta](Pdc);
 	}
 	else {
+=======
+	else if (Pdc >= x_lim[index_eta]) 
+	{
+//		eta = effSpline[splineIndex][index_eta](Pdc);
+		x(0) = Pdc;
+		eta = (m_bspline3[index_eta]).eval(x);
+	}
+	else 
+	{
+>>>>>>> pr/11
 		eta = a[index_eta] * atan(b[index_eta] * Pdc / PNomDC_eff);
 	}
 	return eta;
@@ -379,7 +468,11 @@ bool ond_inverter::acpower(
 	Pac_max_T = tempDerateAC(T_array, PAC_array, Tamb);
 
 	// Limit Pac to current limit
+<<<<<<< HEAD
 	double Pac_max_I;
+=======
+	double Pac_max_I=0.0;
+>>>>>>> pr/11
 
 	// calculate voltage drop in DC cabling
 	double dV_dcLoss;
@@ -476,4 +569,8 @@ bool ond_inverter::acpower(
 	// Final calculations and returning true
 	*Plr = Pdc_eff / PNomDC_eff;
 	return true;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> pr/11

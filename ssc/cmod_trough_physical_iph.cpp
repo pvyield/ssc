@@ -97,8 +97,8 @@ static var_info _cm_vtab_trough_physical_process_heat[] = {
     { SSC_INPUT,        SSC_NUMBER,      "theta_dep",                 "Deploy angle",                                                                     "deg",          "",               "solar_field",    "*",                       "",                      "" },
     { SSC_INPUT,        SSC_NUMBER,      "Row_Distance",              "Spacing between rows (centerline to centerline)",                                  "m",            "",               "solar_field",    "*",                       "",                      "" },
     { SSC_INPUT,        SSC_NUMBER,      "FieldConfig",               "Number of subfield headers",                                                       "none",         "",               "solar_field",    "*",                       "",                      "" },
-    { SSC_INPUT,        SSC_NUMBER,      "is_model_heat_sink_piping", "Should model consider piping through heat sink?",                                  "none",         "",               "solar_field",    "*",                       "",                      "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "L_heat_sink_piping",        "Length of piping (full mass flow) through heat sink (if applicable)",              "none",         "",               "solar_field",    "*",                       "",                      "" },
+    { SSC_INPUT,        SSC_NUMBER,      "is_model_power_block_piping", "Should model consider piping through heat sink?",                                "none",         "",               "solar_field",    "*",                       "",                      "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "L_power_block_piping",      "Length of piping (full mass flow) through heat sink (if applicable)",              "none",         "",               "solar_field",    "*",                       "",                      "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "m_dot_htfmin",              "Minimum loop HTF flow rate",                                                       "kg/s",         "",               "solar_field",    "*",                       "",                      "" },
     { SSC_INPUT,        SSC_NUMBER,      "m_dot_htfmax",              "Maximum loop HTF flow rate",                                                       "kg/s",         "",               "solar_field",    "*",                       "",                      "" },
     { SSC_INPUT,        SSC_NUMBER,      "Fluid",                     "Field HTF fluid ID number",                                                        "none",         "",               "solar_field",    "*",                       "",                      "" },
@@ -273,7 +273,7 @@ static var_info _cm_vtab_trough_physical_process_heat[] = {
 	{ SSC_OUTPUT,       SSC_NUMBER,      "annual_energy",                   "Annual Net Thermal Energy Production w/ avail derate",       "kWt-hr",  "",  "Post-process",    "*",   "",   "" },
 	{ SSC_OUTPUT,       SSC_NUMBER,      "annual_gross_energy",             "Annual Gross Thermal Energy Production w/ avail derate",     "kWt-hr",  "",  "Post-process",    "*",   "",   "" },
 	{ SSC_OUTPUT,       SSC_NUMBER,      "annual_thermal_consumption",      "Annual thermal freeze protection required",                  "kWt-hr",  "",  "Post-process",    "*",   "",   "" },
-	{ SSC_OUTPUT,       SSC_NUMBER,      "annual_electricity_consumption",  "Annual electricity consumptoin w/ avail derate",             "kWe-hr",  "",  "Post-process",    "*",   "",   "" },
+	{ SSC_OUTPUT,       SSC_NUMBER,      "annual_electricity_consumption",  "Annual electricity consumption w/ avail derate",             "kWe-hr",  "",  "Post-process",    "*",   "",   "" },
 	{ SSC_OUTPUT,       SSC_NUMBER,      "annual_total_water_use",          "Total Annual Water Usage",                                   "m^3",     "",  "Post-process",    "*",   "",   "" },
 	{ SSC_OUTPUT,       SSC_NUMBER,      "annual_field_freeze_protection",  "Annual thermal power for field freeze protection",     "kWt-hr",  "",  "Post-process",    "*",   "",   "" },
 	{ SSC_OUTPUT,       SSC_NUMBER,      "annual_tes_freeze_protection",    "Annual thermal power for TES freeze protection",     "kWt-hr",  "",  "Post-process",    "*",   "",   "" },
@@ -304,7 +304,9 @@ public:
 		weather_reader.m_trackmode = 0;
 		weather_reader.m_tilt = 0.0;
 		weather_reader.m_azimuth = 0.0;
+		// Initialize to get weather file info
 		weather_reader.init();
+		if (weather_reader.has_error()) throw exec_error("trough_physical_iph", weather_reader.get_error());
 
 		// Set up ssc output arrays
 		// Set steps per hour
@@ -313,12 +315,12 @@ public:
 		sim_setup.m_sim_time_start = 0.0;				//[s] starting first hour of year
 		sim_setup.m_sim_time_end = nhourssim*3600.0;	//[s] full year simulation
 
-		int steps_per_hour = 1;			//[-]
+		size_t steps_per_hour = 1;			//[-]
 
-		int n_wf_records = (int)weather_reader.m_weather_data_provider->nrecords();
+		size_t n_wf_records = weather_reader.m_weather_data_provider->nrecords();
 		steps_per_hour = n_wf_records / 8760;	//[-]
 
-		int n_steps_fixed = steps_per_hour*8760;	//[-]
+		size_t n_steps_fixed = steps_per_hour*8760;	//[-]
 		sim_setup.m_report_step = 3600.0 / (double)steps_per_hour;	//[s]
 		//***************************************************************************
 		//***************************************************************************
@@ -331,8 +333,8 @@ public:
 		c_trough.m_nHCEVar = as_integer("nHCEVar");					//[-] Number of HCE variants per t
 		c_trough.m_nLoops = as_integer("nLoops");					//[-] Number of loops in the field
 		c_trough.m_FieldConfig = as_integer("FieldConfig");			//[-] Number of subfield headers
-		c_trough.m_L_heat_sink_piping = as_double("L_heat_sink_piping"); //[m] Length of piping (full mass flow) through heat sink (if applicable)
-		c_trough.m_include_fixed_heat_sink_runner = as_boolean("is_model_heat_sink_piping");	//[-] Should model consider piping through heat sink?
+		c_trough.m_L_power_block_piping = as_double("L_power_block_piping"); //[m] Length of piping (full mass flow) through heat sink (if applicable)
+		c_trough.m_include_fixed_power_block_runner = as_boolean("is_model_power_block_piping");	//[-] Should model consider piping through heat sink?
 		c_trough.m_eta_pump = as_double("eta_pump");				//[-] HTF pump efficiency
 		c_trough.m_Fluid = as_integer("Fluid");						//[-] Field HTF fluid number
 		//c_trough.m_fthrok = as_integer("fthrok");					//[-] Flag to allow partial defocusing of the collectors
@@ -489,7 +491,20 @@ public:
 		c_trough.m_Tau_envelope = as_matrix("Tau_envelope");             //[-] Envelope transmittance
 		c_trough.m_EPSILON_4 = as_matrix("EPSILON_4");                   //[-] Inner glass envelope emissivities
 		c_trough.m_EPSILON_5 = as_matrix("EPSILON_5");                   //[-] Outer glass envelope emissivities
-		c_trough.m_GlazingIntact = (as_matrix("GlazingIntactIn") > 0);         //[-] Glazing intact (broken glass) flag {1=true, else=false}
+//		c_trough.m_GlazingIntact = (as_matrix("GlazingIntactIn") > 0);         //[-] Glazing intact (broken glass) flag {1=true, else=false}
+
+		util::matrix_t<double> glazing_intact_double = as_matrix("GlazingIntactIn"); //[-] Is the glazing intact?
+		int n_gl_row = (int)glazing_intact_double.nrows();
+		int n_gl_col = (int)glazing_intact_double.ncols();
+		c_trough.m_GlazingIntact.resize(n_gl_row, n_gl_col);
+		for (int i = 0; i < n_gl_row; i++)
+		{
+			for (int j = 0; j < n_gl_col; j++)
+			{
+				c_trough.m_GlazingIntact(i, j) = (glazing_intact_double(i, j) > 0);
+			}
+		}
+
 		c_trough.m_P_a = as_matrix("P_a");		                         //[torr] Annulus gas pressure				 
 		c_trough.m_AnnulusGas = as_matrix("AnnulusGas");		         //[-] Annulus gas type (1=air, 26=Ar, 27=H2)
 		c_trough.m_AbsorberMaterial = as_matrix("AbsorberMaterial");	 //[-] Absorber material type
@@ -745,7 +760,7 @@ public:
 		if (count != n_steps_fixed)
 			throw exec_error("trough_physical_iph", "The number of fixed steps for 'm_dot_tes_ch' does not match the length of output data arrays");
 		
-		for(int i = 0; i < n_steps_fixed; i++)
+		for(size_t i = 0; i < n_steps_fixed; i++)
 		{
 			size_t hour = (size_t)ceil(p_time_final_hr[i]);
 			p_gen[i] = (ssc_number_t)(p_q_dot_heat_sink[i] * haf(hour) * 1.E3);		//[kWt]

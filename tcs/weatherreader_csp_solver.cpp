@@ -51,8 +51,13 @@
 #include <memory>
 #include "tcstype.h"
 
+<<<<<<< HEAD
 #include <lib_weatherfile.h>
 #include <lib_irradproc.h>
+=======
+#include "lib_weatherfile.h"
+#include "lib_irradproc.h"
+>>>>>>> pr/11
 
 #include "csp_solver_core.h"
 
