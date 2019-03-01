@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -63,7 +63,7 @@
 #define CASECMP(a,b) _stricmp(a,b)
 #define CASENCMP(a,b,n) _strnicmp(a,b,n)
 #else
-#define CASECMP(a,b) strcasecmp(a,b) 
+#define CASECMP(a,b) strcasecmp(a,b)
 #define CASENCMP(a,b,n) strncasecmp(a,b,n)
 #endif
 
@@ -559,7 +559,7 @@ bool weatherfile::timeStepChecks(int hdr_step_sec) {
 	else if (m_nRecords % 8784 == 0)
 	{
 		// Check if the weather file contains a leap day
-		// if so, correct the number of nrecords 
+		// if so, correct the number of nrecords
 		m_nRecords = m_nRecords / 8784 * 8760;
 		nmult = (int)m_nRecords / 8760;
 		m_stepSec = 3600 / nmult;
@@ -685,7 +685,7 @@ bool weatherfile::open(const std::string &file, bool header_only)
 	}
 	else if (m_type == EPW)
 	{
-		m_nRecords = 0; 
+		m_nRecords = 0;
 
 		while (getline(ifs, buf) && buf.length() > 0)
 			m_nRecords++;
@@ -784,7 +784,7 @@ bool weatherfile::open(const std::string &file, bool header_only)
 			if (m_nRecords % 8784 == 0)
 			{
 				// Check if the weather file contains a leap day
-				// if so, exit out with an error 
+				// if so, exit out with an error
 				m_message = "could not determine timestep in CSV weather file. Does the file contain a leap day?";
 				m_ok = false;
 				return false;
@@ -825,11 +825,7 @@ bool weatherfile::open(const std::string &file, bool header_only)
 			{
 				m_hdr.tz = col_or_nan(value);
 			}
-<<<<<<< HEAD
-			else if (name == "el" || name == "elev" || name == "elevation" || name == "site elevation" || name == "altitude" )
-=======
 			else if (name == "el" || name == "elev" || name == "elevation" || name == "site elevation" || name == "altitude")
->>>>>>> pr/11
 			{
 				m_hdr.elev = col_or_nan(value);
 			}
@@ -837,11 +833,7 @@ bool weatherfile::open(const std::string &file, bool header_only)
 			{
 				m_startYear = (int)col_or_nan(value);
 			}
-<<<<<<< HEAD
-			else if (name == "id" || name == "location" || name == "location id" || name == "station" || name == "station id" || name == "wban" || name == "wban#" || name == "site" )
-=======
 			else if (name == "id" || name == "location" || name == "location id" || name == "station" || name == "station id" || name == "wban" || name == "wban#" || name == "site")
->>>>>>> pr/11
 			{
 				m_hdr.location = value;
 			}
@@ -857,11 +849,7 @@ bool weatherfile::open(const std::string &file, bool header_only)
 			{
 				m_hdr.country = value;
 			}
-<<<<<<< HEAD
-			else if (name == "source" || name == "src" || name == "data source" )
-=======
 			else if (name == "source" || name == "src" || name == "data source")
->>>>>>> pr/11
 			{
 				m_hdr.source = value;
 			}
@@ -986,16 +974,6 @@ bool weatherfile::open(const std::string &file, bool header_only)
 				else if (lowname == "hour" || lowname == "hr") m_columns[HOUR].index = i;
 				else if (lowname == "min" || lowname == "minute") m_columns[MINUTE].index = i;
 				else if (lowname == "ghi" || lowname == "gh" || lowname == "global" || lowname == "global horizontal" || lowname == "global horizontal irradiance") m_columns[GHI].index = i;
-<<<<<<< HEAD
-				else if (lowname == "dni" || lowname == "dn" || lowname == "beam" || lowname == "direct normal" || lowname == "direct normal irradiance" || lowname == "direct (beam) normal irradiance" ) m_columns[DNI].index = i;
-				else if (lowname == "dhi" || lowname == "df" || lowname == "diffuse" || lowname == "diffuse horizontal" || lowname == "diffuse horizontal irradiance") m_columns[DHI].index = i;
-				else if (lowname == "poa" || lowname == "pa" || lowname == "plane" || lowname == "plane of array" || lowname == "plane of array irradiance") m_columns[POA].index = i;
-				else if (lowname == "tdry" || lowname == "dry bulb" || lowname == "dry bulb temp" || lowname == "dry bulb temperature" || lowname == "temperature" || lowname == "ambient" || lowname == "ambient temp" || lowname == "tamb" ) m_columns[TDRY].index = i;
-				else if (lowname == "twet" || lowname == "wet bulb" || lowname == "wet bulb temperature") m_columns[TWET].index = i;
-				else if (lowname == "tdew" || lowname == "dew point" || lowname == "dew point temperature") m_columns[TDEW].index = i;
-				else if (lowname == "wspd" || lowname == "wind speed" || lowname == "windspeed" || lowname == "ws" || lowname == "windvel" ) m_columns[WSPD].index = i;
-				else if (lowname == "wdir" || lowname == "wind direction" || lowname == "wd" ) m_columns[WDIR].index = i;
-=======
 				else if (lowname == "dni" || lowname == "dn" || lowname == "beam" || lowname == "direct normal" || lowname == "direct normal irradiance" || lowname == "direct (beam) normal irradiance") m_columns[DNI].index = i;
 				else if (lowname == "dhi" || lowname == "df" || lowname == "diffuse" || lowname == "diffuse horizontal" || lowname == "diffuse horizontal irradiance") m_columns[DHI].index = i;
 				else if (lowname == "poa" || lowname == "pa" || lowname == "plane" || lowname == "plane of array" || lowname == "plane of array irradiance") m_columns[POA].index = i;
@@ -1004,7 +982,6 @@ bool weatherfile::open(const std::string &file, bool header_only)
 				else if (lowname == "tdew" || lowname == "dew point" || lowname == "dew point temperature") m_columns[TDEW].index = i;
 				else if (lowname == "wspd" || lowname == "wind speed" || lowname == "windspeed" || lowname == "ws" || lowname == "windvel") m_columns[WSPD].index = i;
 				else if (lowname == "wdir" || lowname == "wind direction" || lowname == "wd") m_columns[WDIR].index = i;
->>>>>>> pr/11
 				else if (lowname == "rh" || lowname == "rhum" || lowname == "relative humidity" || lowname == "humidity") m_columns[RH].index = i;
 				else if (lowname == "pres" || lowname == "pressure" || lowname == "air pressure") m_columns[PRES].index = i;
 				else if (lowname == "snow" || lowname == "snow cover" || lowname == "snow depth") m_columns[SNOW].index = i;
@@ -1500,7 +1477,7 @@ bool weatherfile::open(const std::string &file, bool header_only)
 	if (m_type == EPW) {
 		for (size_t i = 0; i < m_nRecords; i++) {
 			for (int j = 5; j < 19; j++) {
-				if (j == 8 || j == 17 || j == 18 || j == 10) continue;	// EPW format does not contain 
+				if (j == 8 || j == 17 || j == 18 || j == 10) continue;	// EPW format does not contain
 				if (my_isnan(m_columns[j].data[i])) handle_missing_field(i, j);
 			}
 			if (m_columns[TWET].data[i] == -999.) m_columns[TWET].data[i] = (float)calc_twet((double)m_columns[TDRY].data[i], (double)m_columns[RH].data[i], (double)m_columns[PRES].data[i]);
@@ -1558,14 +1535,14 @@ bool weatherfile::read_average(weather_record *r, std::vector<int> &cols, size_t
 
 		// average columns requested
 		int start = (int)m_index - (int)num_timesteps / 2;
-		if (start < 0) 
+		if (start < 0)
 			start = 0;
 		if ((size_t)start + num_timesteps > m_nRecords)
 			start = (int)m_nRecords - (int)num_timesteps;
-		if (start < 0) 
+		if (start < 0)
 			start = 0;
 
-	
+
 		for (size_t i = 0; i < cols.size(); i++)
 		{
 			double col_val = 0;
@@ -1612,7 +1589,7 @@ bool weatherfile::read_average(weather_record *r, std::vector<int> &cols, size_t
 			case TDRY:
 				r->tdry = col_val;
 				break;
-			case TWET: 
+			case TWET:
 				r->twet = col_val;
 				break;
 			case TDEW:
@@ -1700,7 +1677,7 @@ bool weatherfile::convert_to_wfcsv( const std::string &input, const std::string 
 	util::stdfile fp( output, "w" );
 	if ( !fp.ok() ) return false;
 
-	weather_header hdr; 
+	weather_header hdr;
 	wf.header( &hdr );
 	weather_record rec;
 
@@ -1767,4 +1744,3 @@ bool weatherfile::convert_to_wfcsv( const std::string &input, const std::string 
 	return true;
 
 }
-

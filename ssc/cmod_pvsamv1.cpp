@@ -2,11 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-<<<<<<< HEAD
-*  (�Alliance�) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
-=======
 *  ("Alliance") under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
->>>>>>> pr/11
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -30,13 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-<<<<<<< HEAD
-*  the underlying software originally provided by Alliance as �System Advisor Model� or �SAM�. Except
-*  to comply with the foregoing, the terms �System Advisor Model�, �SAM�, or any confusingly similar
-=======
 *  the underlying software originally provided by Alliance as "System Advisor Model" or "SAM". Except
 *  to comply with the foregoing, the terms "System Advisor Model", "SAM", or any confusingly similar
->>>>>>> pr/11
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -214,24 +205,6 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_rotlim",                            "Sub-array 4 Tracker rotation limit",                      "deg",    "",                              "pvsamv1",              "?=45",                     "MIN=0,MAX=85",                  "" },
 	{ SSC_INPUT,		SSC_NUMBER,		 "subarray4_shade_mode",				     	"Sub-array 4 shading mode (fixed tilt or 1x tracking)",	   "0/1/2",  "0=none,1=standard(non-linear),2=thin film(linear)", "pvsamv1", "subarray4_enable=1", "INTEGER,MIN=0,MAX=2",		   "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_gcr",                               "Sub-array 4 Ground coverage ratio",                       "0..1",   "",                              "pvsamv1",              "?=0.3",                    "MIN=0,MAX=3",               "" },
-<<<<<<< HEAD
-	{ SSC_INPUT,        SSC_ARRAY,       "subarray4_monthly_tilt",                      "Sub-array 4 monthly tilt input",                          "deg",    "",                              "pvsamv1",              "subarray4_track_mode=4",   "LENGTH=12",                     "" },
-//	{ SSC_INPUT,        SSC_ARRAY,       "subarray4_shading:hourly",                    "Sub-array 4 Hourly beam shading losses",                 "%",       "",                              "pvsamv1",              "?",                        "",                              "" },
-//	{ SSC_INPUT, SSC_NUMBER, "subarray4_shading:shading_db_lookup", "Sub-array 4 enable shading database lookup", "", "", "pvsamv1", "?=0", "BOOLEAN", "" },
-//	{ SSC_INPUT, SSC_NUMBER, "subarray4_shading:string_option", "Sub-array 4 shading string option", "", "0=shadingdb,1=average,2=maximum,3=minimum", "pvsamv1", "?=-1", "INTEGER,MIN=-1,MAX=3", "" },
-	{ SSC_INPUT, SSC_NUMBER, "subarray4_shading:string_option", "Sub-array 4 shading string option", "", "0=shadingdb,1=shadingdb_notc,2=average,3=maximum,4=minimum", "pvsamv1", "?=-1", "INTEGER,MIN=-1,MAX=4", "" },
-	{ SSC_INPUT, SSC_MATRIX, "subarray4_shading:timestep", "Sub-array 4 timestep beam shading losses", "%", "", "pvsamv1", "?", "", "" },
-	{ SSC_INPUT, SSC_MATRIX, "subarray4_shading:mxh", "Sub-array 4 Month x Hour beam shading losses", "%", "", "pvsamv1", "?", "", "" },
-	{ SSC_INPUT,        SSC_MATRIX,      "subarray4_shading:azal",                      "Sub-array 4 Azimuth x altitude beam shading losses",     "%",       "",                              "pvsamv1",              "?",                        "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_shading:diff",                      "Sub-array 4 Diffuse shading loss",                       "%",       "",                              "pvsamv1",              "?",                        "",                              "" },
-	{ SSC_INPUT,        SSC_ARRAY,       "subarray4_soiling",                           "Sub-array 4 Monthly soiling loss",                       "%",   "",                              "pvsamv1",              "subarray4_enable=1",       "LENGTH=12",                     "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_mod_orient",                        "Sub-array 4 Module orientation for self-shading",         "0/1",    "0=portrait,1=landscape",        "pvsamv1",              "subarray4_shade_mode>0", "INTEGER,MIN=0,MAX=1",           "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_nmodx",                             "Sub-array 4 no. of modules along bottom for self-shading","",       "",                              "pvsamv1",              "subarray4_shade_mode>0", "INTEGER,POSITIVE",              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_nmody",                             "Sub-array 4 no. of modules along side for self-shading",  "",       "",                              "pvsamv1",              "subarray4_shade_mode>0", "INTEGER,POSITIVE",              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_backtrack",                         "Sub-array 4 Backtracking enabled",                        "",       "0=no backtracking,1=backtrack", "pvsamv1",              "subarray4_track_mode=1",   "BOOLEAN",                       "" },
-
-	{ SSC_INPUT,        SSC_NUMBER,      "module_model",                                "Photovoltaic module model specifier",                     "",       "0=spe,1=cec,2=6par_user,3=snl,4=sd11-iec61853", "pvsamv1",              "*",                        "INTEGER,MIN=0,MAX=5",           "" },
-=======
 	{ SSC_INPUT,        SSC_ARRAY,       "subarray4_monthly_tilt",                      "Sub-array 4 Monthly tilt input",                          "deg",    "",                              "pvsamv1",              "",                         "LENGTH=12",                     "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_shading:string_option",             "Sub-array 4 Shading string option",                       "",       "0=shadingdb,1=shadingdb_notc,2=average,3=maximum,4=minimum", "pvsamv1", "?=-1", "INTEGER,MIN=-1,MAX=4", "" },
 	{ SSC_INPUT,        SSC_MATRIX,      "subarray4_shading:timestep",                  "Sub-array 4 Timestep beam shading losses",                "%",      "",                              "pvsamv1",              "?",                        "", "" },
@@ -245,7 +218,6 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "subarray4_backtrack",                         "Sub-array 4 Backtracking enabled",                        "",       "0=no backtracking,1=backtrack", "pvsamv1",              "",                         "BOOLEAN",                       "" },
 
 	{ SSC_INPUT,        SSC_NUMBER,      "module_model",                                "Photovoltaic module model specifier",                     "",       "0=spe,1=cec,2=6par_user,3=snl,4=sd11-iec61853,5=PVYield", "pvsamv1",              "*",                        "INTEGER,MIN=0,MAX=5",           "" },
->>>>>>> pr/11
 	{ SSC_INPUT,        SSC_NUMBER,      "module_aspect_ratio",                         "Module aspect ratio",                                     "",       "",                              "pvsamv1",              "?=1.7",                    "",                              "POSITIVE" },
 	{ SSC_INPUT,        SSC_NUMBER,      "spe_area",                                    "Module area",                                             "m2",     "",                              "pvsamv1",              "module_model=0",           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "spe_rad0",                                    "Irradiance level 0",                                      "W/m2",   "",                              "pvsamv1",              "module_model=0",           "",                              "" },
@@ -370,7 +342,7 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "snl_series_cells",                            "Number of cells in series",                               "",       "",                      "pvsamv1",       "module_model=3",                    "INTEGER",                       "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "snl_vmpo",                                    "Max power point voltage",                                 "",       "",                      "pvsamv1",       "module_model=3",                    "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "snl_voco",                                    "Open circuit voltage",                                    "",       "",                      "pvsamv1",       "module_model=3",                    "",                              "" },
-	
+
 	//{ SSC_INPUT,        SSC_NUMBER,      "sd11par_type",                                "Cell technology type",                                    "",       "monoSi=0,multiSi=1,CdTe=2,CIS=3,CIGS=4,Amorphous=5",                "pvsamv1",       "module_model=4",                           "INTEGER,MIN=0,MAX=5",       "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "sd11par_nser",                                "Nseries",                                                 "",       "",                                                                  "pvsamv1",       "module_model=4",                           "INTEGER,POSITIVE",              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "sd11par_area",                                "Module area",                                             "m2",     "",                                                                  "pvsamv1",       "module_model=4",                           "",                              "" },
@@ -398,7 +370,7 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "sd11par_c1",                                  "Rsh fit parameter 1",                                     "",       "",                                                                  "pvsamv1",       "module_model=4",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "sd11par_c2",                                  "Rsh fit parameter 2",                                     "",       "",                                                                  "pvsamv1",       "module_model=4",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "sd11par_c3",                                  "Rsh fit parameter 3",                                     "",       "",                                                                  "pvsamv1",       "module_model=4",                           "",                              "" },
-	
+
 
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_N_series",                                "Number of cells in series",                               "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_N_parallel",                              "Number of cells in parallel",						       "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
@@ -453,16 +425,10 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "mlm_groundRelfectionFraction",                "Ground reflection fraction",                              "-",       "",                                                                  "pvsamv1",       "module_model=5",                           "",                              "" },
 
 // inverter model
-<<<<<<< HEAD
-	{ SSC_INPUT,        SSC_NUMBER,      "inverter_model",                              "Inverter model specifier",                                "",        "0=cec,1=datasheet,2=partload,3=coefficientgenerator",        "pvsamv1",               "*",                         "INTEGER,MIN=0,MAX=4",           "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "mppt_low_inverter",                           "Minimum inverter MPPT voltage window",                    "Vdc",     "",                     "pvsamv1",       "",                    "?=0",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "mppt_hi_inverter",                            "Maximum inverter MPPT voltage window",                    "Vdc",     "",                     "pvsamv1",       "",                    "?=0",                              "" },
-=======
 	{ SSC_INPUT,        SSC_NUMBER,      "inverter_model",                              "Inverter model specifier",                                "",        "0=cec,1=datasheet,2=partload,3=coefficientgenerator,4=PVYield",        "pvsamv1",               "*",                         "INTEGER,MIN=0,MAX=4",           "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mppt_low_inverter",                           "Minimum inverter MPPT voltage window",                    "Vdc",     "",                     "pvsamv1",       "?=0",                                 "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "mppt_hi_inverter",                            "Maximum inverter MPPT voltage window",                    "Vdc",     "",                     "pvsamv1",       "?=0",                                 "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "inv_num_mppt",                                "Number of MPPT inputs",                                   "",        "",                     "pvsamv1",       "?=1",                                 "INTEGER,MIN=0,MAX=4",           "" },
->>>>>>> pr/11
 
 	{ SSC_INPUT,        SSC_NUMBER,      "inv_snl_c0",                                  "Curvature between AC power and DC power at ref",          "1/W",     "",                     "pvsamv1",       "inverter_model=0",                    "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "inv_snl_c1",                                  "Coefficient of Pdco variation with DC input voltage",     "1/V",     "",                     "pvsamv1",       "inverter_model=0",                    "",                              "" },
@@ -475,34 +441,6 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "inv_snl_vdco",                                "DC input voltage for the rated AC power rating",          "Vdc",     "",                     "pvsamv1",       "inverter_model=0",                    "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "inv_snl_vdcmax",                              "Maximum DC input operating voltage",                      "Vdc",     "",                     "pvsamv1",       "inverter_model=0",                    "",                              "" },
 
-<<<<<<< HEAD
-	{ SSC_INPUT, SSC_NUMBER, "inv_cec_cg_c0", "Curvature between AC power and DC power at ref", "1/W", "", "pvsamv1", "inverter_model=3", "", "" },
-	{ SSC_INPUT, SSC_NUMBER, "inv_cec_cg_c1", "Coefficient of Pdco variation with DC input voltage", "1/V", "", "pvsamv1", "inverter_model=3", "", "" },
-	{ SSC_INPUT, SSC_NUMBER, "inv_cec_cg_c2", "Coefficient of Pso variation with DC input voltage", "1/V", "", "pvsamv1", "inverter_model=3", "", "" },
-	{ SSC_INPUT, SSC_NUMBER, "inv_cec_cg_c3", "Coefficient of Co variation with DC input voltage", "1/V", "", "pvsamv1", "inverter_model=3", "", "" },
-	{ SSC_INPUT, SSC_NUMBER, "inv_cec_cg_paco", "AC maximum power rating", "Wac", "", "pvsamv1", "inverter_model=3", "", "" },
-	{ SSC_INPUT, SSC_NUMBER, "inv_cec_cg_pdco", "DC input power at which AC power rating is achieved", "Wdc", "", "pvsamv1", "inverter_model=3", "", "" },
-	{ SSC_INPUT, SSC_NUMBER, "inv_cec_cg_pnt", "AC power consumed by inverter at night", "Wac", "", "pvsamv1", "inverter_model=3", "", "" },
-	{ SSC_INPUT, SSC_NUMBER, "inv_cec_cg_psco", "DC power required to enable the inversion process", "Wdc", "", "pvsamv1", "inverter_model=3", "", "" },
-	{ SSC_INPUT, SSC_NUMBER, "inv_cec_cg_vdco", "DC input voltage for the rated AC power rating", "Vdc", "", "pvsamv1", "inverter_model=3", "", "" },
-	{ SSC_INPUT, SSC_NUMBER, "inv_cec_cg_vdcmax", "Maximum DC input operating voltage", "Vdc", "", "pvsamv1", "inverter_model=3", "", "" },
-
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_ds_paco",                                "AC maximum power rating",                                 "Wac",     "",                     "pvsamv1",       "inverter_model=1",                    "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_ds_eff",                                 "Weighted or Peak or Nominal Efficiency",     "Wdc",     "",                     "pvsamv1",       "inverter_model=1",                    "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_ds_pnt",                                 "AC power consumed by inverter at night",                  "Wac",     "",                     "pvsamv1",       "inverter_model=1",                    "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_ds_pso",                                 "DC power required to enable the inversion process",       "Wdc",     "",                     "pvsamv1",       "inverter_model=1",                    "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_ds_vdco",                                "DC input voltage for the rated AC power rating",          "Vdc",     "",                     "pvsamv1",       "inverter_model=1",                    "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_ds_vdcmax",                              "Maximum DC input operating voltage",                      "Vdc",     "",                     "pvsamv1",       "inverter_model=1",                    "",                              "" },
-
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_pd_paco",                                "AC maximum power rating",                                 "Wac",     "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_pd_pdco",                                "DC input power at which AC power rating is achieved",     "Wdc",     "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
-	{ SSC_INPUT,        SSC_ARRAY,       "inv_pd_partload",                            "Partload curve partload values",                          "%",       "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
-	{ SSC_INPUT,        SSC_ARRAY,       "inv_pd_efficiency",                          "Partload curve efficiency values",                        "%",       "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_pd_pnt",                                 "AC power consumed by inverter at night",                  "Wac",     "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_pd_vdco",                                "DC input voltage for the rated AC power rating",          "Vdc",     "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "inv_pd_vdcmax",                              "Maximum DC input operating voltage",                      "Vdc",     "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
-	
-=======
 	{ SSC_INPUT,		SSC_NUMBER,		 "inv_cec_cg_c0",								"Curvature between AC power and DC power at ref",		   "1/W",	  "",					  "pvsamv1",	   "inverter_model=3",					  "",                              "" },
 	{ SSC_INPUT,		SSC_NUMBER,		 "inv_cec_cg_c1",								"Coefficient of Pdco variation with DC input voltage",	   "1/V",	  "",					  "pvsamv1",	   "inverter_model=3",					  "",                              "" },
 	{ SSC_INPUT,		SSC_NUMBER,		 "inv_cec_cg_c2",								"Coefficient of Pso variation with DC input voltage",	   "1/V",	  "",					  "pvsamv1",	   "inverter_model=3",					  "",                              "" },
@@ -529,7 +467,6 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "inv_pd_vdco",                                 "DC input voltage for the rated AC power rating",          "Vdc",     "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "inv_pd_vdcmax",                               "Maximum DC input operating voltage",                      "Vdc",     "",                     "pvsamv1",       "inverter_model=2",                    "",                              "" },
 
->>>>>>> pr/11
 	{ SSC_INPUT, SSC_NUMBER, "ond_PNomConv", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
 	{ SSC_INPUT, SSC_NUMBER, "ond_PMaxOUT", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
 	{ SSC_INPUT, SSC_NUMBER, "ond_VOutConv", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
@@ -568,13 +505,10 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_INPUT, SSC_NUMBER, "ond_Aux_Loss", "", "W", "", "pvsamv1", "inverter_model=4", "", "" },
 	{ SSC_INPUT, SSC_NUMBER, "ond_doAllowOverpower", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
 	{ SSC_INPUT, SSC_NUMBER, "ond_doUseTemperatureLimit", "", "-", "", "pvsamv1", "inverter_model=4", "", "" },
-<<<<<<< HEAD
-=======
 	{ SSC_INPUT,		SSC_MATRIX,		 "inv_tdc_cec_db",							   "Temperature derate curves for CEC Database",			   "Vdc",	  "",					  "pvsamv1",	   "inverter_model=0",					  "",							   "" },
 	{ SSC_INPUT,		SSC_MATRIX,		 "inv_tdc_cec_cg",							   "Temperature derate curves for CEC Coef Gen",			   "Vdc",	  "",					  "pvsamv1",	   "inverter_model=3",					  "",							   "" },
 	{ SSC_INPUT,		SSC_MATRIX,		 "inv_tdc_ds",								   "Temperature derate curves for Inv Datasheet",			   "Vdc",	  "",					  "pvsamv1",	   "inverter_model=1",					  "",							   "" },
 	{ SSC_INPUT,		SSC_MATRIX,		 "inv_tdc_plc",								   "Temperature derate curves for Part Load Curve",			   "C",		  "",					  "pvsamv1",	   "inverter_model=2",					  "",							   "" },
->>>>>>> pr/11
 
 	// battery storage and dispatch
 	{ SSC_INPUT,        SSC_NUMBER,      "en_batt",                                    "Enable battery storage model",                             "0/1",     "",                     "Battery",       "?=0",                                 "",                              "" },
@@ -737,10 +671,10 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_OUTPUT,        SSC_ARRAY,      "poa_rear",                             "Array POA rear-side total radiation after reflection (IAM)",                 "kW",   "",  "Time Series (Array)",       "*",                    "",                              "" },
 	{ SSC_OUTPUT,        SSC_ARRAY,      "poa_eff",                              "Array POA radiation total after reflection (IAM)",                           "kW",   "",  "Time Series (Array)",       "*",                    "",                              "" },
 
-	//SEV: total dc snow loss time series (not a required output) 
+	//SEV: total dc snow loss time series (not a required output)
 	{ SSC_OUTPUT,        SSC_ARRAY,      "dc_snow_loss",                         "Array DC power loss due to snow",						 "kW",   "",   "Time Series (Array)",       "",                    "",                              "" },
 	{ SSC_OUTPUT,        SSC_ARRAY,      "dc_net",                               "Array DC power",                                       "kW",   "",   "Time Series (Array)",       "*",                    "",                              "" },
-	
+
 	//mppt outputs
 	{ SSC_OUTPUT,        SSC_ARRAY,      "inverterMPPT1_DCVoltage",              "Inverter MPPT 1 Nominal DC voltage",                  "V",    "",  "Time Series (MPPT)",           "",                    "",                              "" },
 	{ SSC_OUTPUT,        SSC_ARRAY,      "inverterMPPT2_DCVoltage",              "Inverter MPPT 2 Nominal DC voltage",                  "V",    "",  "Time Series (MPPT)",           "",                    "",                              "" },
@@ -814,7 +748,7 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_OUTPUT,        SSC_NUMBER,     "annual_dc_loss_ond",                          "Annual DC loss OND model",                           "kWh/yr",    "",                      "Annual (Year 1)",       "*",                    "",                              "" },
 	{ SSC_OUTPUT,        SSC_NUMBER,     "annual_ac_loss_ond",                          "Annual AC loss OND model",                           "kWh/yr",    "",                      "Annual (Year 1)",       "*",                    "",                              "" },
 
-	//SEV: total dc snow loss monthy array and annual value (not a required output) 
+	//SEV: total dc snow loss monthy array and annual value (not a required output)
 	{ SSC_OUTPUT,        SSC_ARRAY,      "monthly_snow_loss",                    "Snow DC energy loss",					       "kWh/mo",    "",                       "Monthly",       "",                    "",                              "" },
 	{ SSC_OUTPUT,        SSC_NUMBER,     "annual_snow_loss",                     "Snow DC energy loss",						   "kWh/yr",    "",                       "Annual (Year 1)",       "",                    "",                              "" },
 
@@ -860,7 +794,7 @@ static var_info _cm_vtab_pvsamv1[] = {
 	// annual_poa_nom
 	{ SSC_OUTPUT, SSC_NUMBER, "annual_poa_shading_loss_percent", "POA front-side shading loss", "%", "", "Loss", "*", "", "" },
 	{ SSC_OUTPUT, SSC_NUMBER, "annual_poa_soiling_loss_percent", "POA front-side soiling loss", "%", "", "Loss", "*", "", "" },
-	{ SSC_OUTPUT, SSC_NUMBER, "annual_poa_cover_loss_percent",   "POA front-side reflection (IAM) loss",   "%", "", "Loss", "*", "", "" }, 
+	{ SSC_OUTPUT, SSC_NUMBER, "annual_poa_cover_loss_percent",   "POA front-side reflection (IAM) loss",   "%", "", "Loss", "*", "", "" },
 	{ SSC_OUTPUT, SSC_NUMBER, "annual_poa_rear_gain_percent",    "POA rear-side bifacial gain", "%", "", "Loss", "*", "", "" },
 
 	// annual_dc_nominal
@@ -907,7 +841,6 @@ static var_info _cm_vtab_pvsamv1[] = {
 	{ SSC_OUTPUT, SSC_NUMBER, "annual_dc_after_wiring_loss", "DC output after wiring loss", "kWh", "", "Annual (Year 1)", "*", "", "" },
 	{ SSC_OUTPUT, SSC_NUMBER, "annual_dc_after_tracking_loss", "DC output after tracking loss", "kWh", "", "Annual (Year 1)", "*", "", "" },
 	{ SSC_OUTPUT, SSC_NUMBER, "annual_dc_after_nameplate_loss", "DC output after nameplate loss", "kWh", "", "Annual (Year 1)", "*", "", "" },
-
 	{ SSC_OUTPUT, SSC_NUMBER, "annual_ac_after_inv_cliploss", "AC output after inverter clipping loss", "kWh", "", "Annual (Year 1)", "*", "", "" },
 	{ SSC_OUTPUT, SSC_NUMBER, "annual_ac_after_inv_psoloss", "AC output after inverter power consumption loss", "kWh", "", "Annual (Year 1)", "*", "", "" },
 	{ SSC_OUTPUT, SSC_NUMBER, "annual_ac_after_inv_pntloss", "AC output after inverter night tare loss", "kWh", "", "Annual (Year 1)", "*", "", "" },
@@ -1005,701 +938,7 @@ cm_pvsamv1::cm_pvsamv1()
 	add_var_info(vtab_battery_outputs);
 }
 
-	
-<<<<<<< HEAD
-void cm_pvsamv1::exec() throw (compute_module::general_error)
-{
-	smart_ptr<weather_data_provider>::ptr wdprov;
-	if (is_assigned("solar_resource_file"))
-	{
-		const char *file = as_string("solar_resource_file");
-		wdprov = smart_ptr<weather_data_provider>::ptr(new weatherfile(file));
 
-		weatherfile *wfile = dynamic_cast<weatherfile*>(wdprov.get());
-		if (!wfile->ok()) throw exec_error("pvsamv1", wfile->message());
-		if (wfile->has_message()) log(wfile->message(), SSC_WARNING);
-	}
-	else if (is_assigned("solar_resource_data"))
-	{
-		wdprov = smart_ptr<weather_data_provider>::ptr(new weatherdata(lookup("solar_resource_data")));
-		if (wdprov->has_message()) log(wdprov->message(), SSC_WARNING);
-	}
-	else
-		throw exec_error("pvsamv1", "no weather data supplied");
-
-
-	// assumes instantaneous values, unless hourly file with no minute column specified
-	double ts_shift_hours = 0.0;
-	bool instantaneous = true;
-	if (wdprov->has_data_column(weather_data_provider::MINUTE))
-	{
-		// if we have an file with a minute column, then
-		// the starting time offset equals the time 
-		// of the first record (for correct plotting)
-		// this holds true even for hourly data with a minute column
-		weather_record rec;
-		if (wdprov->read(&rec))
-			ts_shift_hours = rec.minute / 60.0;
-
-		wdprov->rewind();
-	}
-	else if (wdprov->nrecords() == 8760)
-	{
-		// hourly file with no minute data column.  assume
-		// integrated/averaged values and use mid point convention for interpreting results
-		instantaneous = false;
-		ts_shift_hours = 0.5;
-	}
-	else
-		throw exec_error("pvsamv1", "subhourly weather files must specify the minute for each record");
-
-	assign("ts_shift_hours", var_data((ssc_number_t)ts_shift_hours));
-
-	weather_header hdr;
-	wdprov->header(&hdr);
-
-	weather_record wf;
-
-	//total number of records in the weather file (i.e. 8760 * timestep)
-	size_t nrec = wdprov->nrecords();
-	size_t step_per_hour = nrec / 8760;
-	if (step_per_hour < 1 || step_per_hour > 60 || step_per_hour * 8760 != nrec)
-		throw exec_error("pvsamv1", util::format("invalid number of data records (%d): must be an integer multiple of 8760", (int)nrec));
-
-	double ts_hour = 1.0 / step_per_hour;
-	// shading database if necessary
-	smart_ptr<ShadeDB8_mpp>::ptr  p_shade_db; // (new ShadeDB8_mpp());
-
-	bool en_snow_model = (as_integer("en_snow_model") > 0); // snow model activation
-	double annual_snow_loss = 0;
-
-	int modules_per_string = as_integer("modules_per_string");
-	int strings_in_parallel = as_integer("strings_in_parallel");
-	int num_inverters = as_integer("inverter_count");
-	//		double ac_derate = (1 - as_double("acwiring_loss") / 100) * (1 - as_double("transformer_loss") / 100);	//calculate using ac wiring and step up transformer losses
-	double ac_derate = 1 - as_double("acwiring_loss") / 100;	//calculate using ac wiring 
-	double ac_loss_percent = (1 - ac_derate) * 100;
-	assign("ac_loss", var_data((ssc_number_t)ac_loss_percent));
-
-	size_t alb_len = 0;
-	ssc_number_t *alb_array = as_array("albedo", &alb_len); // monthly albedo array
-
-	bool use_wf_alb = (as_integer("use_wf_albedo") > 0); // weather file albedo
-
-	int radmode = as_integer("irrad_mode"); // 0=B&D, 1=G&B, 2=G&D, 3=POA-Ref, 4=POA-Pyra
-	int skymodel = as_integer("sky_model"); // 0=isotropic, 1=hdkr, 2=perez
-
-	// load the subarray parameter information
-	subarray sa[4];
-	int num_subarrays = 1;
-
-
-	// check to see if shading database needs to be created; updated 4/19/16
-	bool create_shade_db = false;
-	// loop over subarrays
-	for (size_t nn = 0; nn < 4; nn++)
-	{
-		sa[nn].enable = true;
-		sa[nn].nstrings = strings_in_parallel;
-		std::string prefix = "subarray" + util::to_string((int)(nn + 1)) + "_";
-
-		if (nn > 0)
-		{
-			sa[nn].nstrings = 0;
-			sa[nn].enable = as_boolean(prefix + "enable");
-			if (sa[nn].enable) sa[nn].nstrings = as_integer(prefix + "nstrings");
-
-			sa[0].nstrings -= sa[nn].nstrings;
-
-			if (sa[nn].nstrings > 0 && sa[nn].enable)
-				num_subarrays++;
-		}
-
-		// don't read in all the other variables
-		// if the subarrays are disabled.
-		if (!sa[nn].enable)
-			continue;
-
-		size_t soil_len = 0;
-		ssc_number_t *soiling = as_array(prefix + "soiling", &soil_len); // monthly soiling array
-		if (soil_len != 12) throw exec_error("pvsamv1", "soiling loss array must have 12 values: subarray " + util::to_string((int)(nn + 1)));
-		for (int k = 0; k < 12; k++)
-			sa[nn].soiling[k] = 1 - (double)soiling[k] / 100; //convert from % to derate
-
-		sa[nn].derate =  /* combine all input losses into one derate, not a percentage */
-			(1 - as_double(prefix + "mismatch_loss") / 100) *
-			(1 - as_double(prefix + "diodeconn_loss") / 100) *
-			(1 - as_double(prefix + "dcwiring_loss") / 100) *
-			(1 - as_double(prefix + "tracking_loss") / 100) *
-			(1 - as_double(prefix + "nameplate_loss") / 100) *
-			(1 - as_double("dcoptimizer_loss") / 100);
-		//assign output dc loss since we just calculated it
-		double temploss = (1 - sa[nn].derate) * 100;
-		assign(prefix + "dcloss", var_data((ssc_number_t)temploss));
-
-		sa[nn].track_mode = as_integer(prefix + "track_mode"); // 0=fixed, 1=1axis, 2=2axis, 3=aziaxis, 4=timeseries
-
-		sa[nn].tilt = fabs(hdr.lat);
-		if (sa[nn].track_mode == 4) //timeseries tilt input
-		{
-			size_t monthly_tilt_count = 0;
-			sa[nn].monthly_tilt = as_array(prefix + "monthly_tilt", &monthly_tilt_count);
-		}
-
-		if (!lookup(prefix + "tilt_eq_lat") || !as_boolean(prefix + "tilt_eq_lat"))
-			sa[nn].tilt = fabs(as_double(prefix + "tilt"));
-
-		sa[nn].azimuth = as_double(prefix + "azimuth");
-		sa[nn].rotlim = as_double(prefix + "rotlim");
-
-		sa[nn].gcr = as_double(prefix + "gcr");
-		if (sa[nn].gcr < 0.01)
-			throw exec_error("pvsamv1", "array ground coverage ratio must obey 0.01 < gcr");
-
-		if (!sa[nn].shad.setup(this, prefix))
-			throw exec_error("pvsamv1", prefix + "_shading: " + sa[nn].shad.get_error());
-
-		create_shade_db = (create_shade_db || sa[nn].shad.use_shade_db());
-
-		// backtracking- only required if one-axis tracker
-		if (sa[nn].track_mode == 1)
-		{
-			sa[nn].backtrack = as_boolean(prefix + "backtrack");
-		}
-
-		// Initialize snow model if activated
-		if (en_snow_model)
-		{
-			if (sa[nn].track_mode == 4) //timeseries tilt input
-				throw exec_error("pvsamv1", "Time-series tilt input may not be used with the snow model at this time: subarray " + util::to_string((int)(nn + 1)));
-			if (!sa[nn].sm.setup(as_integer(prefix + "nmody"), (float)sa[nn].tilt)) {
-				if (sa[nn].sm.good)log(sa[nn].sm.msg, SSC_WARNING);
-				else {
-					log(sa[nn].sm.msg, SSC_ERROR);
-					return;
-				}
-			}
-		}
-
-		sa[nn].poa.usePOAFromWF = false;
-	}
-
-	// create single instance of shading database if necessary
-	if (create_shade_db)
-	{
-		p_shade_db = smart_ptr<ShadeDB8_mpp>::ptr(new ShadeDB8_mpp());
-		p_shade_db->init();
-	}
-
-
-	// loop over subarrays AGAIN to calculate shading inputs because nstrings in subarray 1 isn't correct until AFTER the previous loop
-	for (size_t nn = 0; nn < 4; nn++)
-	{
-		std::string prefix = "subarray" + util::to_string((int)(nn + 1)) + "_";
-
-		// shading mode- only required for fixed tilt/timeseries tilt or one-axis, not backtracking systems
-		if ((sa[nn].track_mode == 0 || sa[nn].track_mode == 4) || (sa[nn].track_mode == 1 && sa[nn].backtrack == 0))
-		{
-			sa[nn].shade_mode = as_integer(prefix + "shade_mode");
-			if (!sa[nn].enable) continue; //skip disabled subarrays
-
-
-			// shading inputs only required if shade mode is self-shaded
-			if (sa[nn].shade_mode == 1 || sa[nn].shade_mode == 2)
-			{
-				sa[nn].sscalc.mod_orient = as_integer(prefix + "mod_orient");
-				sa[nn].sscalc.nmody = as_integer(prefix + "nmody");
-				sa[nn].sscalc.nmodx = as_integer(prefix + "nmodx");
-				sa[nn].sscalc.nstrx = sa[nn].sscalc.nmodx / modules_per_string;
-
-				// SELF-SHADING ASSUMPTIONS
-
-				// Calculate the number of rows given the module dimensions of each row.
-				sa[nn].sscalc.nrows = (int)floor((sa[nn].nstrings * modules_per_string) / (sa[nn].sscalc.nmodx * sa[nn].sscalc.nmody));
-				//if nrows comes out to be zero, this will cause a divide by zero error. Give an error in this case.
-				if (sa[nn].sscalc.nrows == 0 && sa[nn].nstrings != 0) //no need to give an error if the subarray has 0 strings
-					throw exec_error("pvsamv1", "Self shading: Number of rows calculated for subarray " + util::to_string(to_double((double)nn + 1)) + " was zero. Please check your inputs.");
-				// Otherwise, if self-shading configuration does not have equal number of modules as specified on system design page for that subarray,
-				// compute dc derate using the self-shading configuration and apply it to the whole subarray. Give warning.
-				if ((sa[nn].sscalc.nmodx * sa[nn].sscalc.nmody * sa[nn].sscalc.nrows) != (sa[nn].nstrings * modules_per_string))
-					log(util::format("The product of number of modules along side and bottom for subarray %d is not equal to the number of modules in the subarray. Check your inputs for self shading.",
-					(nn + 1)), SSC_WARNING);
-				// assume aspect ratio of 1.7 (see variable "aspect_ratio" below to change this assumption)
-				sa[nn].sscalc.str_orient = 1;	//assume horizontal wiring
-				sa[nn].sscalc.mask_angle_calc_method = 0; //assume worst case mask angle calc method
-				sa[nn].sscalc.ndiode = 3;	//assume 3 diodes- maybe update this assumption based on number of cells in the module?
-			}
-		}
-	}
-
-	double aspect_ratio = as_double("module_aspect_ratio");
-
-	if (sa[0].nstrings < 0)
-		throw exec_error("pvsamv1", "invalid string allocation between subarrays.  all subarrays must have zero or positive number of strings.");
-
-	// run some preliminary checks on inputs
-
-	int mod_type = as_integer("module_model");
-
-	spe_module_t spe;
-	sandia_celltemp_t spe_tc;
-
-	cec6par_module_t cec;
-	noct_celltemp_t noct_tc;
-	mcsp_celltemp_t mcsp_tc;
-
-	sandia_module_t snl;
-	sandia_celltemp_t snl_tc;
-
-	iec61853_module_t sd11; // 11 parameter single diode, uses noct_tc from above
-
-	mlmodel_module_t mlm;
-	mock_celltemp_t mock_tc;
-
-	pvcelltemp_t *celltemp_model = 0;
-	pvmodule_t *module_model = 0;
-
-	double ref_area_m2 = 0;
-
-	double self_shading_fill_factor = 0;
-	double ssVmp = 0;
-
-	double module_watts_stc = -1.0;
-
-	//"0=spe,1=cec,2=6par_user,3=snl,4=sd11-iec61853"
-	bool enable_mismatch_vmax_calc = as_boolean("enable_mismatch_vmax_calc");
-	if (enable_mismatch_vmax_calc
-		&& mod_type != 1 && mod_type != 2 && mod_type != 4)
-		throw exec_error("pvsamv1", "String level subarray mismatch can only be calculated using a single-diode based module model.");
-
-
-	bool speForceNoPOA = false;		// SEV 151002 - Set these flags to avoid calling as_integer(...) repeatedly later on
-	bool mcspForceNoPOA = false;    //   These flags are used to ensure that the usePOAFromWF flag for each sub array will be force
-									//   to false
-
-	if (mod_type == 0)
-	{
-		spe.VmpNominal = as_double("spe_vmp");
-		spe.VocNominal = as_double("spe_voc");
-		spe.Area = as_double("spe_area");
-		ref_area_m2 = spe.Area;
-		for (int i = 0; i < 5; i++)
-		{
-			spe.Rad[i] = as_double(util::format("spe_rad%d", i));
-			spe.Eff[i] = 0.01*as_double(util::format("spe_eff%d", i));
-			if (i > 0 && spe.Rad[i] <= spe.Rad[i - 1])
-				throw exec_error("pvsamv1", "SPE model radiation levels must increase monotonically");
-		}
-
-		spe.Gamma = as_double("spe_temp_coeff");
-		spe.Reference = as_integer("spe_reference");
-
-		switch (as_integer("spe_module_structure"))
-		{
-		case 0: //glass/cell/polymer sheet - open rack
-			spe_tc.a = -3.56;
-			spe_tc.b = -0.0750;
-			spe_tc.DT0 = 3;
-			break;
-		case 1: //glass/cell/glass - open rack
-			spe_tc.a = -3.47;
-			spe_tc.b = -0.0594;
-			spe_tc.DT0 = 3;
-			break;
-		case 2: //polymer/thin film/steel - open rack
-			spe_tc.a = -3.58;
-			spe_tc.b = -0.113;
-			spe_tc.DT0 = 3;
-			break;
-		case 3: //Insulated back (building-integrated PV)
-			spe_tc.a = -2.81;
-			spe_tc.b = -0.0455;
-			spe_tc.DT0 = 0;
-			break;
-		case 4: //close roof mount
-			spe_tc.a = -2.98;
-			spe_tc.b = -0.0471;
-			spe_tc.DT0 = 1;
-			break;
-		case 5: //user defined
-			spe_tc.a = as_double("spe_a");
-			spe_tc.b = as_double("spe_b");
-			spe_tc.DT0 = as_double("spe_dT");
-			break;
-		default:
-			throw exec_error("pvsamv1", "invalid spe module structure and mounting");
-		}
-
-		spe.fd = as_double("spe_fd");
-		spe_tc.fd = spe.fd;
-
-		if (spe.fd < 1.0)
-			speForceNoPOA = true;
-
-		celltemp_model = &spe_tc;
-		module_model = &spe;
-		module_watts_stc = spe.WattsStc();
-		ssVmp = spe.VmpNominal;
-	}
-	else if (mod_type == 1)
-	{
-		cec.Area = as_double("cec_area");
-		ref_area_m2 = cec.Area;
-		cec.Vmp = as_double("cec_v_mp_ref");
-		cec.Imp = as_double("cec_i_mp_ref");
-		cec.Voc = as_double("cec_v_oc_ref");
-		cec.Isc = as_double("cec_i_sc_ref");
-		cec.alpha_isc = as_double("cec_alpha_sc");
-		cec.beta_voc = as_double("cec_beta_oc");
-		cec.a = as_double("cec_a_ref");
-		cec.Il = as_double("cec_i_l_ref");
-		cec.Io = as_double("cec_i_o_ref");
-		cec.Rs = as_double("cec_r_s");
-		cec.Rsh = as_double("cec_r_sh_ref");
-		cec.Adj = as_double("cec_adjust");
-
-		self_shading_fill_factor = cec.Vmp * cec.Imp / cec.Voc / cec.Isc;
-		ssVmp = cec.Vmp;
-
-		if (as_integer("cec_temp_corr_mode") == 0)
-		{
-			noct_tc.Tnoct = as_double("cec_t_noct");
-			int standoff = as_integer("cec_standoff");
-			noct_tc.standoff_tnoct_adj = 0;
-			switch (standoff)
-			{
-			case 2: noct_tc.standoff_tnoct_adj = 2; break; // between 2.5 and 3.5 inches
-			case 3: noct_tc.standoff_tnoct_adj = 6; break; // between 1.5 and 2.5 inches
-			case 4: noct_tc.standoff_tnoct_adj = 11; break; // between 0.5 and 1.5 inches
-			case 5: noct_tc.standoff_tnoct_adj = 18; break; // less than 0.5 inches
-				// note: all others, standoff_tnoct_adj = 0;
-			}
-
-			int height = as_integer("cec_height");
-			noct_tc.ffv_wind = 0.51;
-			if (height == 1)
-				noct_tc.ffv_wind = 0.61;
-
-			celltemp_model = &noct_tc;
-		}
-		else
-		{
-			/*	int MC; // Mounting configuration (1=rack,2=flush,3=integrated,4=gap)
-				int HTD; // Heat transfer dimension (1=Module,2=Array)
-				int MSO; // Mounting structure orientation (1=does not impede flow beneath, 2=vertical supports, 3=horizontal supports)
-				int Nrows, Ncols; // number of modules in rows and columns, when using array heat transfer dimensions
-				double Length; // module length, along horizontal dimension, (m)
-				double Width; // module width, along vertical dimension, (m)
-				double Wgap;  // gap width spacing (m)
-				double TbackInteg; */
-
-			mcsp_tc.DcDerate = sa[0].derate;  // TODO dc_derate needs to updated for each subarray
-			mcsp_tc.MC = as_integer("cec_mounting_config") + 1;
-			mcsp_tc.HTD = as_integer("cec_heat_transfer") + 1;
-			mcsp_tc.MSO = as_integer("cec_mounting_orientation") + 1;
-			mcsp_tc.Wgap = as_double("cec_gap_spacing");
-			mcsp_tc.Length = as_double("cec_module_length");
-			mcsp_tc.Width = as_double("cec_module_width");
-			mcsp_tc.Nrows = (int)as_integer("cec_array_rows");
-			mcsp_tc.Ncols = (int)as_integer("cec_array_cols");
-			mcsp_tc.TbackInteg = as_double("cec_backside_temp");
-
-			celltemp_model = &mcsp_tc;
-			mcspForceNoPOA = true;
-		}
-
-		module_model = &cec;
-		module_watts_stc = cec.Vmp * cec.Imp;
-	}
-	else if (mod_type == 3)
-	{
-		snl.A0 = as_double("snl_a0");
-		snl.A1 = as_double("snl_a1");
-		snl.A2 = as_double("snl_a2");
-		snl.A3 = as_double("snl_a3");
-		snl.A4 = as_double("snl_a4");
-		snl.aImp = as_double("snl_aimp");
-		snl.aIsc = as_double("snl_aisc");
-		snl.Area = as_double("snl_area");
-		ref_area_m2 = snl.Area;
-		snl.B0 = as_double("snl_b0");
-		snl.B1 = as_double("snl_b1");
-		snl.B2 = as_double("snl_b2");
-		snl.B3 = as_double("snl_b3");
-		snl.B4 = as_double("snl_b4");
-		snl.B5 = as_double("snl_b5");
-		snl.BVmp0 = as_double("snl_bvmpo");
-		snl.BVoc0 = as_double("snl_bvoco");
-		snl.C0 = as_double("snl_c0");
-		snl.C1 = as_double("snl_c1");
-		snl.C2 = as_double("snl_c2");
-		snl.C3 = as_double("snl_c3");
-		snl.C4 = as_double("snl_c4");
-		snl.C5 = as_double("snl_c5");
-		snl.C6 = as_double("snl_c6");
-		snl.C7 = as_double("snl_c7");
-		snl.fd = as_double("snl_fd");
-		snl.Imp0 = as_double("snl_impo");
-		snl.Isc0 = as_double("snl_isco");
-		snl.Ix0 = as_double("snl_ixo");
-		snl.Ixx0 = as_double("snl_ixxo");
-		snl.mBVmp = as_double("snl_mbvmp");
-		snl.mBVoc = as_double("snl_mbvoc");
-		snl.DiodeFactor = as_double("snl_n");
-		snl.NcellSer = as_integer("snl_series_cells");
-		snl.Vmp0 = as_double("snl_vmpo");
-		snl.Voc0 = as_double("snl_voco");
-
-		self_shading_fill_factor = snl.Vmp0 * snl.Imp0 / snl.Voc0 / snl.Isc0;
-		ssVmp = snl.Vmp0;
-
-		// by default, use database values
-		double A = as_double("snl_a");
-		double B = as_double("snl_b");
-		double DT = as_double("snl_dtc");
-
-		switch (as_integer("snl_module_structure"))
-		{
-		case 1: //glass/cell/polymer sheet - open rack
-			A = -3.56;
-			B = -0.0750;
-			DT = 3;
-			break;
-		case 2: //glass/cell/glass - open rack
-			A = -3.47;
-			B = -0.0594;
-			DT = 3;
-			break;
-		case 3: //polymer/thin film/steel - open rack
-			A = -3.58;
-			B = -0.113;
-			DT = 3;
-			break;
-		case 4: //Insulated back (building-integrated PV)
-			A = -2.81;
-			B = -0.0455;
-			DT = 0;
-			break;
-		case 5: //close roof mount
-			A = -2.98;
-			B = -0.0471;
-			DT = 1;
-			break;
-		case 6: //user defined
-			A = as_double("snl_ref_a");
-			B = as_double("snl_ref_b");
-			DT = as_double("snl_ref_dT");
-			break;
-
-		default:
-			break;
-		}
-
-		snl_tc.a = A;
-		snl_tc.b = B;
-		snl_tc.DT0 = DT;
-		snl_tc.fd = snl.fd;
-
-		celltemp_model = &snl_tc;
-		module_model = &snl;
-		module_watts_stc = snl.Vmp0 * snl.Imp0;
-	}
-	else if (mod_type == 2)
-	{
-		// calculate the 6 parameters
-		// adjust TNOCT and FFV_wind
-
-		int tech_id = module6par::monoSi;
-		int type = as_integer("6par_celltech"); // "monoSi,multiSi,CdTe,CIS,CIGS,Amorphous"
-		switch (type)
-		{
-		case 0: tech_id = module6par::monoSi; break;
-		case 1: tech_id = module6par::multiSi; break;
-		case 2: tech_id = module6par::CdTe; break;
-		case 3: tech_id = module6par::CIS; break;
-		case 4: tech_id = module6par::CIGS; break;
-		case 5: tech_id = module6par::Amorphous; break;
-		}
-
-		double Vmp = as_double("6par_vmp");
-		double Imp = as_double("6par_imp");
-		double Voc = as_double("6par_voc");
-		double Isc = as_double("6par_isc");
-		double alpha = as_double("6par_aisc");
-		double beta = as_double("6par_bvoc");
-		double gamma = as_double("6par_gpmp");
-		int nser = as_integer("6par_nser");
-
-		module6par m(tech_id, Vmp, Imp, Voc, Isc, beta, alpha, gamma, nser, 298.15);
-		int err = m.solve_with_sanity_and_heuristics<double>(300, 1e-7);
-
-		if (err != 0)
-			throw exec_error("pvsamv1", "CEC 6 parameter model:  Could not solve for normalized coefficients.  Please check your inputs.");
-
-		cec.Area = as_double("6par_area");
-		ref_area_m2 = cec.Area;
-		cec.Vmp = Vmp;
-		cec.Imp = Imp;
-		cec.Voc = Voc;
-		cec.Isc = Isc;
-		cec.alpha_isc = alpha;
-		cec.beta_voc = beta;
-		cec.a = m.a;
-		cec.Il = m.Il;
-		cec.Io = m.Io;
-		cec.Rs = m.Rs;
-		cec.Rsh = m.Rsh;
-		cec.Adj = m.Adj;
-
-		self_shading_fill_factor = cec.Vmp * cec.Imp / cec.Voc / cec.Isc;
-		ssVmp = cec.Vmp;
-
-		setup_noct_model("6par", noct_tc);
-
-		celltemp_model = &noct_tc;
-		module_model = &cec;
-		module_watts_stc = cec.Vmp * cec.Imp;
-	}
-	else if (mod_type == 4)
-	{
-		// IEC 61853 model
-		sd11.NcellSer = as_integer("sd11par_nser");
-		sd11.Area = as_double("sd11par_area");
-		sd11.AMA[0] = as_double("sd11par_AMa0");
-		sd11.AMA[1] = as_double("sd11par_AMa1");
-		sd11.AMA[2] = as_double("sd11par_AMa2");
-		sd11.AMA[3] = as_double("sd11par_AMa3");
-		sd11.AMA[4] = as_double("sd11par_AMa4");
-		sd11.GlassAR = as_boolean("sd11par_glass");
-
-		setup_noct_model("sd11par", noct_tc);
-
-		sd11.Vmp0 = as_double("sd11par_Vmp0");
-		sd11.Imp0 = as_double("sd11par_Imp0");
-		sd11.Voc0 = as_double("sd11par_Voc0");
-		sd11.Isc0 = as_double("sd11par_Isc0");
-		sd11.alphaIsc = as_double("sd11par_alphaIsc");
-		sd11.n = as_double("sd11par_n");
-		sd11.Il = as_double("sd11par_Il");
-		sd11.Io = as_double("sd11par_Io");
-		sd11.Egref = as_double("sd11par_Egref");
-		sd11.D1 = as_double("sd11par_d1");
-		sd11.D2 = as_double("sd11par_d2");
-		sd11.D3 = as_double("sd11par_d3");
-		sd11.C1 = as_double("sd11par_c1");
-		sd11.C2 = as_double("sd11par_c2");
-		sd11.C3 = as_double("sd11par_c3");
-
-		celltemp_model = &noct_tc;
-		module_model = &sd11;
-		module_watts_stc = sd11.Vmp0 * sd11.Imp0;
-		ref_area_m2 = sd11.Area;
-		self_shading_fill_factor = sd11.Vmp0 * sd11.Imp0 / sd11.Voc0 / sd11.Isc0;
-		ssVmp = sd11.Vmp0;
-	}
-	else if (mod_type == 5)
-	{
-		// Mermoud/Lejeune single-diode model
-		size_t elementCount1 = 0;
-		size_t elementCount2 = 0;
-		ssc_number_t *arrayIncAngle = 0;
-		ssc_number_t *arrayIamValue = 0;
-
-		mlm.N_series = as_integer("mlm_N_series");
-		mlm.N_parallel = as_integer("mlm_N_parallel");
-		mlm.N_diodes = as_integer("mlm_N_diodes");
-		mlm.Width = as_double("mlm_Width");
-		mlm.Length = as_double("mlm_Length");
-		mlm.V_mp_ref = as_double("mlm_V_mp_ref");
-		mlm.I_mp_ref = as_double("mlm_I_mp_ref");
-		mlm.V_oc_ref = as_double("mlm_V_oc_ref");
-		mlm.I_sc_ref = as_double("mlm_I_sc_ref");
-		mlm.S_ref = as_double("mlm_S_ref");
-		mlm.T_ref = as_double("mlm_T_ref");
-		mlm.R_shref = as_double("mlm_R_shref");
-		mlm.R_sh0 = as_double("mlm_R_sh0");
-		mlm.R_shexp = as_double("mlm_R_shexp");
-		mlm.R_s = as_double("mlm_R_s");
-		mlm.alpha_isc = as_double("mlm_alpha_isc");
-		mlm.beta_voc_spec = as_double("mlm_beta_voc_spec");
-		mlm.E_g = as_double("mlm_E_g");
-		mlm.n_0 = as_double("mlm_n_0");
-		mlm.mu_n = as_double("mlm_mu_n");
-		mlm.D2MuTau = as_double("mlm_D2MuTau");
-		mlm.T_mode = as_integer("mlm_T_mode");
-		mlm.T_c_no_tnoct = as_double("mlm_T_c_no_tnoct");
-		mlm.T_c_no_mounting = as_integer("mlm_T_c_no_mounting");
-		mlm.T_c_no_standoff = as_integer("mlm_T_c_no_standoff");
-		mlm.T_c_fa_alpha = as_double("mlm_T_c_fa_alpha");
-		mlm.T_c_fa_U0 = as_double("mlm_T_c_fa_U0");
-		mlm.T_c_fa_U1 = as_double("mlm_T_c_fa_U1");
-		mlm.AM_mode = as_integer("mlm_AM_mode");
-		mlm.AM_c_sa[0] = as_double("mlm_AM_c_sa0");
-		mlm.AM_c_sa[1] = as_double("mlm_AM_c_sa1");
-		mlm.AM_c_sa[2] = as_double("mlm_AM_c_sa2");
-		mlm.AM_c_sa[3] = as_double("mlm_AM_c_sa3");
-		mlm.AM_c_sa[4] = as_double("mlm_AM_c_sa4");
-		mlm.AM_c_lp[0] = as_double("mlm_AM_c_lp0");
-		mlm.AM_c_lp[1] = as_double("mlm_AM_c_lp0");
-		mlm.AM_c_lp[2] = as_double("mlm_AM_c_lp0");
-		mlm.AM_c_lp[3] = as_double("mlm_AM_c_lp0");
-		mlm.AM_c_lp[4] = as_double("mlm_AM_c_lp0");
-		mlm.AM_c_lp[5] = as_double("mlm_AM_c_lp0");
-		mlm.IAM_mode = as_integer("mlm_IAM_mode");
-		mlm.IAM_c_as = as_double("mlm_IAM_c_as");
-		mlm.IAM_c_sa[0] = as_double("mlm_IAM_c_sa0");
-		mlm.IAM_c_sa[1] = as_double("mlm_IAM_c_sa1");
-		mlm.IAM_c_sa[2] = as_double("mlm_IAM_c_sa2");
-		mlm.IAM_c_sa[3] = as_double("mlm_IAM_c_sa3");
-		mlm.IAM_c_sa[4] = as_double("mlm_IAM_c_sa4");
-		mlm.IAM_c_sa[5] = as_double("mlm_IAM_c_sa5");
-		mlm.groundRelfectionFraction = as_double("mlm_groundRelfectionFraction");
-
-		arrayIncAngle = as_array("mlm_IAM_c_cs_incAngle", &elementCount1);
-		arrayIamValue = as_array("mlm_IAM_c_cs_iamValue", &elementCount2);
-		mlm.IAM_c_cs_elements = elementCount1; // as_integer("mlm_IAM_c_cs_elements");
-
-		if (mlm.IAM_mode == 3)
-		{
-			if (elementCount1 != elementCount2)
-			{
-				exec_error("pvsamv1", "Spline IAM: Number of entries for incidence angle and IAM value different.");
-			}
-			for (int i = 0; i <= mlm.IAM_c_cs_elements - 1; i = i + 1) {
-				mlm.IAM_c_cs_incAngle[i] = arrayIncAngle[i];
-				mlm.IAM_c_cs_iamValue[i] = arrayIamValue[i];
-			}
-		}
-		if (mlm.T_mode == 1) {
-			setup_noct_model("mlm_T_c_no", noct_tc);
-			celltemp_model = &noct_tc;
-		}
-		else if (mlm.T_mode == 2) {
-			celltemp_model = &mock_tc;
-		}
-		else {
-			throw exec_error("pvsamv1", "invalid temperature model type");
-		}
-
-		mlm.initializeManual();
-
-		module_model = &mlm;
-		module_watts_stc = mlm.V_oc_ref * mlm.I_mp_ref;
-		ref_area_m2 = mlm.Width * mlm.Length;
-		self_shading_fill_factor = mlm.V_mp_ref * mlm.I_mp_ref / mlm.V_oc_ref / mlm.I_sc_ref;
-		ssVmp = mlm.V_mp_ref;
-	}
-	else
-		throw exec_error("pvsamv1", "invalid pv module model type");
-
-	//boolean to determine if the sandia model is being used for CPV
-	bool is_cpv = false;
-
-	if (as_integer("module_model") == 3 // sandia model 
-		&& as_double("snl_fd") == 0)
-		is_cpv = true;
-
-=======
 void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 {
 
@@ -1710,7 +949,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	std::vector<Subarray_IO *> Subarrays = IOManager->getSubarrays();
 	PVSystem_IO * PVSystem = IOManager->getPVSystemIO();
 	ShadeDB8_mpp * shadeDatabase = IOManager->getShadeDatabase();
-	
+
 	size_t nrec = Simulation->numberOfWeatherFileRecords;
 	size_t nlifetime = Simulation->numberOfSteps;
 	size_t nyears = Simulation->numberOfYears;
@@ -1732,8 +971,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	SharedInverter * sharedInverter = PVSystem->m_sharedInverter.get();
 
 	double annual_snow_loss = 0;
-	
->>>>>>> pr/11
+
 	// SELF-SHADING MODULE INFORMATION
 	double width = sqrt((ref_area_m2 / aspect_ratio));
 	for (size_t nn = 0; nn < num_subarrays; nn++)
@@ -1749,187 +987,13 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 			b = Subarrays[nn]->selfShadingInputs.nmody * Subarrays[nn]->selfShadingInputs.width;
 		Subarrays[nn]->selfShadingInputs.row_space = b / Subarrays[nn]->groundCoverageRatio;
 	}
-<<<<<<< HEAD
-
-	double nameplate_kw = modules_per_string * strings_in_parallel * module_watts_stc * util::watt_to_kilowatt;
-
-	::sandia_inverter_t snlinv;
-	::ond_inverter ondinv;
-	::partload_inverter_t plinv;
-
-	int inv_type = as_integer("inverter_model");
-	double V_mppt_lo_1module;
-	double V_mppt_hi_1module;
-	if (inv_type == 4) {
-		V_mppt_lo_1module = as_double("ond_VMppMin") / modules_per_string;
-		V_mppt_hi_1module = as_double("ond_VMppMax") / modules_per_string;
-	}
-	else {
-		V_mppt_lo_1module = as_double("mppt_low_inverter") / modules_per_string;
-		V_mppt_hi_1module = as_double("mppt_hi_inverter") / modules_per_string;
-	}
-
-	bool clip_mppt_window = false;
-	double ratedACOutput = 0;
-=======
->>>>>>> pr/11
 
 	double nameplate_kw = 0;
 	for (size_t nn = 0; nn < num_subarrays; nn++)
 	{
-<<<<<<< HEAD
-		if ( mod_type == 1     // cec with database
-			|| mod_type == 2   // cec with user specs
-			|| mod_type == 5   // ml single diode model
-			|| mod_type == 4 ) // iec61853 single diode
-		{
-			clip_mppt_window = true;
-		}
-		else
-		{
-			log( "The simple efficiency and Sandia module models do not allow limiting module voltage to the MPPT tracking range of the inverter.", SSC_NOTICE );
-		}
-	}
-	else
-	{
-		log( "Inverter MPPT voltage tracking window not defined - modules always operate at MPPT.", SSC_NOTICE );
-	}
-
-	if (inv_type == 0) // cec database
-	{
-		snlinv.Paco = as_double("inv_snl_paco");
-		snlinv.Pdco = as_double("inv_snl_pdco");
-		snlinv.Vdco = as_double("inv_snl_vdco");
-		snlinv.Pso = as_double("inv_snl_pso");
-		snlinv.Pntare = as_double("inv_snl_pnt");
-		snlinv.C0 = as_double("inv_snl_c0");
-		snlinv.C1 = as_double("inv_snl_c1");
-		snlinv.C2 = as_double("inv_snl_c2");
-		snlinv.C3 = as_double("inv_snl_c3");
-		ratedACOutput = snlinv.Paco;
-	}
-	else if (inv_type == 1) // datasheet data
-	{
-		double eff_ds = as_double("inv_ds_eff") / 100.0;
-		snlinv.Paco = as_double("inv_ds_paco");
-		if (eff_ds != 0)
-			snlinv.Pdco = snlinv.Paco / eff_ds;
-		else
-			snlinv.Pdco = 0;
-		snlinv.Vdco = as_double("inv_ds_vdco");
-		snlinv.Pso = as_double("inv_ds_pso");
-		snlinv.Pntare = as_double("inv_ds_pnt");
-		snlinv.C0 = 0;
-		snlinv.C1 = 0;
-		snlinv.C2 = 0;
-		snlinv.C3 = 0;
-		ratedACOutput = snlinv.Paco;
-	}
-	else if (inv_type == 2) // partload curve
-	{
-		plinv.Paco = as_double("inv_pd_paco");
-		plinv.Pdco = as_double("inv_pd_pdco");
-		plinv.Pntare = as_double("inv_pd_pnt");
-
-		std::vector<double> pl_pd = as_doublevec("inv_pd_partload");
-		std::vector<double> eff_pd = as_doublevec("inv_pd_efficiency");
-
-		plinv.Partload = pl_pd;
-		plinv.Efficiency = eff_pd;
-		ratedACOutput = plinv.Paco;
-	}
-	else if (inv_type == 3) // coefficient generator
-	{
-		snlinv.Paco = as_double("inv_cec_cg_paco");
-		snlinv.Pdco = as_double("inv_cec_cg_pdco");
-		snlinv.Vdco = as_double("inv_cec_cg_vdco");
-		snlinv.Pso = as_double("inv_cec_cg_psco");
-		snlinv.Pntare = as_double("inv_cec_cg_pnt");
-		snlinv.C0 = as_double("inv_cec_cg_c0");
-		snlinv.C1 = as_double("inv_cec_cg_c1");
-		snlinv.C2 = as_double("inv_cec_cg_c2");
-		snlinv.C3 = as_double("inv_cec_cg_c3");
-		ratedACOutput = snlinv.Paco;
-	}
-	else if (inv_type == 4) // ond inverter
-	{
-		size_t elementCount = 0;
-		size_t rows = 0;
-		size_t cols = 0;
-		ssc_number_t *VNomEffArray;
-		ssc_number_t *effCurve_PdcArray;
-		ssc_number_t *effCurve_PacArray;
-		ssc_number_t *effCurve_etaArray;
-		
-		ondinv.PNomConv = as_double("ond_PNomConv");
-		ondinv.PMaxOUT = as_double("ond_PMaxOUT");
-		ondinv.VOutConv = as_double("ond_VOutConv");
-		ondinv.VMppMin = as_double("ond_VMppMin");
-		ondinv.VMPPMax = as_double("ond_VMPPMax");
-		ondinv.VAbsMax = as_double("ond_VAbsMax");
-		ondinv.PSeuil = as_double("ond_PSeuil");
-		ondinv.ModeOper = as_string("ond_ModeOper");
-		ondinv.CompPMax = as_string("ond_CompPMax");
-		ondinv.CompVMax = as_string("ond_CompVMax");
-		ondinv.ModeAffEnum = as_string("ond_ModeAffEnum");
-		ondinv.PNomDC = as_double("ond_PNomDC");
-		ondinv.PMaxDC = as_double("ond_PMaxDC");
-		ondinv.IMaxDC = as_double("ond_IMaxDC");
-		ondinv.INomDC = as_double("ond_INomDC");
-		ondinv.INomAC = as_double("ond_INomAC");
-		ondinv.IMaxAC = as_double("ond_IMaxAC");
-		ondinv.TPNom = as_double("ond_TPNom");
-		ondinv.TPMax = as_double("ond_TPMax");
-		ondinv.TPLim1 = as_double("ond_TPLim1");
-		ondinv.TPLimAbs = as_double("ond_TPLimAbs");
-		ondinv.PLim1 = as_double("ond_PLim1");
-		ondinv.PLimAbs = as_double("ond_PLimAbs");
-		VNomEffArray = as_array("ond_VNomEff", &elementCount);
-		ondinv.NbInputs = as_integer("ond_NbInputs");
-		ondinv.NbMPPT = as_integer("ond_NbMPPT");
-		ondinv.Aux_Loss = as_double("ond_Aux_Loss");
-		ondinv.Night_Loss = as_double("ond_Night_Loss");
-		ondinv.lossRDc = as_double("ond_lossRDc");
-		ondinv.lossRAc = as_double("ond_lossRAc");
-		ondinv.effCurve_elements = as_integer("ond_effCurve_elements");
-		effCurve_PdcArray = as_matrix("ond_effCurve_Pdc", &rows, &cols);
-		effCurve_PacArray = as_matrix("ond_effCurve_Pac", &rows, &cols);
-		effCurve_etaArray = as_matrix("ond_effCurve_eta", &rows, &cols);
-		ondinv.doAllowOverpower = as_integer("ond_doAllowOverpower");
-		ondinv.doUseTemperatureLimit = as_integer("ond_doUseTemperatureLimit");
-
-		int matrixIndex;
-		const int MAX_ELEMENTS = 100;
-		for (int i = 0; i <= 2; i = i + 1) {
-			ondinv.VNomEff[i] = VNomEffArray[i];
-			for (int j = 0; j <= MAX_ELEMENTS - 1; j = j + 1) {
-				matrixIndex = i * MAX_ELEMENTS + j;
-				ondinv.effCurve_Pdc[i][j] = effCurve_PdcArray[matrixIndex];
-				ondinv.effCurve_Pac[i][j] = effCurve_PacArray[matrixIndex];
-				ondinv.effCurve_eta[i][j] = effCurve_etaArray[matrixIndex];
-			}
-		}
-
-		ondinv.initializeManual();
-		ratedACOutput = ondinv.PNomConv;
-	}
-	else
-	{
-		throw exec_error("pvsamv1", "invalid inverter model type");
-	}
-	ratedACOutput *= num_inverters;
-
-	// lifetime control variables - used to set array sizes
-	int system_use_lifetime_output = as_integer("system_use_lifetime_output");
-	size_t nyears = 1;
-	if (system_use_lifetime_output == 1)
-		nyears = as_integer("analysis_period");
-
-=======
 		nameplate_kw += Subarrays[nn]->nModulesPerString * Subarrays[nn]->nStrings * module_watts_stc * util::watt_to_kilowatt;
 	}
 
->>>>>>> pr/11
 	// Warning workaround
 	static bool is32BitLifetime = (__ARCHBITS__ == 32 && system_use_lifetime_output);
 	if (is32BitLifetime)
@@ -2000,26 +1064,14 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	size_t hour = 0;
 
 	// variables used to calculate loss diagram
-<<<<<<< HEAD
-	double annual_energy = 0, annual_ac_gross = 0, annual_ac_pre_avail = 0, dc_gross[4] = { 0, 0, 0, 0 }, annual_mppt_window_clipping = 0, annual_dc_adjust_loss = 0, annual_dc_lifetime_loss = 0, annual_ac_lifetime_loss = 0, annual_ac_battery_loss = 0, annual_xfmr_nll = 0, annual_xfmr_ll = 0, annual_xfmr_loss = 0;
-	double annual_dc_loss = 0; // Added to account for DC losses (TR)
-
-	// Check if a POA model is used, if so load all POA data into the poaData struct
-	if (radmode == POA_R || radmode == POA_P ){
-		for (int nn = 0; nn < 4; nn++){
-			if (!sa[nn].enable) continue;
-				
-			sa[nn].poa.poaAll.elev = hdr.elev;
-=======
 	double annual_energy = 0, annual_ac_gross = 0, annual_ac_pre_avail = 0, dc_gross[4] = { 0, 0, 0, 0 }, annualMpptVoltageClipping = 0, annual_dc_adjust_loss = 0, annual_dc_lifetime_loss = 0, annual_ac_lifetime_loss = 0, annual_ac_battery_loss = 0, annual_xfmr_nll = 0, annual_xfmr_ll = 0, annual_xfmr_loss = 0;
->>>>>>> pr/11
 
 	/* *********************************************************************************************
 	PV DC calculation
 	*********************************************************************************************** */
 	std::vector<double> dcPowerNetPerMppt_kW; //Vector of Net DC power in kW for each MPPT input on the system for THIS TIMESTEP ONLY
 	std::vector<double> dcPowerNetPerSubarray; //Net DC power in W for each subarray for THIS TIMESTEP ONLY
-	std::vector<double> dcVoltagePerMppt; //Voltage in V at each MPPT input on the system for THIS TIMESTEP ONLY	
+	std::vector<double> dcVoltagePerMppt; //Voltage in V at each MPPT input on the system for THIS TIMESTEP ONLY
 	std::vector<std::vector<double>> dcStringVoltage; // Voltage of string for each subarray
 	double dcPowerNetTotalSystem = 0; //Net DC power in W for the entire system (sum of all subarrays)
 
@@ -2027,7 +1079,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	{
 		dcPowerNetPerMppt_kW.push_back(0);
 		dcVoltagePerMppt.push_back(0);
-		PVSystem->p_dcPowerNetPerMppt[mpptInput][idx] = 0;		
+		PVSystem->p_dcPowerNetPerMppt[mpptInput][idx] = 0;
 	}
 	for (size_t nn = 0; nn < PVSystem->numberOfSubarrays; nn++) {
 		dcPowerNetPerSubarray.push_back(0);
@@ -2038,7 +1090,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	{
 		for (hour = 0; hour < 8760; hour++)
 		{
-			// report progress updates to the caller	
+			// report progress updates to the caller
 			ireport++;
 			if (ireport - ireplast > irepfreq)
 			{
@@ -2057,7 +1109,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 			for (size_t jj = 0; jj < step_per_hour; jj++)
 			{
 				// Reset dcPower calculation for new timestep
-				dcPowerNetTotalSystem = 0; 
+				dcPowerNetTotalSystem = 0;
 
 				// electric load is subhourly
 				// if no load profile supplied, load = 0
@@ -2086,13 +1138,14 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 							Subarrays[nn]->poa.poaAll->dayStart = idx;
 							Subarrays[nn]->poa.poaAll->doy += 1;
 						}
+
 					}
 				}
-				
+
 				double solazi = 0, solzen = 0, solalt = 0;
 				int sunup = 0;
 
-				// accumulators for radiation power (W) over this 
+				// accumulators for radiation power (W) over this
 				// timestep from each subarray
 				double ts_accum_poa_front_nom = 0.0;
 				double ts_accum_poa_front_beam_nom = 0.0;
@@ -2126,7 +1179,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 						Irradiance->dtHour, Subarrays[nn]->tiltDegrees, Subarrays[nn]->azimuthDegrees, Subarrays[nn]->trackerRotationLimitDegrees, Subarrays[nn]->groundCoverageRatio,
 						Subarrays[nn]->monthlyTiltDegrees, Irradiance->userSpecifiedMonthlyAlbedo,
 						Subarrays[nn]->poa.poaAll.get());
-											
+
 					int code = irr.calc();
 
 					if (code < 0) //jmf updated 11/30/18 so that negative numbers are errors, positive numbers are warnings, 0 is everything correct. implemented in patch for POA model only, will be added to develop for other irrad models as well
@@ -2143,7 +1196,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					else if (code == 42)
 						log(util::format("SAM calculated negative global horizontal irradiance in the POA decomposition algorithm at time [y:%d m:%d d:%d h:%d], set to zero.",
 							wf.year, wf.month, wf.day, wf.hour), SSC_WARNING, (float)idx);
-									   					 
+
 					// p_irrad_calc is only weather file records long...
 					if (iyear == 0)
 					{
@@ -2159,7 +1212,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					double ibeam, iskydiff, ignddiff;
 					double aoi, stilt, sazi, rot, btd;
 
-					// Ensure that the usePOAFromWF flag is false unless a reference cell has been used. 
+					// Ensure that the usePOAFromWF flag is false unless a reference cell has been used.
 					//  This will later get forced to false if any shading has been applied (in any scenario)
 					//  also this will also be forced to false if using the cec mcsp thermal model OR if using the spe module model with a diffuse util. factor < 1.0
 					Subarrays[nn]->poa.usePOAFromWF = false;
@@ -2284,7 +1337,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 						double shadedb_str_vmp_stc = Subarrays[nn]->nModulesPerString * Subarrays[nn]->Module->voltageMaxPower;
 						double shadedb_mppt_lo = PVSystem->Inverter->mpptLowVoltage;
 						double shadedb_mppt_hi = PVSystem->Inverter->mpptHiVoltage;
-						 
+
 						// shading database if necessary
 						if (!Subarrays[nn]->shadeCalculator.fbeam_shade_db(shadeDatabase, hour, solalt, solazi, jj, step_per_hour, shadedb_gpoa, shadedb_dpoa, tcell, Subarrays[nn]->nModulesPerString, shadedb_str_vmp_stc, shadedb_mppt_lo, shadedb_mppt_hi))
 						{
@@ -2304,7 +1357,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 #endif
 							// fraction shaded for comparison
 							PVSystem->p_shadeDBShadeFraction[nn][idx] = (ssc_number_t)(Subarrays[nn]->shadeCalculator.dc_shade_factor());
-						} 
+						}
 					}
 					else
 					{
@@ -2314,7 +1367,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 						}
 					}
 
-					// apply hourly shading factors to beam (if none enabled, factors are 1.0) 
+					// apply hourly shading factors to beam (if none enabled, factors are 1.0)
 					// shj 3/21/16 - update to handle negative shading loss
 					if (Subarrays[nn]->shadeCalculator.beam_shade_factor() != 1.0){
 						//							if (sa[nn].shad.beam_shade_factor() < 1.0){
@@ -2447,24 +1500,10 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					// Calculate total front irradiation after soiling added to shading
 					ipoa_front[nn] = ibeam + iskydiff + ignddiff;
 					ts_accum_poa_front_shaded_soiled += ipoa_front[nn] * ref_area_m2 * Subarrays[nn]->nModulesPerString * Subarrays[nn]->nStrings;
-					
+
 					// Calculate rear-side irradiance for bifacial modules
 					if (Subarrays[0]->Module->isBifacial)
 					{
-<<<<<<< HEAD
-						// save sub-array level outputs			
-						p_poashaded[nn][idx] = (ssc_number_t)poashad;
-						p_poaeffbeam[nn][idx] = (ssc_number_t)ibeam;
-						p_poaeffdiff[nn][idx] = (ssc_number_t)(iskydiff + ignddiff);
-						p_poaeff[nn][idx] = (radmode == POA_R) ? (ssc_number_t)ipoa : (ssc_number_t)(ibeam + iskydiff + ignddiff);
-						p_shad[nn][idx] = (ssc_number_t)beam_shading_factor;
-						p_rot[nn][idx] = (ssc_number_t)rot;
-						p_idealrot[nn][idx] = (ssc_number_t)(rot - btd);
-						p_aoi[nn][idx] = (ssc_number_t)aoi;
-						p_surftilt[nn][idx] = (ssc_number_t)stilt;
-						p_surfazi[nn][idx] = (ssc_number_t)sazi;
-						p_soiling[nn][idx] = (ssc_number_t)soiling_factor;
-=======
 						double slopeLength = Subarrays[nn]->selfShadingInputs.length * Subarrays[nn]->selfShadingInputs.nmody;
 						if (Subarrays[nn]->selfShadingInputs.mod_orient == 1) {
 							slopeLength = Subarrays[nn]->selfShadingInputs.width * Subarrays[nn]->selfShadingInputs.nmody;
@@ -2477,9 +1516,9 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					ts_accum_poa_rear += ipoa_rear[nn] * ref_area_m2 * Subarrays[nn]->nModulesPerString * Subarrays[nn]->nStrings;
 					ts_accum_poa_rear_after_losses = ts_accum_poa_rear * (1 - Subarrays[nn]->rearIrradianceLossPercent);
 
-					if (iyear == 0) 
+					if (iyear == 0)
 					{
-						// save sub-array level outputs			
+						// save sub-array level outputs
 						PVSystem->p_poaShadedFront[nn][idx] = (ssc_number_t)poashad;
 						PVSystem->p_poaShadedSoiledFront[nn][idx] = (ssc_number_t)ipoa_front[nn];
 						PVSystem->p_poaBeamFront[nn][idx] = (ssc_number_t)ibeam;
@@ -2492,7 +1531,6 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 						PVSystem->p_surfaceTilt[nn][idx] = (ssc_number_t)stilt;
 						PVSystem->p_surfaceAzimuth[nn][idx] = (ssc_number_t)sazi;
 						PVSystem->p_derateSoiling[nn][idx] = (ssc_number_t)soiling_factor;
->>>>>>> pr/11
 					}
 
 					// accumulate incident total radiation (W) in this timestep (all subarrays)
@@ -2529,7 +1567,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 					//mismatch calculations assume that the inverter MPPT operates all strings on that MPPT input at the same voltage.
 					//this algorithm sweeps across a range of string voltages, calculating total power for all strings on this MPPT input at each voltage.
-					//it finds the maximum total power of all string voltages swept, then uses that in subsequent power calculations for each subarray. 
+					//it finds the maximum total power of all string voltages swept, then uses that in subsequent power calculations for each subarray.
 					if (PVSystem->enableMismatchVoltageCalc)
 					{
 						double vmax = PVSystem->Inverter->mpptHiVoltage; //the upper MPPT range of the inverter is the high end for string voltages that it will control
@@ -2539,7 +1577,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 						// sweep voltage, calculating current for each subarray, add all subarray currents together at each voltage
 						for (int i = 0; i < NP; i++)
 						{
-							double stringV = vmin + (vmax - vmin)*i / ((double)NP); //voltage of a string at this point in the voltage sweep							
+							double stringV = vmin + (vmax - vmin)*i / ((double)NP); //voltage of a string at this point in the voltage sweep
 
 							//if the voltage is ok, continue to calculate total power on this MPPT input at this voltage
 							double P = 0; //temporary variable to store the total power on this MPPT input at this voltage
@@ -2596,12 +1634,12 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 							radmode, Subarrays[nn]->poa.usePOAFromWF);
 						pvoutput_t out_temp(0, 0, 0, 0, 0, 0, 0, 0);
 						in[nn] = in_temp;
-						out[nn] = out_temp;					
-						
+						out[nn] = out_temp;
+
 						if (Subarrays[nn]->poa.sunUp)
 						{
-							//module voltage value to be passed into module power function. 
-							//if -1 is passed in, power will be calculated at max power point. 
+							//module voltage value to be passed into module power function.
+							//if -1 is passed in, power will be calculated at max power point.
 							//if a voltage value is passed in, power will be calculated at the specified voltage for all single-diode module models
 							double module_voltage = -1;
 							if (stringVoltage != -1) module_voltage = stringVoltage / (double)Subarrays[nn]->nModulesPerString;
@@ -2613,7 +1651,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					}
 
 					//assign input voltage at this MPPT input
-					//if mismatch was enabled, the voltage already was clipped to the inverter MPPT range as needed and  
+					//if mismatch was enabled, the voltage already was clipped to the inverter MPPT range as needed and
 					//the string voltage is the same for all subarrays, so the voltage at the MPPT input is the same as the string voltage of any subarray
 					if (PVSystem->enableMismatchVoltageCalc) {
 						PVSystem->p_mpptVoltage[mpptInput][idx] = (ssc_number_t)out[SubarraysOnMpptInput[0]].Voltage * Subarrays[SubarraysOnMpptInput[0]]->nModulesPerString;
@@ -2648,7 +1686,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 								avgVoltage = PVSystem->Inverter->mpptHiVoltage;
 								recalculatePower = true;
 							}
-							
+
 							//if MPPT clipping occurs, we need to recalculate the module power for each subarray
 							if (recalculatePower)
 							{
@@ -2669,7 +1707,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 						}
 					}
 
-					//now that we have the correct power for all subarrays, subject to inverter MPPT clipping, save outputs 
+					//now that we have the correct power for all subarrays, subject to inverter MPPT clipping, save outputs
 					for (int nSubarray = 0; nSubarray < nSubarraysOnMpptInput; nSubarray++) //sweep across all subarrays connected to this MPPT input
 					{
 						int nn = SubarraysOnMpptInput[nSubarray]; //get the index of the subarray we're checking here
@@ -2697,7 +1735,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 						Subarrays[nn]->Module->currentShortCircuit = out[nn].Isc_oper;
 						Subarrays[nn]->Module->voltageOpenCircuit = out[nn].Voc_oper;
 						Subarrays[nn]->Module->angleOfIncidenceModifier = out[nn].AOIModifier;
-						
+
 						// Lifetime dcStringVoltage
 						dcStringVoltage[nn].push_back(Subarrays[nn]->Module->dcVoltage * Subarrays[nn]->nModulesPerString);
 
@@ -2770,13 +1808,13 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 						annualMpptVoltageClipping += mpptVoltageClipping[nn]*util::watt_to_kilowatt*ts_hour; //power W to energy kWh
 						// save to SSC output arrays
 						PVSystem->p_temperatureCell[nn][idx] = (ssc_number_t)Subarrays[nn]->Module->temperatureCellCelcius;
-						PVSystem->p_moduleEfficiency[nn][idx] = (ssc_number_t)Subarrays[nn]->Module->dcEfficiency;					
+						PVSystem->p_moduleEfficiency[nn][idx] = (ssc_number_t)Subarrays[nn]->Module->dcEfficiency;
 						PVSystem->p_voltageOpenCircuit[nn][idx] = (ssc_number_t)(Subarrays[nn]->Module->voltageOpenCircuit * (double)Subarrays[nn]->nModulesPerString);
 						PVSystem->p_currentShortCircuit[nn][idx] = (ssc_number_t)Subarrays[nn]->Module->currentShortCircuit;
 						PVSystem->p_angleOfIncidenceModifier[nn][idx] = (ssc_number_t)(Subarrays[nn]->Module->angleOfIncidenceModifier);
 
 					}
-					
+
 					//calculate net power for each subarray
 
 					// apply pre-inverter power derate
@@ -2804,8 +1842,8 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 					//add this subarray's net DC power to the appropriate MPPT input and to the total system DC power
 					PVSystem->p_dcPowerNetPerMppt[Subarrays[nn]->mpptInput - 1][idx] += (ssc_number_t)(dcPowerNetPerSubarray[nn]); //need to subtract 1 from mppt input number because those are 1-indexed
-					dcPowerNetTotalSystem += dcPowerNetPerSubarray[nn];	
-				}								
+					dcPowerNetTotalSystem += dcPowerNetPerSubarray[nn];
+				}
 
 				// save other array-level environmental and irradiance outputs	- year 1 only outputs
 				if (iyear == 0)
@@ -2824,13 +1862,13 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					Irradiance->p_sunUpOverHorizon[idx] = (ssc_number_t)sunup;
 
 					// Sum of radiation power on each subarray for the current timestep [kW]
-					PVSystem->p_poaFrontNominalTotal[idx] = (ssc_number_t)(ts_accum_poa_front_nom * util::watt_to_kilowatt); 
-					PVSystem->p_poaFrontBeamNominalTotal[idx] = (ssc_number_t)(ts_accum_poa_front_beam_nom * util::watt_to_kilowatt); 
-					PVSystem->p_poaFrontShadedTotal[idx] = (ssc_number_t)(ts_accum_poa_front_shaded * util::watt_to_kilowatt); 
+					PVSystem->p_poaFrontNominalTotal[idx] = (ssc_number_t)(ts_accum_poa_front_nom * util::watt_to_kilowatt);
+					PVSystem->p_poaFrontBeamNominalTotal[idx] = (ssc_number_t)(ts_accum_poa_front_beam_nom * util::watt_to_kilowatt);
+					PVSystem->p_poaFrontShadedTotal[idx] = (ssc_number_t)(ts_accum_poa_front_shaded * util::watt_to_kilowatt);
 					PVSystem->p_poaFrontShadedSoiledTotal[idx] = (ssc_number_t)(ts_accum_poa_front_shaded_soiled * util::watt_to_kilowatt);
 					PVSystem->p_poaFrontTotal[idx] = (ssc_number_t)(ts_accum_poa_front_total * util::watt_to_kilowatt);
 					PVSystem->p_poaRearTotal[idx] = (ssc_number_t)(ts_accum_poa_rear_after_losses * util::watt_to_kilowatt);
-					PVSystem->p_poaTotalAllSubarrays[idx] = (ssc_number_t)(ts_accum_poa_total_eff * util::watt_to_kilowatt); 
+					PVSystem->p_poaTotalAllSubarrays[idx] = (ssc_number_t)(ts_accum_poa_total_eff * util::watt_to_kilowatt);
 					PVSystem->p_poaFrontBeamTotal[idx] = (ssc_number_t)(ts_accum_poa_front_beam_eff * util::watt_to_kilowatt);
 					PVSystem->p_inverterMPPTLoss[idx] = 0;
 					for (size_t nn = 0; nn < num_subarrays; nn++) {
@@ -2881,24 +1919,17 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	PV AC calculation
 	*********************************************************************************************** */
 	idx = 0; ireport = 0; ireplast = 0; percent_baseline = percent_complete;
-<<<<<<< HEAD
-	double annual_dc_power_before_battery = 0, annual_dc_power_after_battery = 0;
-
-	double annual_dc_loss_ond = 0, annual_ac_loss_ond = 0; // (TR)
-
-=======
 	double annual_battery_loss = 0;
 	wdprov->rewind();
 
 	double annual_dc_loss_ond = 0, annual_ac_loss_ond = 0; // (TR)
 
 
->>>>>>> pr/11
 	for (size_t iyear = 0; iyear < nyears; iyear++)
 	{
 		for (hour = 0; hour < 8760; hour++)
 		{
-			// report progress updates to the caller	
+			// report progress updates to the caller
 			ireport++;
 			if (ireport - ireplast > irepfreq)
 			{
@@ -2919,24 +1950,6 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					batt.check_replacement_schedule();
 				}
 
-<<<<<<< HEAD
-				// Iterative loop over DC battery
-				size_t dc_count = 0; bool iterate_dc = false;
-				double dcpwr_net = 0, acpwr_gross = 0, aceff = 0, pntloss = 0, psoloss = 0, cliploss = 0, ac_wiringloss = 0;
-				double dc_wiringloss = 0; // Added by TR for OND model
-
-				do {
-					cur_load = p_load_full[idx];
-					dcpwr_net = util::kilowatt_to_watt * p_dcpwr[idx];
-					double dc_string_voltage = p_inv_dc_voltage[idx];
-
-					// DC Connected Battery
-					bool battery_charging = false;
-					if (en_batt && (ac_or_dc == charge_controller::DC_CONNECTED))
-					{
-						if (iyear == 0 && dc_count == 0)
-							annual_dc_power_before_battery += p_dcpwr[idx] * ts_hour;
-=======
 				double acpwr_gross = 0, ac_wiringloss = 0, transmissionloss = 0;
 				cur_load = p_load_full[idx];
 				wdprov->read(&Irradiance->weatherRecord);
@@ -2948,7 +1961,6 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					dcVoltagePerMppt[m] = PVSystem->p_mpptVoltage[m][idx];
 					dcPowerNetPerMppt_kW[m] = PVSystem->p_dcPowerNetPerMppt[m][idx] * util::watt_to_kilowatt;
 				}
->>>>>>> pr/11
 
 				//run AC power calculation
 				if (en_batt && (batt_topology == ChargeController::DC_CONNECTED)) // DC-connected battery
@@ -2968,95 +1980,17 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				else
 				{
 					// inverter: runs at all hours of the day, even if no DC power.  important
-<<<<<<< HEAD
-					// for capturing tare losses			
-					acpwr_gross = 0, aceff = 0, pntloss = 0, psoloss = 0, cliploss = 0, ac_wiringloss = 0;
-					if ((inv_type == 0) || (inv_type == 1) || (inv_type == 3))
-					{
-						double _par, _plr;
-						snlinv.acpower(dcpwr_net / num_inverters, dc_string_voltage,
-							&acpwr_gross, &_par, &_plr, &aceff, &cliploss, &psoloss, &pntloss);
-
-						acpwr_gross *= num_inverters;
-						cliploss *= num_inverters;
-						psoloss *= num_inverters;
-						pntloss *= num_inverters;
-						aceff *= 100;
-					}
-					else if (inv_type == 2) // partload
-					{
-						double _par, _plr;
-						plinv.acpower(dcpwr_net / num_inverters, &acpwr_gross, &_par, &_plr, &aceff, &cliploss, &pntloss);
-						acpwr_gross *= num_inverters;
-						cliploss *= num_inverters;
-						psoloss *= num_inverters;
-						pntloss *= num_inverters;
-						aceff *= 100;
-					}
-					else if (inv_type == 4) // ond
-					{
-						double _par, _plr;
-						ondinv.acpower(dcpwr_net / num_inverters, dc_string_voltage, p_tdry[idx],
-							&acpwr_gross, &_par, &_plr, &aceff, &cliploss, &psoloss, &pntloss, &dc_wiringloss, &ac_wiringloss);
-						acpwr_gross *= num_inverters;
-						cliploss *= num_inverters;
-						psoloss *= num_inverters;
-						pntloss *= num_inverters;
-						dc_wiringloss *= num_inverters;
-						ac_wiringloss *= num_inverters;
-						aceff *= 100;
-					}
-
-					// if dc connected battery, update post-inverted quantities
-					if (en_batt && (ac_or_dc == charge_controller::DC_CONNECTED))
-					{
-						if (battery_charging)
-						{
-							// change sign back now that is inverted
-							dcpwr_net *= -1;
-							acpwr_gross *= -1;
-						}
-						batt.update_post_inverted(*this, acpwr_gross*util::watt_to_kilowatt);
-						iterate_dc = batt.check_iterate(dc_count);
-						acpwr_gross = batt.outGenPower[idx] * util::kilowatt_to_watt;
-					}
-					dc_count++;
-				} while (iterate_dc);
-
-				if (inv_type != 4) { // losses calculated above for OND model
-					ac_wiringloss = fabs(acpwr_gross) * ac_loss_percent * 0.01;
-				}
-
-				// accumulate first year annual energy
-				if (iyear == 0)
-				{
-					if (en_batt && (ac_or_dc == charge_controller::DC_CONNECTED))
-							annual_dc_power_after_battery += batt.outGenPower[idx] * ts_hour;
-
-					annual_ac_gross += acpwr_gross * util::watt_to_kilowatt * ts_hour;
-					annual_dc_loss_ond += dc_wiringloss * util::watt_to_kilowatt * ts_hour; // (TR)
-					annual_ac_loss_ond += ac_wiringloss * util::watt_to_kilowatt * ts_hour; // (TR)
-					
-					p_inveff[idx] = (ssc_number_t)(aceff);
-					p_invcliploss[idx] = (ssc_number_t)(cliploss * util::watt_to_kilowatt);
-					p_invpsoloss[idx] = (ssc_number_t)(psoloss * util::watt_to_kilowatt);
-					p_invpntloss[idx] = (ssc_number_t)(pntloss * util::watt_to_kilowatt);
-					p_ac_wiringloss[idx] = (ssc_number_t)(ac_wiringloss * util::watt_to_kilowatt);
-				}
-				p_dcpwr[idx] = (ssc_number_t)((dcpwr_net - dc_wiringloss) * util::watt_to_kilowatt); // added dc_wiringloss-term to consider DC losses here (TR)
-					
-=======
 					// for capturing tare losses
 					sharedInverter->calculateACPower(dcPowerNetPerMppt_kW, dcVoltagePerMppt, wf.tdry);
 					acpwr_gross = sharedInverter->powerAC_kW;
-				}		
-				
+				}
+
 				ac_wiringloss = fabs(acpwr_gross) * PVSystem->acLossPercent * 0.01;
 				transmissionloss = fabs(acpwr_gross) * PVSystem->transmissionLossPercent * 0.01;
 
 				// accumulate first year annual energy
 				if (iyear == 0)
-				{ 
+				{
 					annual_ac_gross += acpwr_gross * ts_hour;
 
 					annual_dc_loss_ond += sharedInverter->dcWiringLoss_ond_kW * ts_hour; // (TR)
@@ -3073,7 +2007,6 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				}
 				PVSystem->p_systemDCPower[idx] = (ssc_number_t)(sharedInverter->powerDC_kW);
 
->>>>>>> pr/11
 				//ac losses should always be subtracted, this means you can't just multiply by the derate because at nighttime it will add power
 				PVSystem->p_systemACPower[idx] = (ssc_number_t)(acpwr_gross - ac_wiringloss);
 
@@ -3086,9 +2019,9 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				{
 					if (PVSystem->p_systemACPower[idx] < transformerRatingkW)
 						xfmr_ll *= PVSystem->p_systemACPower[idx] * PVSystem->p_systemACPower[idx] / transformerRatingkW;
-					else 
+					else
 						xfmr_ll *= PVSystem->p_systemACPower[idx];
-				} 
+				}
 				// total load loss
 				ssc_number_t xfmr_loss = xfmr_ll + xfmr_nll;
 				PVSystem->p_systemACPower[idx] -= xfmr_loss;
@@ -3131,15 +2064,15 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 		batt.initialize_automated_dispatch(util::array_to_vector<ssc_number_t>(PVSystem->p_systemACPower, nlifetime), p_load_full);
 
 	/* *********************************************************************************************
-	Post PV AC 
+	Post PV AC
 	*********************************************************************************************** */
 	idx = 0; ireport = 0; ireplast = 0; percent_baseline = percent_complete;
-	double annual_energy_pre_battery = 0.; 
+	double annual_energy_pre_battery = 0.;
 	for (size_t iyear = 0; iyear < nyears; iyear++)
 	{
 		for (hour = 0; hour < 8760; hour++)
 		{
-			// report progress updates to the caller	
+			// report progress updates to the caller
 			ireport++;
 			if (ireport - ireplast > irepfreq)
 			{
@@ -3164,12 +2097,8 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 				// accumulate system generation before curtailment and availability
 				if (iyear == 0)
-<<<<<<< HEAD
-					annual_ac_pre_avail += p_gen[idx] * ts_hour;
-=======
 					annual_ac_pre_avail += PVSystem->p_systemACPower[idx] * ts_hour;
-		
->>>>>>> pr/11
+
 
 				//apply availability and curtailment
 				PVSystem->p_systemACPower[idx] *= haf(hour);
@@ -3191,34 +2120,34 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 				idx++;
 			}
-		} 
+		}
 
-	} 
+	}
 	// Check the snow models and if neccessary report a warning
-	//  *This only needs to be done for subarray1 since all of the activated subarrays should 
+	//  *This only needs to be done for subarray1 since all of the activated subarrays should
 	//   have the same number of bad values
-	//  *Also accumulate monthly and annual loss values 
+	//  *Also accumulate monthly and annual loss values
 
 	if (PVSystem->enableSnowModel){
 		if (Subarrays[0]->snowModel.badValues > 0){
 			log(util::format("The snow model has detected %d bad snow depth values (less than 0 or greater than 610 cm). These values have been set to zero.", Subarrays[0]->snowModel.badValues), SSC_WARNING);
 		}
-			
+
 		// scale by ts_hour to convert power -> energy
-		accumulate_monthly_for_year( "dc_snow_loss", "monthly_snow_loss", ts_hour , step_per_hour );			
+		accumulate_monthly_for_year( "dc_snow_loss", "monthly_snow_loss", ts_hour , step_per_hour );
 		accumulate_annual_for_year( "dc_snow_loss", "annual_snow_loss", ts_hour, step_per_hour);
 	}
-		 
+
 	if (hour != 8760)
 		throw exec_error("pvsamv1", "failed to simulate all 8760 hours, error in weather file ?");
 
 
 	accumulate_monthly_for_year("dc_net", "monthly_dc", ts_hour, step_per_hour);
 	accumulate_monthly_for_year("gen", "monthly_energy", ts_hour, step_per_hour);
-		
+
 	// scale by ts_hour to convert power -> energy
 	accumulate_annual_for_year("gh", "annual_gh", ts_hour, step_per_hour);
-		
+
 	// scale by ts_hour to convert power -> energy
 	double annual_poa_nom = accumulate_annual_for_year("poa_nom", "annual_poa_nom", ts_hour, step_per_hour);
 	double annual_poa_beam_nom = accumulate_annual_for_year("poa_beam_nom", "annual_poa_beam_nom", ts_hour, step_per_hour);
@@ -3228,7 +2157,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	double annual_poa_rear = accumulate_annual_for_year("poa_rear", "annual_poa_rear", ts_hour, step_per_hour);
 	double annual_poa_eff = accumulate_annual_for_year("poa_eff", "annual_poa_eff", ts_hour, step_per_hour);
 	double annual_poa_beam_eff = accumulate_annual_for_year("poa_beam_eff", "annual_poa_beam_eff", ts_hour, step_per_hour);
-		
+
 	accumulate_monthly_for_year( "poa_nom", "monthly_poa_nom", ts_hour, step_per_hour );
 	accumulate_monthly_for_year( "poa_beam_nom", "monthly_poa_beam_nom", ts_hour, step_per_hour );
 	accumulate_monthly_for_year("poa_front", "monthly_poa_front", ts_hour, step_per_hour);
@@ -3276,13 +2205,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 	double annual_mismatch_loss = 0, annual_diode_loss = 0, annual_wiring_loss = 0, annual_tracking_loss = 0, annual_nameplate_loss = 0, annual_dcopt_loss = 0;
 	double annual_dc_gross = 0;
-<<<<<<< HEAD
 
-	//dc optimizer losses are the same for all four subarrays, assign outside of subarray loop but calculate inside loop
-	double dc_opt = as_double("dcoptimizer_loss");
-=======
-		
->>>>>>> pr/11
 	// loop over subarrays
 	for (size_t nn = 0; nn < num_subarrays; nn++)
 	{
@@ -3294,7 +2217,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 			// dc derate for each sub array
 			double dc_loss = dc_gross[nn] * Subarrays[nn]->dcLossTotalPercent;
 			annual_dc_gross += dc_gross[nn];
-			
+
 			if (Subarrays[nn]->dcLossTotalPercent != 0)
 			{
 				double total_percent = Subarrays[nn]->dcLossTotalPercent;
@@ -3311,7 +2234,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 			annual_tracking_loss += tracking_loss;
 			annual_nameplate_loss += nameplate_loss;
 			annual_dcopt_loss += dcopt_loss;
-			
+
 			assign("annual_" + prefix + "dc_gross", var_data((ssc_number_t)dc_gross[nn]));
 			assign("annual_" + prefix + "dc_mismatch_loss", var_data((ssc_number_t)mismatch_loss));
 			assign("annual_" + prefix + "dc_diodes_loss", var_data((ssc_number_t)diode_loss));
@@ -3411,7 +2334,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 	// annual_dc_nominal
 	percent = 0.;
-	// SEV: Apply Snow loss to loss diagram 
+	// SEV: Apply Snow loss to loss diagram
 	if (annual_dc_nominal > 0) percent = 100 * annual_snow_loss / annual_dc_nominal;
 	assign("annual_dc_snow_loss_percent", var_data((ssc_number_t)percent));
 
@@ -3577,16 +2500,16 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	Irradiance->AssignOutputs(this);
 	Subarrays[0]->AssignOutputs(this);
 	PVSystem->AssignOutputs(this);
-	
+
 //	_CrtDumpMemoryLeaks();
 //	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 
 }
-	
+
 double cm_pvsamv1::module_eff(int mod_type)
 {
 	double eff = -1;
-	
+
 	switch (mod_type)
 	{
 	case 0: // SPE
@@ -3636,15 +2559,6 @@ double cm_pvsamv1::module_eff(int mod_type)
 			eff = 100.0 * ((vmp*imp)/area)/1000.0;
 		}
 		break;
-	case 5: // ML model
-		{
-			double Width = as_double("mlm_Width");
-			double Length = as_double("mlm_Length");
-			double vmp = as_double("mlm_V_mp_ref");
-			double imp = as_double("mlm_I_mp_ref");
-			double Sref = as_double("mlm_S_ref");
-			eff = 100.0 * ((vmp*imp) / (Width*Length)) / Sref;
-		}
 	}
 
 	if (eff == 0.0) eff = -1;
@@ -3674,11 +2588,7 @@ void cm_pvsamv1::inverter_vdcmax_check()
 		case 3: // coefficient generator
 			vdcmax = as_double("inv_cec_cg_vdcmax");
 			break;
-<<<<<<< HEAD
-		case 4:
-=======
 		case 4: // ondInverter (PVYield)
->>>>>>> pr/11
 			vdcmax = as_double("ond_VAbsMax");
 			break;
 		default:
@@ -3698,7 +2608,7 @@ void cm_pvsamv1::inverter_vdcmax_check()
 			if (da[i] > vdcmax)
 			{
 				numVmpGTVdcmax++;
-				if (da[i] > maxVmp) 
+				if (da[i] > maxVmp)
 				{
 					maxVmp = da[i];
 					maxVmpHour = (int)i;
@@ -3707,7 +2617,7 @@ void cm_pvsamv1::inverter_vdcmax_check()
 		}
 	}
 
-	if (numVmpGTVdcmax > 0) 
+	if (numVmpGTVdcmax > 0)
 	{
 		log( util::format( "Module array voltage Vmp exceeds the Vdcmax (%.2lfV) of inverter %d times.\n"
 				"   The maximum Vmp value is %.2lfV at hour %d.\n"
@@ -3751,7 +2661,7 @@ void cm_pvsamv1::inverter_size_check()
 			ratedACOutput = as_double("inv_cec_cg_paco");
 			ratedDCOutput = as_double("inv_cec_cg_pdco");
 			break;
-		case 4: // ond inverter (PVYield) 
+		case 4: // ond inverter (PVYield)
 			ratedACOutput = as_double("ond_PMaxOUT");
 			ratedDCOutput = as_double("ond_PMaxDC");
 			break;
@@ -3774,17 +2684,17 @@ void cm_pvsamv1::inverter_size_check()
 		for (size_t i=0; i < acCount;i++)
 		{
 			if (dcPower[i] > ratedDCOutput) numHoursClipped++;
-			if (acPower[i] > maxACOutput) maxACOutput = acPower[i]; 
+			if (acPower[i] > maxACOutput) maxACOutput = acPower[i];
 		}
 	}
 	if (numHoursClipped >= 2190) //more than one quarter of the entire year (8760) is clipped
-		log( util::format("Inverter undersized: The array output exceeded the inverter rating %.2lf kWdc for %d hours.", 
-			ratedDCOutput, numHoursClipped), 
+		log( util::format("Inverter undersized: The array output exceeded the inverter rating %.2lf kWdc for %d hours.",
+			ratedDCOutput, numHoursClipped),
 			SSC_WARNING );
 
 	if ((maxACOutput < 0.75 * ratedACOutput) && (maxACOutput > 0))
-		log( util::format("Inverter oversized: The maximum inverter output was %.2lf%% of the rated value %lg kWac.", 
-			100 * maxACOutput / ratedACOutput, ratedACOutput), 
+		log( util::format("Inverter oversized: The maximum inverter output was %.2lf%% of the rated value %lg kWac.",
+			100 * maxACOutput / ratedACOutput, ratedACOutput),
 			SSC_WARNING);
 }
 

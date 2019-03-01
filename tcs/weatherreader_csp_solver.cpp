@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -51,13 +51,8 @@
 #include <memory>
 #include "tcstype.h"
 
-<<<<<<< HEAD
-#include <lib_weatherfile.h>
-#include <lib_irradproc.h>
-=======
 #include "lib_weatherfile.h"
 #include "lib_irradproc.h"
->>>>>>> pr/11
 
 #include "csp_solver_core.h"
 
@@ -68,7 +63,7 @@
 
 
 
-enum {	P_FILENAME, 
+enum {	P_FILENAME,
 
 		P_TRACKMODE,
 		P_TILT,
@@ -80,7 +75,7 @@ enum {	P_FILENAME,
 		O_HOUR,
 		O_MINUTE,
 
-		O_GLOBAL, 
+		O_GLOBAL,
 		O_BEAM,
 		O_HOR_BEAM,
 		O_DIFFUSE,
@@ -139,7 +134,7 @@ tcsvarinfo weatherreader_variables[] = {
 	{ TCS_OUTPUT,  TCS_NUMBER,   O_PRES,     "pres",        "Pressure",                             "mbar",    "Meteo", "",     "" },
 	{ TCS_OUTPUT,  TCS_NUMBER,   O_SNOW,     "snow",        "Snow cover",                           "cm",      "Meteo", "valid (0,150)",   "" },
 	{ TCS_OUTPUT,  TCS_NUMBER,   O_ALBEDO,   "albedo",      "Ground albedo",                        "0..1",    "Meteo", "valid (0,1)",     "" },
-	
+
 	{ TCS_OUTPUT,  TCS_NUMBER,   O_POA,      "poa",         "Plane-of-array total incident irradiance", "W/m2","Irrad", "",     "" },
 	{ TCS_OUTPUT,  TCS_NUMBER,   O_SOLAZI,   "solazi",      "Solar Azimuth",                        "deg",     "",      "",     "" },
 	{ TCS_OUTPUT,  TCS_NUMBER,   O_SOLZEN,   "solzen",      "Solar Zenith",                         "deg",     "",      "",     "" },
@@ -175,7 +170,7 @@ public:
 		c_wr.m_trackmode = (int) value(P_TRACKMODE);
 		c_wr.m_tilt = value(P_TILT);
 		c_wr.m_azimuth = value(P_AZIMUTH);
-		
+
 
 		int out_type = -1;
 		std::string out_msg = "";
@@ -247,7 +242,7 @@ public:
 			}
 
 			message(TCS_ERROR, csp_exception.m_error_message.c_str());
-			return -1;		
+			return -1;
 		}
 
 		// If no exception, then report messages and move on
@@ -258,7 +253,7 @@ public:
 			else if( out_type == C_csp_messages::WARNING )
 				message(TCS_WARNING, out_msg.c_str());
 		}
-		
+
 		m_wf = &c_wr.ms_outputs;
 
 		value(O_YEAR, m_wf->m_year);
@@ -328,7 +323,7 @@ public:
 		}
 
 		return 0;
-	
+
 	}
 };
 

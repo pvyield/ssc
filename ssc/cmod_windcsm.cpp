@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (ìAllianceî) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (‚ÄúAlliance‚Äù) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as ìSystem Advisor Modelî or ìSAMî. Except
-*  to comply with the foregoing, the terms ìSystem Advisor Modelî, ìSAMî, or any confusingly similar
+*  the underlying software originally provided by Alliance as ‚ÄúSystem Advisor Model‚Äù or ‚ÄúSAM‚Äù. Except
+*  to comply with the foregoing, the terms ‚ÄúSystem Advisor Model‚Äù, ‚ÄúSAM‚Äù, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -50,37 +50,7 @@
 #include "core.h"
 
 static var_info _cm_vtab_windcsm[] = {
-<<<<<<< HEAD
-/*   VARTYPE           DATATYPE         NAME                              LABEL                                                      UNITS     META                      GROUP          REQUIRED_IF                 CONSTRAINTS                      UI_HINTS*/			
-
-	// Rotor														      								                             
-	{ SSC_INPUT,        SSC_NUMBER,      "blades",							"Blade mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "hub",								"Hub mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "pitch",							"Pitch mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "spinner",							"Spinner mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-
-	// Drivetrain
-	{ SSC_INPUT,        SSC_NUMBER,      "lowspeedshaft",					"Low speed shaft mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "bearings",						"Bearings mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "gearbox",							"Gearbox mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "brake",							"Brake mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "generator",						"Low speed shaft mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "variablespeed",					"Variable speed electronics mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "yaw",								"Yaw mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "bedplate",						"Bedplate mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "connections",						"Electrical connections mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "hydraulic",						"Hydraulics mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "nacelle",							"Nacelle mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "controls",						"Controls mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "other",							"Other rivetrain mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-
-	// Tower
-	{ SSC_INPUT,        SSC_NUMBER,      "tower",							"Tower mass",                                          "kg",     "",                      "wind_csm",      "*",                       "",                              "" },
-
-	// Outputs intermediate percentages and cost breakdown and total cost
-	{ SSC_OUTPUT,       SSC_NUMBER,      "rotor_cost",             "Rotor Cost",                                 "$",     "",                      "wind_csm",      "*",                       "",                              "" },
-=======
-/*   VARTYPE           DATATYPE         NAME                                LABEL                                UNITS     META           GROUP          REQUIRED_IF                 CONSTRAINTS                      UI_HINTS*/			
+/*   VARTYPE           DATATYPE         NAME                                LABEL                                UNITS     META           GROUP          REQUIRED_IF                 CONSTRAINTS                      UI_HINTS*/
 	{ SSC_INPUT,        SSC_NUMBER,      "turbine_class",					 "Turbine class",                     "",      "",            "wind_csm",      "?=0",                    "INTEGER,MIN=0,MAX=3",            "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "turbine_user_exponent",			 "Turbine user exponent",             "",      "",            "wind_csm",      "?=2.5",                  "",                               "" },
 	{ SSC_INPUT,		SSC_NUMBER,      "turbine_carbon_blades",            "Turbine carbon blades",             "0/1",   "",            "wind_csm",      "?=0",                    "INTEGER,MIN=0,MAX=1",            "" },
@@ -95,7 +65,7 @@ static var_info _cm_vtab_windcsm[] = {
 	{ SSC_INPUT,		SSC_NUMBER,      "hub_height",                       "Hub height",                        "m",     "",            "wind_csm",      "*",                      "",                               "" },
 
 	{ SSC_INPUT,		SSC_NUMBER,      "num_blades",                       "Number of blades",                  "",      "",            "wind_csm",      "?=3",                    "INTEGER,MIN=1",                  "" },
-	
+
 	{ SSC_INPUT,		SSC_NUMBER,      "num_bearings",                     "Number of main bearings",           "",      "",            "wind_csm",      "?=2",                    "INTEGER,MIN=1",                  "" },
 
 	// Outputs intermediate percentages and cost breakdown and total cost
@@ -107,7 +77,7 @@ static var_info _cm_vtab_windcsm[] = {
 	{ SSC_OUTPUT,       SSC_NUMBER,      "pitch_cost",                       "Pitch cost",                        "$",     "",            "wind_csm",      "*",                       "",                              "" },
 	{ SSC_OUTPUT,       SSC_NUMBER,      "spinner_cost",                     "Spinner cost",                      "$",     "",            "wind_csm",      "*",                       "",                              "" },
 
-	
+
 	{ SSC_OUTPUT,       SSC_NUMBER,      "drivetrain_mass",                  "Drivetrain mass",                   "kg",    "",            "wind_csm",      "*",                       "",                              "" },
 	{ SSC_OUTPUT,       SSC_NUMBER,      "drivetrain_cost",                  "Drivetrain cost",                   "$",     "",            "wind_csm",      "*",                       "",                              "" },
 	// Drive train or Nacelle breakdown
@@ -133,7 +103,6 @@ static var_info _cm_vtab_windcsm[] = {
 	// overall cost
 	{ SSC_OUTPUT,       SSC_NUMBER,      "turbine_cost",                     "Turbine cost",                      "$",     "",            "wind_csm",      "*",                       "",                              "" },
 
->>>>>>> pr/11
 
 var_info_invalid };
 
@@ -152,13 +121,6 @@ public:
 
 	void exec( ) throw( general_error )
 	{
-<<<<<<< HEAD
-		// get values
-		double blades = (double) as_number("blades");
-
-		// assign outputs
-//		assign( "rotor_cost", var_data(output) );
-=======
 		// mass values from nrel_csm_tcc_2015.py
 		// Cost values from turbine_costsse_2015.py
 
@@ -308,7 +270,7 @@ public:
 		}
 
 		// bedplate cost is input and crane cost is hard coded at line 429
-		// Note that bedplate cost only used in base hardware cost which is commented out 
+		// Note that bedplate cost only used in base hardware cost which is commented out
 		// turbine_costsse_2015.py line 450.
 		//double base_hardware_cost_coeff = 0.7;
 		//double base_hardware_cost = base_hardware_cost_coeff * bedplate_cost;
@@ -333,7 +295,7 @@ public:
 
 		parts_cost = low_speed_shaft_cost + bearings_cost + gearbox_cost + high_speed_side_cost
 			+ generator_cost + bedplate_cost + yaw_system_cost + variable_speed_elec_cost
-			+ hydraulic_cooling_cost + nacelle_cover_cost + elec_connec_machine_rating_cost 
+			+ hydraulic_cooling_cost + nacelle_cover_cost + elec_connec_machine_rating_cost
 			+ controls_machine_rating_cost + mainframe_cost + transformer_cost;
 
 		double nacelle_system_cost_adder_2015 = (1.0 + nacelle_transport_multiplier
@@ -404,7 +366,6 @@ public:
 			// overall cost
 		assign("turbine_cost", var_data(ssc_number_t(turbine_cost_adder_2015)));
 
->>>>>>> pr/11
 	}
 };
 

@@ -58,11 +58,7 @@
 
 SSCEXPORT int ssc_version()
 {
-<<<<<<< HEAD
-	return 186;
-=======
 	return 205;
->>>>>>> pr/11
 }
 
 
@@ -71,14 +67,14 @@ SSCEXPORT const char *ssc_build_info()
 {
 	static const char *_bi = __PLATFORM__ " " __ARCH__ " " __COMPILER__ " " __DATE__ " " __TIME__;
 	return _bi;
-} 
+}
 
-/* to add new computation modules, 
+/* to add new computation modules,
 	specify an extern module entry,
 	and add it to 'module_table'
 */
 
-extern module_entry_info 
+extern module_entry_info
 /* extern declarations of modules for linking */
 	cm_entry_singlediode,
 	cm_entry_singlediodeparams,
@@ -375,7 +371,7 @@ SSCEXPORT const char *ssc_data_get_string( ssc_data_t p_data, const char *name )
 	if (!vt) return 0;
 	var_data *dat = vt->lookup(name);
 	if (!dat || dat->type != SSC_STRING) return 0;
-	return dat->str.c_str();	
+	return dat->str.c_str();
 }
 
 SSCEXPORT ssc_bool_t ssc_data_get_number( ssc_data_t p_data, const char *name, ssc_number_t *value )
@@ -386,7 +382,7 @@ SSCEXPORT ssc_bool_t ssc_data_get_number( ssc_data_t p_data, const char *name, s
 	var_data *dat = vt->lookup(name);
 	if (!dat || dat->type != SSC_NUMBER) return 0;
 	*value = dat->num;
-	return 1;	
+	return 1;
 }
 
 SSCEXPORT ssc_number_t *ssc_data_get_array(ssc_data_t p_data,  const char *name, int *length )
@@ -530,7 +526,7 @@ public:
 */
 
 static ssc_bool_t default_internal_handler_no_print( ssc_module_t /*p_mod*/, ssc_handler_t /*p_handler*/,
-	int /*action_type*/, float /*f0*/, float /*f1*/, 
+	int /*action_type*/, float /*f0*/, float /*f1*/,
 	const char * /*s0*/, const char * /*s1*/,
 	void * /*p_data*/ )
 {
@@ -540,7 +536,7 @@ static ssc_bool_t default_internal_handler_no_print( ssc_module_t /*p_mod*/, ssc
 }
 
 static ssc_bool_t default_internal_handler( ssc_module_t /*p_mod*/, ssc_handler_t /*p_handler*/,
-	int action_type, float f0, float f1, 
+	int action_type, float f0, float f1,
 	const char *s0, const char * /*s1*/,
 	void * /*p_data*/ )
 {
@@ -571,7 +567,7 @@ SSCEXPORT ssc_bool_t ssc_module_exec_simple( const char *name, ssc_data_t p_data
 {
 	ssc_module_t p_mod = ssc_module_create( name );
 	if ( !p_mod ) return 0;
-	
+
 	ssc_bool_t result = ssc_module_exec( p_mod, p_data );
 
 	ssc_module_free( p_mod );
@@ -643,24 +639,24 @@ public:
 	virtual void on_log( const std::string &text, int type, float time )
 	{
 		if (!m_hfunc) return;
-		(*m_hfunc)( static_cast<ssc_module_t>( module() ), 
-					static_cast<ssc_handler_t>( static_cast<handler_interface*>(this) ), 
+		(*m_hfunc)( static_cast<ssc_module_t>( module() ),
+					static_cast<ssc_handler_t>( static_cast<handler_interface*>(this) ),
 					SSC_LOG, (float)type, time, text.c_str(), 0, m_hdata );
 	}
 
 	virtual bool on_update( const std::string &text, float percent, float time )
 	{
 		if (!m_hfunc) return true;
-		
+
 		return (*m_hfunc)( static_cast<ssc_module_t>( module() ),
-					static_cast<ssc_handler_t>( static_cast<handler_interface*>(this) ), 
+					static_cast<ssc_handler_t>( static_cast<handler_interface*>(this) ),
 					SSC_UPDATE, percent, time, text.c_str(), 0, m_hdata ) ? 1 : 0;
 	}
 };
 
-SSCEXPORT ssc_bool_t ssc_module_exec_with_handler( 
-	ssc_module_t p_mod, 
-	ssc_data_t p_data, 
+SSCEXPORT ssc_bool_t ssc_module_exec_with_handler(
+	ssc_module_t p_mod,
+	ssc_data_t p_data,
 	ssc_bool_t (*pf_handler)( ssc_module_t, ssc_handler_t, int, float, float, const char*, const char *, void * ),
 	void *pf_user_data )
 {
@@ -673,7 +669,7 @@ SSCEXPORT ssc_bool_t ssc_module_exec_with_handler(
 		cm->log("invalid data object provided", SSC_ERROR);
 		return 0;
 	}
-	
+
 	default_exec_handler h( cm, pf_handler, pf_user_data );
 	return cm->compute( &h, vt ) ? 1 : 0;
 }

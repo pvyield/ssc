@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -51,13 +51,8 @@
 #include "csp_solver_util.h"
 #include "sam_csp_util.h"
 
-<<<<<<< HEAD
-#include <lib_weatherfile.h>
-#include <lib_irradproc.h>
-=======
 #include "lib_weatherfile.h"
 #include "lib_irradproc.h"
->>>>>>> pr/11
 
 C_csp_weatherreader::C_csp_weatherreader()
 {
@@ -93,7 +88,7 @@ void C_csp_weatherreader::init()
 	ms_solved_params.m_tz = m_hdr->tz;		//[deg]
 	ms_solved_params.m_shift = (m_hdr->lon - m_hdr->tz*15.0);	//[deg]
 	ms_solved_params.m_elev = m_hdr->elev;	//[m]
-    /* 
+    /*
     Leap year:
         The year is evenly divisible by 4;
         If the year can be evenly divided by 100, it is NOT a leap year, unless;
@@ -106,7 +101,7 @@ void C_csp_weatherreader::init()
     //do a special check to see if it's a leap year but the weather file supplies 8760 values nonetheless
     if( ms_solved_params.m_leapyear && (m_weather_data_provider->nrecords() % 8760 == 0) )
         ms_solved_params.m_leapyear = false;
-    
+
 	// ***********************************************************
 
 	m_first = true;		// True the first time call() is accessed
@@ -125,7 +120,7 @@ void C_csp_weatherreader::timestep_call(const C_csp_solver_sim_info &p_sim_info)
 	// Increase call-per-timestep counter
 	// Converge() sets it to -1, so on first call this line will adjust it = 0
 	m_ncall++;
-	
+
 	double time = p_sim_info.ms_ts.m_time;		//[s]
 	double step = p_sim_info.ms_ts.m_step;		//[s]
 	//int ncall = p_sim_info->m_ncall;
@@ -167,7 +162,7 @@ void C_csp_weatherreader::timestep_call(const C_csp_solver_sim_info &p_sim_info)
 		incidence(m_trackmode, m_tilt, m_azimuth, 45.0, sunn[1], sunn[0], 0, 0, angle);
 		perez(sunn[8], m_rec.dn, m_rec.df, 0.2, angle[0], angle[1], sunn[1], poa, diffc);		 // diffuse shading factor not enabled (set to 1.0 by default)
 	}
-	
+
 	ms_outputs.m_year = m_rec.year;
 	ms_outputs.m_month = m_rec.month;
 	ms_outputs.m_day = m_rec.day;
@@ -175,7 +170,7 @@ void C_csp_weatherreader::timestep_call(const C_csp_solver_sim_info &p_sim_info)
 	ms_outputs.m_minute = m_rec.minute;
 
 	ms_outputs.m_global = m_rec.gh;
-	ms_outputs.m_beam = m_rec.dn;	
+	ms_outputs.m_beam = m_rec.dn;
 	ms_outputs.m_diffuse = m_rec.df;
 	ms_outputs.m_tdry = m_rec.tdry;
 	ms_outputs.m_twet = m_rec.twet;
@@ -198,7 +193,7 @@ void C_csp_weatherreader::timestep_call(const C_csp_solver_sim_info &p_sim_info)
 	ms_outputs.m_elev = m_hdr->elev;
 
 	ms_outputs.m_hor_beam = m_rec.dn*cos(sunn[1]);
-	
+
 	// Recalculate sunrise and sunset if necessary
 	if( m_rec.day != day_prev )
 	{
@@ -222,12 +217,12 @@ void C_csp_weatherreader::timestep_call(const C_csp_solver_sim_info &p_sim_info)
 		ms_outputs.m_time_rise = SolarNoon - N_daylight_hours/2.0;	//[hr]
 		ms_outputs.m_time_set = SolarNoon + N_daylight_hours/2.0;	//[hr]
 	}
-	
+
 }
 
 bool C_csp_weatherreader::read_time_step(int time_step, C_csp_solver_sim_info &p_sim_info)
 {
-    /* 
+    /*
     Read in the weather file for the specified time step
     */
 
@@ -239,9 +234,9 @@ bool C_csp_weatherreader::read_time_step(int time_step, C_csp_solver_sim_info &p
     else
     {
         converged();
-    
+
 		p_sim_info.ms_ts.m_time = (time_step + 1.) * p_sim_info.ms_ts.m_step;
-    
+
         m_first = false;
 
         timestep_call(p_sim_info);

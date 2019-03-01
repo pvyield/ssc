@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -60,7 +60,7 @@
 pvinput_t::pvinput_t()
 {
 	Ibeam = Idiff = Ignd = Tdry = poaIrr= Tdew = Wspd = Wdir = Patm
-		= Zenith = IncAng = Elev 
+		= Zenith = IncAng = Elev
 		= Tilt = Azimuth = HourOfDay = std::numeric_limits<double>::quiet_NaN();
 
 	radmode = 0;
@@ -70,7 +70,7 @@ pvinput_t::pvinput_t()
 
 pvinput_t::pvinput_t( double ib, double id, double ig, double irear, double ip,
 		double ta, double td, double ws, double wd, double patm,
-		double zen, double inc, 
+		double zen, double inc,
 		double elv, double tlt, double azi,
 		double hrday, int rmode, bool up )
 {
@@ -107,7 +107,7 @@ pvoutput_t::pvoutput_t()
 
 
 pvoutput_t::pvoutput_t( double p, double v,
-		double c, double e, 
+		double c, double e,
 		double voc, double isc, double t, double aoi_modifier)
 {
 	Power = p;
@@ -138,7 +138,7 @@ spe_module_t::spe_module_t( )
 		Eff[i] = Rad[i] = 0;
 }
 
-	
+
 double spe_module_t::eff_interpolate( double irrad, double rad[5], double eff[5] )
 {
 	if ( irrad < rad[0] )
@@ -149,7 +149,7 @@ double spe_module_t::eff_interpolate( double irrad, double rad[5], double eff[5]
 	int i = 1;
 	for ( i=1;i<5;i++ )
 		if ( irrad < rad[i] ) break;
-      
+
 	int i1 = i-1;
 
 	double wx=(irrad-rad[i1])/(rad[i]-rad[i1]);
@@ -164,7 +164,7 @@ bool spe_module_t::operator() ( pvinput_t &input, double TcellC, double , pvoutp
 	double dceff, dcpwr;
 	if( input.radmode != 3  || !input.usePOAFromWF){
 		dceff = eff_interpolate( input.Ibeam + idiff + input.Irear, Rad, Eff );
-		dcpwr = dceff*(input.Ibeam+idiff + input.Irear)*Area;	
+		dcpwr = dceff*(input.Ibeam+idiff + input.Irear)*Area;
 	}
 	else{
 		dceff = eff_interpolate( input.poaIrr, Rad, Eff );
@@ -175,13 +175,13 @@ bool spe_module_t::operator() ( pvinput_t &input, double TcellC, double , pvoutp
 	if (dcpwr < 0) dcpwr = 0;
 
 	output.CellTemp = TcellC;
-	output.Efficiency = dceff;	
+	output.Efficiency = dceff;
 	output.Power = dcpwr;
 	output.Voltage = VmpRef();
 	output.Current = output.Power / output.Voltage;
 	output.Isc_oper = IscRef();
 	output.Voc_oper = VocRef();
-	output.AOIModifier = 1.0; // No model for cover effects in simple efficiency model 
+	output.AOIModifier = 1.0; // No model for cover effects in simple efficiency model
 	return true;
 }
 
@@ -316,11 +316,11 @@ double current_5par( double V, double IMR, double A, double IL, double IO, doubl
 	C     Iterative solution for current as a function of voltage using
 	C     equations from the five-parameter model.  Newton's method is used
 	C     to converge on a value.  Max power at reference conditions is initial
-	C     guess. 
+	C     guess.
 */
 	double IOLD = 0.0;
-	double V_MODULE = V;	
-	
+	double V_MODULE = V;
+
 	//C**** first guess is max.power point current
 	double INEW = IMR;
 	const int maxit = 4000;
@@ -332,10 +332,10 @@ double current_5par( double V, double IMR, double A, double IL, double IO, doubl
 		double F = IL-IOLD-IO*(exp((V_MODULE+IOLD*RS)/A)-1.0) - (V_MODULE+IOLD*RS)/RSH; // commeted out TR
 		double FPRIME = -1.0 - IO * (RS / A)*exp((V_MODULE + IOLD * RS) / A) - (RS / RSH);
 		INEW = max(0.0,(IOLD-(F/FPRIME)));
-		if ( it++ == maxit ) 
+		if ( it++ == maxit )
 			return -1.0;
 	}
-	
+
 	return INEW;
 }
 
@@ -379,12 +379,12 @@ double openvoltage_5par( double Voc0, double a, double IL, double IO, double Rsh
 /*
 	C     Iterative solution for open-circuit voltage.  Explicit algebraic solution
 	C     not possible in 5-parameter model
-*/	
+*/
 	double VocLow = 0;
 	double VocHigh = Voc0 * 1.5;
-	
+
 	double Voc = Voc0; // initial guess
-	
+
 	int niter = 0;
 	while( fabs(VocHigh-VocLow) > 0.001 )
 	{
@@ -397,7 +397,7 @@ double openvoltage_5par( double Voc0, double a, double IL, double IO, double Rsh
 		if (++niter > 5000)
 			return -1.0;
 	}
-	return Voc;	
+	return Voc;
 }
 
 double openvoltage_5par_rec(double Voc0, double a, double IL, double IO, double Rsh, double D2MuTau, double Vbi)
@@ -442,11 +442,7 @@ static double powerfunc_rec(double V, void *_d)
 	return -V * current_5par_rec(V, 0.9*r->Il, r->a, r->Il, r->Io, r->Rs, r->Rsh, r->D2MuTau, r->Vbi);
 }
 
-<<<<<<< HEAD
-double maxpower_5par(double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double *__Vmp, double *__Imp)
-=======
 double maxpower_5par( double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double *__Vmp, double *__Imp )
->>>>>>> pr/11
 {
 	double P, V, I;
 	struct refparm refdata;
@@ -485,10 +481,10 @@ double maxpower_5par_rec( double Voc_ubound, double a, double Il, double Io, dou
 	refdata.Vbi = Vbi;
 
 	int maxiter = 5000;
-				
+
 	if (golden( 0, Voc_ubound, powerfunc_rec, &refdata, 1e-4, &V, &P, maxiter))
 	{
-		P = -P;				
+		P = -P;
 		I = 0;
 		if (V != 0) I=P/V;
 	}
@@ -499,32 +495,3 @@ double maxpower_5par_rec( double Voc_ubound, double a, double Il, double Io, dou
 	if ( __Imp ) *__Imp = I;
 	return P;
 }
-
-double maxpower_5par_rec( double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double D2MuTau, double Vbi, double *__Vmp, double *__Imp )
-{
-	double P, V, I;
-	struct refparm_rec refdata;
-	refdata.a = a;
-	refdata.Il = Il;
-	refdata.Io = Io;
-	refdata.Rs = Rs;
-	refdata.Rsh = Rsh;
-	refdata.D2MuTau = D2MuTau;
-	refdata.Vbi = Vbi;
-
-	int maxiter = 5000;
-				
-	if (golden( 0, Voc_ubound, powerfunc_rec, &refdata, 1e-4, &V, &P, maxiter))
-	{
-		P = -P;				
-		I = 0;
-		if (V != 0) I=P/V;
-	}
-	else
-		P = V = I = -999;
-
-	if ( __Vmp ) *__Vmp = V;
-	if ( __Imp ) *__Imp = I;
-	return P;
-}
-
