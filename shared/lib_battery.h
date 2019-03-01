@@ -549,8 +549,9 @@ class thermal_t
 {
 public:
 	thermal_t();
-	thermal_t(double mass, double length, double width, double height,
-		double Cp, double h, double T_room,
+	thermal_t(double dtHour, double mass, double length, double width, double height,
+		double Cp, double h, 
+		std::vector<double> T_room,
 		const util::matrix_t<double> &cap_vs_temp);
 
 	// deep copy
@@ -600,7 +601,7 @@ protected:
 *
 *  The Battery losses class takes generic losses which occur during charging, discharge, or idle operation modes:
 *  The model also accepts a time-series vector of losses defined for every time step of the first year of simulation
-*  which may be used in lieu of the losses for operational mode.
+*  which may be used in lieu of the losses for operational mode.  
 */
 class losses_t
 {
@@ -621,13 +622,13 @@ public:
 	* \param[in] batt_loss_kw vector (size 1 for annual or 12 for monthly) containing battery system losses when idle (kW)
 	*/
 	losses_t(double dtHour,
-			lifetime_t *,
-			thermal_t *,
-			capacity_t*,
-			const int loss_mode,
-			const double_vec batt_loss_charge_kw = std::vector<double>(0),
-			const double_vec batt_loss_discharge_kw = std::vector<double>(0),
-			const double_vec batt_loss_idle_kw = std::vector<double>(0),
+			lifetime_t *, 
+			thermal_t *, 
+			capacity_t*, 
+			const int loss_mode, 
+			const double_vec batt_loss_charge_kw = std::vector<double>(0), 
+			const double_vec batt_loss_discharge_kw = std::vector<double>(0), 
+			const double_vec batt_loss_idle_kw = std::vector<double>(0), 
 			const double_vec batt_loss_kw=std::vector<double>(0));
 
 	/// Deep copy of losses object
@@ -653,7 +654,7 @@ protected:
 	int _loss_mode;
 	int _nCycle;
 	double _dtHour;
-
+	
 	lifetime_t * _lifetime;
 	thermal_t * _thermal;
 	capacity_t * _capacity;

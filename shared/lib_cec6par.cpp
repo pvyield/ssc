@@ -363,7 +363,7 @@ bool mcsp_celltemp_t::operator() ( pvinput_t &input, pvmodule_t &module, double 
 	double RefrAng1   = asind(sind(THETA)/n2);
 	double TransSurf1 = 1-0.5*( pow(sind(RefrAng1-THETA),2)/pow(sind(RefrAng1+THETA),2)
 			+ pow(tand(RefrAng1-THETA),2)/pow(tand(RefrAng1+THETA),2) );
-	double TransCoverAbs1 = exp(-k_trans*l_thick/cosd(RefrAng1));
+	double TransCoverAbs1 = exp(-k_glass*l_glass/cosd(RefrAng1));
 	double tau1       = TransCoverAbs1*TransSurf1;
         
 	//!Evaluating transmittance at angle Normal to surface (0), use 1 to avoid probs.
@@ -371,7 +371,7 @@ bool mcsp_celltemp_t::operator() ( pvinput_t &input, pvmodule_t &module, double 
 	double RefrAng2   = asind(sind(THETA2)/n2);
 	double TransSurf2 = 1-0.5*( pow(sind(RefrAng2-1),2)/pow(sind(RefrAng2+1),2)
 		+ pow(tand(RefrAng2-1),2)/pow(tand(RefrAng2+1),2) );
-	double TransCoverAbs2 = exp(-k_trans*l_thick/cosd(RefrAng2));
+	double TransCoverAbs2 = exp(-k_glass*l_glass/cosd(RefrAng2));
 	double tau2       = TransCoverAbs2*TransSurf2;
 
 	//!Evaluating transmittance at equivalent angle for diffuse 
@@ -379,7 +379,7 @@ bool mcsp_celltemp_t::operator() ( pvinput_t &input, pvmodule_t &module, double 
 	double RefrAng3   = asind(sind(THETA3)/n2);
 	double TransSurf3 = 1-.5*( pow(sind(RefrAng3-THETA3),2)/pow(sind(RefrAng3+THETA3),2)
 		+ pow(tand(RefrAng3-THETA3),2)/pow(tand(RefrAng3+THETA3),2) );
-	double TransCoverAbs3 = exp(-k_trans*l_thick/cosd(RefrAng3));
+	double TransCoverAbs3 = exp(-k_glass*l_glass/cosd(RefrAng3));
 	double TransCoverDiff = TransCoverAbs3;
 	double tau3       = TransCoverAbs3*TransSurf3;
 	double TADIR      = tau1/tau2;
@@ -391,7 +391,7 @@ bool mcsp_celltemp_t::operator() ( pvinput_t &input, pvmodule_t &module, double 
 	RefrAng3   = asind(sind(THETA3)/n2);
 	TransSurf3 = 1-.5*( pow(sind(RefrAng3-THETA3),2)/pow(sind(RefrAng3+THETA3),2)
 		+ pow(tand(RefrAng3-THETA3),2)/pow(tand(RefrAng3+THETA3),2) );
-	TransCoverAbs3 = exp(-k_trans*l_thick/cosd(RefrAng3));
+	TransCoverAbs3 = exp(-k_glass*l_glass/cosd(RefrAng3));
 	tau3       = TransCoverAbs3*TransSurf3;
 	double TAGND     = tau3/tau2;
       

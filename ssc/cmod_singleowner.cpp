@@ -1055,6 +1055,9 @@ enum {
 	CF_battery_replacement_cost_schedule,
 	CF_battery_replacement_cost,
 
+	CF_fuelcell_replacement_cost_schedule,
+	CF_fuelcell_replacement_cost,
+
 	CF_utility_bill,
 
 	CF_max };
@@ -1217,15 +1220,30 @@ public:
 			// updated 10/17/15 per 10/14/15 meeting
 			escal_or_annual(CF_battery_replacement_cost_schedule, nyears, "om_replacement_cost1", inflation_rate, batt_cap, false, as_double("om_replacement_cost_escal")*0.01);
 
-			for ( i = 0; i<nyears; i++)
-				cf.at(CF_battery_replacement_cost_schedule, i + 1) = batt_repl_cost * batt_cap * pow(1 + batt_repl_cost_escal + inflation_rate, i);
-
-			for ( i = 0; i < nyears && i<(int)count; i++)
-				cf.at(CF_battery_replacement_cost, i + 1) = batt_rep[i] * 
+			for (int i = 0; i < nyears && i < (int)count; i++) {
+				cf.at(CF_battery_replacement_cost, i + 1) = batt_rep[i] *
 					cf.at(CF_battery_replacement_cost_schedule, i + 1);
 			}
 		}
 		
+
+		// fuelcell cost - replacement from lifetime analysis
+		if (is_assigned("fuelcell_replacement_option") && (as_integer("fuelcell_replacement_option") > 0))
+		{
+			ssc_number_t *fuelcell_rep = 0;
+			if (as_integer("fuelcell_replacement_option") == 1)
+				fuelcell_rep = as_array("fuelcell_replacement", &count); // replacements per year calculated
+			else // user specified
+				fuelcell_rep = as_array("fuelcell_replacement_schedule", &count); // replacements per year user-defined
+			escal_or_annual(CF_fuelcell_replacement_cost_schedule, nyears, "om_replacement_cost2", inflation_rate, nameplate2, false, as_double("om_replacement_cost_escal")*0.01);
+
+			for (int i = 0; i < nyears && i < (int)count; i++) {
+				cf.at(CF_fuelcell_replacement_cost, i + 1) = fuelcell_rep[i] *
+					cf.at(CF_fuelcell_replacement_cost_schedule, i + 1);
+			}
+		}
+
+
 
 
 
@@ -1235,7 +1253,7 @@ public:
 			size_t ub_count;
 			ssc_number_t* ub_arr;
 			ub_arr = as_array("utility_bill_w_sys", &ub_count);
-			if (ub_count != (nyears+1))
+			if (ub_count != (size_t)(nyears+1))
 				throw exec_error("singleowner", util::format("utility bill years (%d) not equal to analysis period years (%d).", (int)ub_count, nyears));
 
 			for ( i = 0; i <= nyears; i++)
@@ -1500,6 +1518,7 @@ public:
 				+ cf.at(CF_property_tax_expense,i)
 				+ cf.at(CF_insurance_expense,i)
 				+ cf.at(CF_battery_replacement_cost,i)
+				+ cf.at(CF_fuelcell_replacement_cost, i)
 				+ cf.at(CF_utility_bill,i)
 				+ cf.at(CF_Recapitalization,i);
 		}

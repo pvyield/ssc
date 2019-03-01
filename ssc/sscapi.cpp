@@ -58,7 +58,7 @@
 
 SSCEXPORT int ssc_version()
 {
-	return 206;
+	return 205;
 }
 
 
@@ -67,7 +67,7 @@ SSCEXPORT const char *ssc_build_info()
 {
 	static const char *_bi = __PLATFORM__ " " __ARCH__ " " __COMPILER__ " " __DATE__ " " __TIME__;
 	return _bi;
-}
+} 
 
 /* to add new computation modules,
 	specify an extern module entry,

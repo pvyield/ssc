@@ -126,6 +126,9 @@ public:
 			// Default cycle config to recompression
 			m_cycle_config = 1;
 	
+			// Air cooler default
+			m_is_des_air_cooler = true;
+
 			// Default to standard optimization to maximize cycle efficiency
 			m_des_objective_type = 1;
 			m_min_phx_deltaT = 0.0;		//[C]

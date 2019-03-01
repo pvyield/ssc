@@ -1075,13 +1075,13 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 	std::vector<std::vector<double>> dcStringVoltage; // Voltage of string for each subarray
 	double dcPowerNetTotalSystem = 0; //Net DC power in W for the entire system (sum of all subarrays)
 
-	for (int mpptInput = 0; mpptInput < PVSystem->Inverter->nMpptInputs; mpptInput++)
+	for (size_t mpptInput = 0; mpptInput < PVSystem->Inverter->nMpptInputs; mpptInput++)
 	{
 		dcPowerNetPerMppt_kW.push_back(0);
 		dcVoltagePerMppt.push_back(0);
 		PVSystem->p_dcPowerNetPerMppt[mpptInput][idx] = 0;		
 	}
-	for (int nn = 0; nn < PVSystem->numberOfSubarrays; nn++) {
+	for (size_t nn = 0; nn < PVSystem->numberOfSubarrays; nn++) {
 		dcPowerNetPerSubarray.push_back(0);
 		std::vector<double> tmp;
 		dcStringVoltage.push_back(tmp);
@@ -1162,7 +1162,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				double alb;
 				alb = 0;
 
-				for (int nn = 0; nn < num_subarrays; nn++)
+				for (size_t nn = 0; nn < num_subarrays; nn++)
 				{
 					ipoa_rear.push_back(0);
 					ipoa_rear_after_losses.push_back(0);
@@ -1549,12 +1549,12 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				}
 
 				std::vector<double> mpptVoltageClipping; //a vector to store power that is clipped due to the inverter MPPT low & high voltage limits for each subarray
-				for (int nn = 0; nn < PVSystem->numberOfSubarrays; nn++) {
+				for (size_t nn = 0; nn < PVSystem->numberOfSubarrays; nn++) {
 					mpptVoltageClipping.push_back(0.0);
 				}
 
 				//Calculate power of each MPPT input
-				for (int mpptInput = 0; mpptInput < PVSystem->Inverter->nMpptInputs; mpptInput++) //remember that actual named mppt inputs are 1-indexed, and these are 0-indexed
+				for (size_t mpptInput = 0; mpptInput < PVSystem->Inverter->nMpptInputs; mpptInput++) //remember that actual named mppt inputs are 1-indexed, and these are 0-indexed
 				{
 					int nSubarraysOnMpptInput = (int)(PVSystem->mpptMapping[mpptInput].size()); //number of subarrays attached to this MPPT input
 					std::vector<int> SubarraysOnMpptInput = PVSystem->mpptMapping[mpptInput]; //vector of which subarrays are attached to this MPPT input
@@ -1757,7 +1757,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 				// sum up all DC power from the whole array
 				PVSystem->p_systemDCPower[idx] = 0;
-				for (int nn = 0; nn < num_subarrays; nn++)
+				for (size_t nn = 0; nn < num_subarrays; nn++)
 				{
 					// DC derates for snow and shading must be applied first
 					// these can't be applied before the power calculation because they are POWER derates
@@ -1871,8 +1871,9 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 					PVSystem->p_poaTotalAllSubarrays[idx] = (ssc_number_t)(ts_accum_poa_total_eff * util::watt_to_kilowatt); 
 					PVSystem->p_poaFrontBeamTotal[idx] = (ssc_number_t)(ts_accum_poa_front_beam_eff * util::watt_to_kilowatt);
 					PVSystem->p_inverterMPPTLoss[idx] = 0;
-					for (int nn = 0; nn < num_subarrays; nn++)
+					for (size_t nn = 0; nn < num_subarrays; nn++) {
 						PVSystem->p_inverterMPPTLoss[idx] = (ssc_number_t)(mpptVoltageClipping[nn] * util::watt_to_kilowatt);
+					}
 				}
 
 				// Predict clipping for DC battery controller
@@ -1906,7 +1907,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 
 		// Assign annual lifetime DC outputs
 		if (system_use_lifetime_output) {
-			PVSystem->p_dcDegradationFactor[iyear] = PVSystem->dcDegradationFactor[iyear];
+			PVSystem->p_dcDegradationFactor[iyear] = (ssc_number_t)(PVSystem->dcDegradationFactor[iyear]);
 		}
 	}
 
@@ -1955,7 +1956,7 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				weather_record wf = Irradiance->weatherRecord;
 
 				//set DC voltages for use in AC power calculation
-				for (int m = 0; m < PVSystem->Inverter->nMpptInputs; m++)
+				for (size_t m = 0; m < PVSystem->Inverter->nMpptInputs; m++)
 				{
 					dcVoltagePerMppt[m] = PVSystem->p_mpptVoltage[m][idx];
 					dcPowerNetPerMppt_kW[m] = PVSystem->p_dcPowerNetPerMppt[m][idx] * util::watt_to_kilowatt;
@@ -2026,8 +2027,9 @@ void cm_pvsamv1::exec( ) throw (compute_module::general_error)
 				PVSystem->p_systemACPower[idx] -= xfmr_loss;
 
 				// transmission loss if AC power is produced
-				if (PVSystem->p_systemACPower[idx] > 0)
+				if (PVSystem->p_systemACPower[idx] > 0){
 					PVSystem->p_systemACPower[idx] -= (ssc_number_t)(transmissionloss);
+				}
 
 				// accumulate first year annual energy
 				if (iyear == 0)

@@ -1292,9 +1292,10 @@ void lifetime_calendar_t::replaceBattery()
 Define Thermal Model
 */
 thermal_t::thermal_t() { /* nothing to do */ }
-thermal_t::thermal_t(double mass, double length, double width, double height, 
-	double Cp,  double h, double T_room, 
-	const util::matrix_t<double> &c_vs_t )
+thermal_t::thermal_t(double dt_hour, double mass, double length, double width, double height, 
+	double Cp,  double h, std::vector<double> T_room, 
+	const util::matrix_t<double> &c_vs_t ) : _dt_hour(dt_hour), _mass(mass), _length(length), _width(width), _height(height),
+	_Cp(Cp), _h(h), _T_room(T_room), _cap_vs_temp(c_vs_t)
 {
 	_R = 0.004;
 	_capacity_percent = 100;
@@ -1332,7 +1333,7 @@ void thermal_t::copy(thermal_t * thermal)
 	_T_max = thermal->_T_max;
 }
 void thermal_t::replace_battery(size_t lifetimeIndex)
-{
+{ 
 	_T_battery = _T_room[util::yearOneIndex(_dt_hour, lifetimeIndex)];
 	_capacity_percent = 100.;
 }
@@ -1371,7 +1372,7 @@ double thermal_t::trapezoidal(double I, double dt, size_t lifetimeindex)
 	double T_prime = f(_T_battery, I, lifetimeindex);	// [K]
 
 	return (_T_battery + 0.5*dt*(T_prime + B*(C*_T_room[util::yearOneIndex(_dt_hour, lifetimeindex)] + D))) / (1 + 0.5*dt*B*C);
-}
+} 
 double thermal_t::implicit_euler(double I, double dt, size_t lifetimeIndex)
 {
 	double B = 1 / (_mass*_Cp); // [K/J]
@@ -1418,7 +1419,7 @@ losses_t::losses_t(double dtHour, lifetime_t * lifetime, thermal_t * thermal, ca
 			_charge_loss = charge_loss;
 		}
 		if (discharge_loss.size() == 1) {
-
+			
 			for (size_t m = 0; m < 12; m++) {
 				_discharge_loss.push_back(discharge_loss[0]);
 			}
@@ -1471,7 +1472,7 @@ void losses_t::copy(losses_t * losses)
 void losses_t::replace_battery(){ _nCycle = 0; }
 double losses_t::getLoss(size_t indexFirstYear) { return _full_loss[indexFirstYear]; }
 void losses_t::run_losses(size_t lifetimeIndex)
-{
+{	
 	_capacity->updateCapacityForLifetime(_lifetime->capacity_percent());
 
 	size_t indexYearOne = util::yearOneIndex(_dtHour, lifetimeIndex);
@@ -1573,7 +1574,7 @@ void battery_t::initialize(capacity_t *capacity, voltage_t * voltage, lifetime_t
 	_thermal_initial->copy(_thermal);
 }
 
-void battery_t::run(size_t idx, double I)
+void battery_t::run(size_t lifetimeIndex, double I)
 {	
 
 	// Temperature affects capacity, but capacity model can reduce current, which reduces temperature, need to iterate
@@ -1584,7 +1585,7 @@ void battery_t::run(size_t idx, double I)
 
 	while (iterate_count < 5)
 	{
-		runThermalModel(I);
+		runThermalModel(I, lifetimeIndex);
 		runCapacityModel(I);
 
 		if (fabs(I - I_initial)/fabs(I_initial) > tolerance)
