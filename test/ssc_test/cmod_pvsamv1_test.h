@@ -3,6 +3,8 @@
 
 #include <gtest/gtest.h>
 #include "core.h"
+#ifndef _CMOD_PVSAMV1_TEST_H_
+#define _CMOD_PVSAMV1_TEST_H_
 
 #include "../ssc/vartab.h"
 #include "../ssc/common.h"
@@ -49,3 +51,6 @@ public:
 };
 
 #endif // !_CMOD_PVSAMV1_TEST_H_
+
+#ifndef _CMOD_PVSAMV1_TEST_H_
+#define _CMOD_PVSAMV1_TEST_H_

@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -701,10 +701,9 @@ public:
 		bConnected &= connect(weather, "solazi", type250_solarfield, "SolarAz", 0);
 		bConnected &= connect(type251_controller, "defocus", type250_solarfield, "defocus" );
 		bConnected &= connect(type251_controller, "T_field_in", type250_solarfield, "T_cold_in" );
-        bConnected &= connect(type251_controller, "recirculating", type250_solarfield, "recirculating");
+        //bConnected &= connect(type251_controller, "recirculating", type250_solarfield, "recirculating");
         set_unit_value_ssc_double(type250_solarfield, "v_sgs", -999);                                       // indicate that this value should be propagated at the simulation start
         bConnected &= connect(type251_controller, "SGS_vol_tot", type250_solarfield, "v_sgs");              // output first param, input second
-        bConnected &= connect(type251_controller, "SGS_P_des_1", type250_solarfield, "DP_SGS_1");
 
 		//Set controller parameters ===========================================
 		set_unit_value_ssc_double(type251_controller, "field_fluid", as_double("Fluid") ); // , 21);
@@ -788,7 +787,7 @@ public:
         bConnected &= connect(type250_solarfield, "T_field_in_at_des", type251_controller, "T_field_in_at_des");
         bConnected &= connect(type250_solarfield, "T_field_out_at_des", type251_controller, "T_field_out_at_des");
         bConnected &= connect(type250_solarfield, "P_field_in_at_des", type251_controller, "P_field_in_at_des");
-        bConnected &= connect(type250_solarfield, "defocus_rel", type251_controller, "defocus_prev");   // unique tolerance is just to stand out when debugging
+        bConnected &= connect(type251_controller, "SGS_P_des_1", type250_solarfield, "DP_SGS_1");
 
 
 			//Set controller initial values

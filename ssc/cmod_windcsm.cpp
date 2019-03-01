@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (�Alliance�) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as �System Advisor Model� or �SAM�. Except
+*  to comply with the foregoing, the terms �System Advisor Model�, �SAM�, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -50,7 +50,7 @@
 #include "core.h"
 
 static var_info _cm_vtab_windcsm[] = {
-/*   VARTYPE           DATATYPE         NAME                                LABEL                                UNITS     META           GROUP          REQUIRED_IF                 CONSTRAINTS                      UI_HINTS*/
+/*   VARTYPE           DATATYPE         NAME                                LABEL                                UNITS     META           GROUP          REQUIRED_IF                 CONSTRAINTS                      UI_HINTS*/			
 	{ SSC_INPUT,        SSC_NUMBER,      "turbine_class",					 "Turbine class",                     "",      "",            "wind_csm",      "?=0",                    "INTEGER,MIN=0,MAX=3",            "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "turbine_user_exponent",			 "Turbine user exponent",             "",      "",            "wind_csm",      "?=2.5",                  "",                               "" },
 	{ SSC_INPUT,		SSC_NUMBER,      "turbine_carbon_blades",            "Turbine carbon blades",             "0/1",   "",            "wind_csm",      "?=0",                    "INTEGER,MIN=0,MAX=1",            "" },
@@ -65,7 +65,7 @@ static var_info _cm_vtab_windcsm[] = {
 	{ SSC_INPUT,		SSC_NUMBER,      "hub_height",                       "Hub height",                        "m",     "",            "wind_csm",      "*",                      "",                               "" },
 
 	{ SSC_INPUT,		SSC_NUMBER,      "num_blades",                       "Number of blades",                  "",      "",            "wind_csm",      "?=3",                    "INTEGER,MIN=1",                  "" },
-
+	
 	{ SSC_INPUT,		SSC_NUMBER,      "num_bearings",                     "Number of main bearings",           "",      "",            "wind_csm",      "?=2",                    "INTEGER,MIN=1",                  "" },
 
 	// Outputs intermediate percentages and cost breakdown and total cost
@@ -77,7 +77,7 @@ static var_info _cm_vtab_windcsm[] = {
 	{ SSC_OUTPUT,       SSC_NUMBER,      "pitch_cost",                       "Pitch cost",                        "$",     "",            "wind_csm",      "*",                       "",                              "" },
 	{ SSC_OUTPUT,       SSC_NUMBER,      "spinner_cost",                     "Spinner cost",                      "$",     "",            "wind_csm",      "*",                       "",                              "" },
 
-
+	
 	{ SSC_OUTPUT,       SSC_NUMBER,      "drivetrain_mass",                  "Drivetrain mass",                   "kg",    "",            "wind_csm",      "*",                       "",                              "" },
 	{ SSC_OUTPUT,       SSC_NUMBER,      "drivetrain_cost",                  "Drivetrain cost",                   "$",     "",            "wind_csm",      "*",                       "",                              "" },
 	// Drive train or Nacelle breakdown
@@ -159,26 +159,26 @@ public:
 		}
 		double blade_mass = 0.5 * pow((0.5*turbine_rotor_diameter), exponent);
 		double blade_mass_cost_coeff = 14.6; // line 27
-		//double blade_mass_cost_coeff_2015 = 13.08; // line 152
+		double blade_mass_cost_coeff_2015 = 13.08; // line 152
 		double blade_cost_2015 = blade_mass_cost_coeff * blade_mass;
 
 		// hub mass
 		double hub_mass = 2.3 * blade_mass + 1320.0;
 		double hub_mass_cost_coeff = 3.9; // line 45
-		//double hub_mass_cost_coeff_2015 = 3.8; // line 154
+		double hub_mass_cost_coeff_2015 = 3.8; // line 154
 		double hub_cost_2015 = hub_mass_cost_coeff * hub_mass;
 
 		// pitch mass
 		double pitch_bearing_mass = 0.1295 * blade_mass * blades + 491.31;
 		double pitch_mass = pitch_bearing_mass * (1.0 + 0.3280) + 555.0;
 		double pitch_mass_cost_coeff = 22.1; // line 63
-		//double pitch_mass_cost_coeff_2015 = 22.91; // line 156
+		double pitch_mass_cost_coeff_2015 = 22.91; // line 156
 		double pitch_cost_2015 = pitch_mass_cost_coeff * pitch_mass;
 
 		// spinner mass
 		double spinner_mass = 15.5 * turbine_rotor_diameter - 980.0;
 		double spinner_mass_cost_coeff = 11.1; // line 81
-		//double spinner_mass_cost_coeff_2015 = 15.59; // line 158
+		double spinner_mass_cost_coeff_2015 = 15.59; // line 158
 		double spinner_cost_2015 = spinner_mass_cost_coeff * spinner_mass;
 
 
@@ -270,10 +270,10 @@ public:
 		}
 
 		// bedplate cost is input and crane cost is hard coded at line 429
-		// Note that bedplate cost only used in base hardware cost which is commented out
+		// Note that bedplate cost only used in base hardware cost which is commented out 
 		// turbine_costsse_2015.py line 450.
-		//double base_hardware_cost_coeff = 0.7;
-		//double base_hardware_cost = base_hardware_cost_coeff * bedplate_cost;
+		double base_hardware_cost_coeff = 0.7;
+		double base_hardware_cost = base_hardware_cost_coeff * bedplate_cost;
 
 		double mainframe_cost = nacelle_platforms_cost + crane_cost;
 
@@ -295,7 +295,7 @@ public:
 
 		parts_cost = low_speed_shaft_cost + bearings_cost + gearbox_cost + high_speed_side_cost
 			+ generator_cost + bedplate_cost + yaw_system_cost + variable_speed_elec_cost
-			+ hydraulic_cooling_cost + nacelle_cover_cost + elec_connec_machine_rating_cost
+			+ hydraulic_cooling_cost + nacelle_cover_cost + elec_connec_machine_rating_cost 
 			+ controls_machine_rating_cost + mainframe_cost + transformer_cost;
 
 		double nacelle_system_cost_adder_2015 = (1.0 + nacelle_transport_multiplier

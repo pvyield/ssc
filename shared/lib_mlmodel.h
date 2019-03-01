@@ -1,8 +1,10 @@
 /*******************************************************************************************************
+*
+*  Copyright 2017 - pvyield GmbH / Timo Richert
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +28,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
-*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
+*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
+*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -46,39 +48,92 @@
 *  IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 *  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************************************/
+#ifndef __mlmodel_h
+#define __mlmodel_h
 
-#ifndef __lib_snowmodel_h
-#define __lib_snowmodel_h
 
-#include <string>
+#include "lib_pvmodel.h"
+//#include "mlm_spline.h"
+#include "bspline.h"
 
-class pvsnowmodel
+using namespace SPLINTER;
+
+
+class mlmodel_module_t : public pvmodule_t
 {
 public:
-	pvsnowmodel();
+	int N_series;
+	int N_parallel;
+	int N_diodes;
 
-	// limitTilt requires tilt to be between 10 and 45 degrees
-	bool setup(int, float, bool limitTilt = true);
+	double Width;
+	double Length;
 
-	bool getLoss(float poa, float tilt, float wspd, float tdry, float snowDepth, int sunup, float dt, float &returnLoss);
+	double V_mp_ref;
+	double I_mp_ref;
+	double V_oc_ref;
+	double I_sc_ref;
 
-	float	tilt,		// Surface tilt, degrees
-		baseTilt,		// The default tilt for 1-axis tracking systems
-		mSlope,			// This is a value given by fig. 4 in [1]
-		sSlope,			// This is a value given by fig. 7 in [1]
-		deltaThreshold,	// The minimum change in snow depth required to trigger a snow fall detection
-		depthThreshold,	// The minimum snow depth required to trigger a snow fall detection
-		previousDepth,	// The snow depth from the previous iteration
-		coverage,		// Snow coverage ( 0...1 )
-		pCvg;			// Snow coverage from previous iteration ( 0...1 )
+	double S_ref;
+	double T_ref;
 
-	int nmody,			// number of modules in a row
-		badValues,		// keeps track of the number of detected bad snow depth values
-		maxBadValues;	// The number of maximum bad snow depth values that is acceptable
+	double R_shref;
+	double R_sh0;
+	double R_shexp;
+	double R_s;
+	double alpha_isc;
+	double beta_voc_spec;
+	double E_g;
+	double n_0;
+	double mu_n;
+	double D2MuTau;
+	
+	int T_mode;
+	double T_c_no_tnoct;
+	int T_c_no_mounting;
+	int T_c_no_standoff;
+	double T_c_fa_alpha;
+	double T_c_fa_U0;
+	double T_c_fa_U1;
 
-	std::string msg;		// This is a string used to return error messages
-	bool good;				// This an error flag that will be set to false
-							//  if an error has occured
+	int AM_mode;
+	double AM_c_sa[5];
+	double AM_c_lp[6];
+
+	int IAM_mode;
+	double IAM_c_as;
+	double IAM_c_sa[6];
+	int IAM_c_cs_elements;
+	double IAM_c_cs_incAngle[100];
+	double IAM_c_cs_iamValue[100];
+
+	double groundRelfectionFraction;
+
+	mlmodel_module_t();
+
+	virtual double AreaRef() { return (Width * Length); }
+	virtual double VmpRef() { return V_mp_ref; }
+	virtual double ImpRef() { return I_mp_ref; }
+	virtual double VocRef() { return V_oc_ref; }
+	virtual double IscRef() { return I_sc_ref; }
+	virtual bool operator() (pvinput_t &input, double TcellC, double opvoltage, pvoutput_t &output);
+	virtual void initializeManual();
+
+private:
+	bool isInitialized;
+	double nVT;
+	double I_0ref;
+	double I_Lref;
+	double Vbi;
+//	tk::spline iamSpline;
+	BSpline m_bspline3;
+
+};
+
+class mock_celltemp_t : public pvcelltemp_t
+{
+public:
+	virtual bool operator() (pvinput_t &input, pvmodule_t &module, double opvoltage, double &Tcell);
 };
 
 #endif

@@ -75,7 +75,7 @@ public:
      * Check input
      */
     void checkInput(DenseVector x) const {
-        if (x.size() != (int)numVariables)
+        if (x.size() != numVariables)
             throw Exception("Function::checkInput: Wrong dimension on evaluation point x.");
     }
 

@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -1055,9 +1055,6 @@ enum {
 	CF_battery_replacement_cost_schedule,
 	CF_battery_replacement_cost,
 
-	CF_fuelcell_replacement_cost_schedule,
-	CF_fuelcell_replacement_cost,
-
 	CF_utility_bill,
 
 	CF_max };
@@ -1220,30 +1217,15 @@ public:
 			// updated 10/17/15 per 10/14/15 meeting
 			escal_or_annual(CF_battery_replacement_cost_schedule, nyears, "om_replacement_cost1", inflation_rate, batt_cap, false, as_double("om_replacement_cost_escal")*0.01);
 
-			for (int i = 0; i < nyears && i < (int)count; i++) {
-				cf.at(CF_battery_replacement_cost, i + 1) = batt_rep[i] *
+			for ( i = 0; i<nyears; i++)
+				cf.at(CF_battery_replacement_cost_schedule, i + 1) = batt_repl_cost * batt_cap * pow(1 + batt_repl_cost_escal + inflation_rate, i);
+
+			for ( i = 0; i < nyears && i<(int)count; i++)
+				cf.at(CF_battery_replacement_cost, i + 1) = batt_rep[i] * 
 					cf.at(CF_battery_replacement_cost_schedule, i + 1);
 			}
 		}
 		
-
-		// fuelcell cost - replacement from lifetime analysis
-		if (is_assigned("fuelcell_replacement_option") && (as_integer("fuelcell_replacement_option") > 0))
-		{
-			ssc_number_t *fuelcell_rep = 0;
-			if (as_integer("fuelcell_replacement_option") == 1)
-				fuelcell_rep = as_array("fuelcell_replacement", &count); // replacements per year calculated
-			else // user specified
-				fuelcell_rep = as_array("fuelcell_replacement_schedule", &count); // replacements per year user-defined
-			escal_or_annual(CF_fuelcell_replacement_cost_schedule, nyears, "om_replacement_cost2", inflation_rate, nameplate2, false, as_double("om_replacement_cost_escal")*0.01);
-
-			for (int i = 0; i < nyears && i < (int)count; i++) {
-				cf.at(CF_fuelcell_replacement_cost, i + 1) = fuelcell_rep[i] *
-					cf.at(CF_fuelcell_replacement_cost_schedule, i + 1);
-			}
-		}
-
-
 
 
 
@@ -1253,7 +1235,7 @@ public:
 			size_t ub_count;
 			ssc_number_t* ub_arr;
 			ub_arr = as_array("utility_bill_w_sys", &ub_count);
-			if (ub_count != (size_t)(nyears+1))
+			if (ub_count != (nyears+1))
 				throw exec_error("singleowner", util::format("utility bill years (%d) not equal to analysis period years (%d).", (int)ub_count, nyears));
 
 			for ( i = 0; i <= nyears; i++)
@@ -1518,7 +1500,6 @@ public:
 				+ cf.at(CF_property_tax_expense,i)
 				+ cf.at(CF_insurance_expense,i)
 				+ cf.at(CF_battery_replacement_cost,i)
-				+ cf.at(CF_fuelcell_replacement_cost, i)
 				+ cf.at(CF_utility_bill,i)
 				+ cf.at(CF_Recapitalization,i);
 		}

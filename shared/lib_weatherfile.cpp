@@ -559,7 +559,7 @@ bool weatherfile::timeStepChecks(int hdr_step_sec) {
 	else if (m_nRecords % 8784 == 0)
 	{
 		// Check if the weather file contains a leap day
-		// if so, correct the number of nrecords
+		// if so, correct the number of nrecords 
 		m_nRecords = m_nRecords / 8784 * 8760;
 		nmult = (int)m_nRecords / 8760;
 		m_stepSec = 3600 / nmult;
@@ -685,7 +685,7 @@ bool weatherfile::open(const std::string &file, bool header_only)
 	}
 	else if (m_type == EPW)
 	{
-		m_nRecords = 0;
+		m_nRecords = 0; 
 
 		while (getline(ifs, buf) && buf.length() > 0)
 			m_nRecords++;
@@ -1477,7 +1477,7 @@ bool weatherfile::open(const std::string &file, bool header_only)
 	if (m_type == EPW) {
 		for (size_t i = 0; i < m_nRecords; i++) {
 			for (int j = 5; j < 19; j++) {
-				if (j == 8 || j == 17 || j == 18 || j == 10) continue;	// EPW format does not contain
+				if (j == 8 || j == 17 || j == 18 || j == 10) continue;	// EPW format does not contain 
 				if (my_isnan(m_columns[j].data[i])) handle_missing_field(i, j);
 			}
 			if (m_columns[TWET].data[i] == -999.) m_columns[TWET].data[i] = (float)calc_twet((double)m_columns[TDRY].data[i], (double)m_columns[RH].data[i], (double)m_columns[PRES].data[i]);
@@ -1535,14 +1535,14 @@ bool weatherfile::read_average(weather_record *r, std::vector<int> &cols, size_t
 
 		// average columns requested
 		int start = (int)m_index - (int)num_timesteps / 2;
-		if (start < 0)
+		if (start < 0) 
 			start = 0;
 		if ((size_t)start + num_timesteps > m_nRecords)
 			start = (int)m_nRecords - (int)num_timesteps;
-		if (start < 0)
+		if (start < 0) 
 			start = 0;
 
-
+	
 		for (size_t i = 0; i < cols.size(); i++)
 		{
 			double col_val = 0;
@@ -1589,7 +1589,7 @@ bool weatherfile::read_average(weather_record *r, std::vector<int> &cols, size_t
 			case TDRY:
 				r->tdry = col_val;
 				break;
-			case TWET:
+			case TWET: 
 				r->twet = col_val;
 				break;
 			case TDEW:

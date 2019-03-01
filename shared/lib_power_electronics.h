@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -52,6 +52,13 @@
 
 // Required due to need for complete type in std::unique_ptr<>
 #include "lib_battery_dispatch.h"
+#include "lib_battery_powerflow.h"
+#include "lib_sandia.h"
+#include "lib_pvinv.h"
+#include "lib_ondinv.h"
+#include "lib_shared_inverter.h"
+
+
 
 class BatteryBidirectionalInverter
 {
@@ -140,7 +147,7 @@ public:
 	virtual ~ChargeController() {};
 
 	/// Virtual method to run the charge controller given the current timestep, PV production, and load
-	virtual void run(size_t year, size_t hour_of_year, size_t step_of_hour, size_t index) = 0;
+	virtual void run(size_t year, size_t hour_of_year, size_t step_of_hour, size_t index, double P_pv, double V_pv, double P_load, double P_clipped) = 0;
 
 	/// The supported configurations of a battery system
 	enum CONNECTION{ DC_CONNECTED, AC_CONNECTED };
@@ -151,9 +158,9 @@ protected:
 	std::unique_ptr<dispatch_t> m_dispatchInitial;	/// An internally managed copy of the initial dispatch of the timestep
 
 	// memory managed elsewhere
-	BatteryPower * m_batteryPower;
+	BatteryPower * m_batteryPower;		/// A structure containing all of the components in the battery power flow calculations
 	battery_metrics_t *m_batteryMetrics;    /// An object that tracks battery metrics for later analysis
-    dispatch_t * m_dispatch;		/// An object containing the framework to run a battery and check operational constraints
+        dispatch_t * m_dispatch;		/// An object containing the framework to run a battery and check operational constraints
 };
 
 /**
@@ -173,7 +180,7 @@ public:
 	~ACBatteryController() {};
 
 	/// Runs the battery dispatch model with the current PV and Load information
-	void run(size_t year, size_t hour_of_year, size_t step_of_hour, size_t index);
+	void run(size_t year, size_t hour_of_year, size_t step_of_hour, size_t index, double P_pv, double V_pv=0, double P_load=0, double P_clipped=0);
 
 private:
 	// allocated and managed internally
@@ -200,7 +207,7 @@ public:
 	void setSharedInverter(SharedInverter * sharedInverter);
 
 	/// Runs the battery dispatch model with the current PV and Load information
-	void run(size_t year, size_t hour_of_year, size_t step_of_hour, size_t index);
+	void run(size_t year, size_t hour_of_year, size_t step_of_hour, size_t index, double P_pv, double V_pv, double P_load=0, double P_pv_clipped = 0);
 
 private:
 	

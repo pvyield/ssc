@@ -55,8 +55,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tcsconsole", "tcsconsole_vs
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "splinter", "splinter.vcxproj", "{EB49DD48-E90A-451F-BDC7-D1FCF8575A13}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lpsolve", "lpsolve_vs2017.vcxproj", "{BCB4DD2B-D12B-47AE-A303-31BBCA9E3830}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -137,14 +135,6 @@ Global
 		{EB49DD48-E90A-451F-BDC7-D1FCF8575A13}.Release|Win32.Build.0 = Release|Win32
 		{EB49DD48-E90A-451F-BDC7-D1FCF8575A13}.Release|x64.ActiveCfg = Release|x64
 		{EB49DD48-E90A-451F-BDC7-D1FCF8575A13}.Release|x64.Build.0 = Release|x64
-		{BCB4DD2B-D12B-47AE-A303-31BBCA9E3830}.Debug|Win32.ActiveCfg = Debug|Win32
-		{BCB4DD2B-D12B-47AE-A303-31BBCA9E3830}.Debug|Win32.Build.0 = Debug|Win32
-		{BCB4DD2B-D12B-47AE-A303-31BBCA9E3830}.Debug|x64.ActiveCfg = Debug|x64
-		{BCB4DD2B-D12B-47AE-A303-31BBCA9E3830}.Debug|x64.Build.0 = Debug|x64
-		{BCB4DD2B-D12B-47AE-A303-31BBCA9E3830}.Release|Win32.ActiveCfg = Release|Win32
-		{BCB4DD2B-D12B-47AE-A303-31BBCA9E3830}.Release|Win32.Build.0 = Release|Win32
-		{BCB4DD2B-D12B-47AE-A303-31BBCA9E3830}.Release|x64.ActiveCfg = Release|x64
-		{BCB4DD2B-D12B-47AE-A303-31BBCA9E3830}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

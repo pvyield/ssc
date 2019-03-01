@@ -6,6 +6,8 @@
 
 /// Test PVSAMv1 with all defaults and no-financial model
 TEST_F(CMPvsamv1PowerIntegration, DefaultNoFinancialModel){
+	
+	int pvsam_errors = run_module(data, "pvsamv1");
 
 	int pvsam_errors = run_module(data, "pvsamv1");
 
@@ -29,45 +31,6 @@ TEST_F(CMPvsamv1PowerIntegration, DefaultNoFinancialModel){
 		EXPECT_NEAR(performance_ratio, 0.79, m_error_tolerance_lo) << "Energy yield";
 	}
 }
-
-/// Run PVSAMv1 with all defaults and lifetime mode for no-financial model
-TEST_F(CMPvsamv1PowerIntegration, DefaultLifetimeNoFinancialModel) {
-
-	std::map<std::string, double> pairs;
-	pairs["system_use_lifetime_output"] = 1;
-	pairs["analysis_period"] = 25;
-
-	double dc_degradation[25];
-	for (size_t i = 0; i < 25; i++) {
-		dc_degradation[i] = 0.5;
-	}
-
-	ssc_data_set_array(data, "dc_degradation", (ssc_number_t*)dc_degradation, 25);
-	ssc_data_set_array(data, "ac_degradation", (ssc_number_t*)dc_degradation, 25);
-
-	int pvsam_errors = modify_ssc_data_and_run_module(data, "pvsamv1", pairs);
-
-	EXPECT_FALSE(pvsam_errors);
-	if (!pvsam_errors)
-	{
-		ssc_number_t annual_energy;
-		ssc_data_get_number(data, "annual_energy", &annual_energy);
-		EXPECT_NEAR(annual_energy, 8714, m_error_tolerance_hi) << "Annual energy.";
-
-		ssc_number_t capacity_factor;
-		ssc_data_get_number(data, "capacity_factor", &capacity_factor);
-		EXPECT_NEAR(capacity_factor, 21.2, m_error_tolerance_lo) << "Capacity factor";
-
-		ssc_number_t kwh_per_kw;
-		ssc_data_get_number(data, "kwh_per_kw", &kwh_per_kw);
-		EXPECT_NEAR(kwh_per_kw, 1857, m_error_tolerance_hi) << "Energy yield";
-
-		ssc_number_t performance_ratio;
-		ssc_data_get_number(data, "performance_ratio", &performance_ratio);
-		EXPECT_NEAR(performance_ratio, 0.79, m_error_tolerance_lo) << "Energy yield";
-	}
-}
-
 
 /// Test PVSAMv1 with all defaults and residential financial model
 TEST_F(CMPvsamv1PowerIntegration, DefaultResidentialModel)
@@ -247,31 +210,6 @@ TEST_F(CMPvsamv1PowerIntegration, NoFinancialModelModuleAndInverterModels)
 	}
 }
 
-/// Test PVSAMv1 with default no-financial model and combinations of module thermal, spectral, and reflection models
-//This test can be expanded when we allow different combinations of thermal, spectral, and reflection models with different module models
-TEST_F(CMPvsamv1PowerIntegration, NoFinancialModelModuleThermalSpectralReflection)
-{
-	std::vector<double> annual_energy_expected = { 8714, 8749 };
-	std::map<std::string, double> pairs;
-	size_t count = 0;
-
-	// Module thermal models: NOCT, Heat Transfer Method
-	for (int cec_temp_corr_mode = 0; cec_temp_corr_mode < 1; cec_temp_corr_mode++)
-	{
-		pairs["cec_temp_corr_mode"] = cec_temp_corr_mode;
-		int pvsam_errors = modify_ssc_data_and_run_module(data, "pvsamv1", pairs);
-		EXPECT_FALSE(pvsam_errors);
-
-		if (!pvsam_errors)
-		{
-			ssc_number_t annual_energy;
-			ssc_data_get_number(data, "annual_energy", &annual_energy);
-			EXPECT_NEAR(annual_energy, annual_energy_expected[count], m_error_tolerance_hi) << "Annual energy.";
-		}
-		count++;
-	}
-}
-
 /// Test PVSAMv1 with default no-financial model and sytem design page changes
 TEST_F(CMPvsamv1PowerIntegration, NoFinancialModelSystemDesign)
 {
@@ -348,30 +286,30 @@ TEST_F(CMPvsamv1PowerIntegration, NoFinancialModelSystemDesign)
 	std::vector<double> subarray2_track_mode = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	std::vector<double> subarray3_track_mode = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 0, 0, 0, 0, 0 };
 	std::vector<double> subarray4_track_mode = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4 };
-	annual_energy_expected = { 167392, 176331, 183243, 166251, 175833, 183243, 171952, 178321, 183243, 171952, 178321, 183243, 183243, 183235, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 177310, 182927, 162456, 176883, 182902, 160961, 179014, 183024, 168431, 179014, 183024, 168431, 183243, 183243, 183243, 183243, 183243, 198796, 205187, 192695, 186088, 183243, 201501, 206750, 193370, 186290, 183243, 195419, 198926, 189995, 185277, 183243, 195419, 198926, 189995, 185277 };
+	annual_energy_expected = { 167392, 176331, 183243, 166251, 175833, 183243, 171952, 178321, 183243, 171952, 178321, 183243, 183243, 183227, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 177310, 182927, 162456, 176883, 182902, 160961, 179014, 183024, 168431, 179014, 183024, 168431, 183243, 183243, 183243, 183243, 183243, 198796, 205187, 192695, 186088, 183243, 201501, 206750, 193370, 186290, 183243, 195419, 198925, 189995, 185277, 183243, 195419, 198925, 189995, 185277 };
 
 	for (int i = 0; i != annual_energy_expected.size(); i++)
 	{
 		pairs["enable_mismatch_vmax_calc"] = enable_mismatch[i];
 		pairs["subarray1_azimuth"] = subarray1_azimuth[i];
-		pairs["subarray2_azimuth"] = subarray2_azimuth[i];
-		pairs["subarray3_azimuth"] = subarray3_azimuth[i];
+		pairs["subarray2_azimuth"] = subarray2_azimuth[i]; 
+		pairs["subarray3_azimuth"] = subarray3_azimuth[i]; 
 		pairs["subarray4_azimuth"] = subarray4_azimuth[i];
-		pairs["subarray1_gcr"] = subarray1_gcr[i];
-		pairs["subarray2_gcr"] = subarray2_gcr[i];
-		pairs["subarray3_gcr"] = subarray3_gcr[i];
+		pairs["subarray1_gcr"] = subarray1_gcr[i]; 
+		pairs["subarray2_gcr"] = subarray2_gcr[i]; 
+		pairs["subarray3_gcr"] = subarray3_gcr[i]; 
 		pairs["subarray4_gcr"] = subarray4_gcr[i];
-		pairs["subarray1_tilt"] = subarray1_tilt[i];
-		pairs["subarray2_tilt"] = subarray2_tilt[i];
-		pairs["subarray3_tilt"] = subarray3_tilt[i];
+		pairs["subarray1_tilt"] = subarray1_tilt[i]; 
+		pairs["subarray2_tilt"] = subarray2_tilt[i]; 
+		pairs["subarray3_tilt"] = subarray3_tilt[i]; 
 		pairs["subarray4_tilt"] = subarray4_tilt[i];
-		pairs["subarray1_rotlim"] = subarray1_rotlim[i];
-		pairs["subarray2_rotlim"] = subarray2_rotlim[i];
-		pairs["subarray3_rotlim"] = subarray3_rotlim[i];
+		pairs["subarray1_rotlim"] = subarray1_rotlim[i]; 
+		pairs["subarray2_rotlim"] = subarray2_rotlim[i]; 
+		pairs["subarray3_rotlim"] = subarray3_rotlim[i]; 
 		pairs["subarray4_rotlim"] = subarray4_rotlim[i];
-		pairs["subarray1_track_mode"] = subarray1_track_mode[i];
-		pairs["subarray2_track_mode"] = subarray2_track_mode[i];
-		pairs["subarray3_track_mode"] = subarray3_track_mode[i];
+		pairs["subarray1_track_mode"] = subarray1_track_mode[i]; 
+		pairs["subarray2_track_mode"] = subarray2_track_mode[i]; 
+		pairs["subarray3_track_mode"] = subarray3_track_mode[i]; 
 		pairs["subarray4_track_mode"] = subarray4_track_mode[i];
 
 		int pvsam_errors = modify_ssc_data_and_run_module(data, "pvsamv1", pairs);
@@ -410,21 +348,6 @@ TEST_F(CMPvsamv1PowerIntegration, NoFinancialModelShading)
 	if (!pvsam_errors) {
 		SetCalculated("annual_energy");
 		EXPECT_NEAR(calculated_value, annual_energy_expected[0], m_error_tolerance_hi);
-	}
-
-	// 4. Face both in same direction, ensure poa is calculated the same
-	pairs["subarray1_azimuth"] = 180;
-	pairs["subarray2_azimuth"] = 180;
-	pvsam_errors = modify_ssc_data_and_run_module(data, "pvsamv1", pairs);
-	EXPECT_FALSE(pvsam_errors);
-	if (!pvsam_errors) {
-		int n1, n2;
-		ssc_number_t * subarray1_poa_front = ssc_data_get_array(data, "subarray1_poa_front", &n1);
-		ssc_number_t * subarray2_poa_front = ssc_data_get_array(data, "subarray2_poa_front", &n2);
-		EXPECT_EQ(n1, n2);
-		for (int i = 0; i < n1; i++) {
-			EXPECT_EQ(subarray1_poa_front[i], subarray2_poa_front[i]);
-		}
 	}
 
 	// 1. Add 3D Shading
@@ -519,6 +442,133 @@ TEST_F(CMPvsamv1PowerIntegration, NoFinancialModelLosses)
 		EXPECT_NEAR(calculated_value, annual_energy_expected[2], m_error_tolerance_hi);
 	}
 }
+	
+	int pvsam_errors = run_module(data, "pvsamv1");
+/// Run PVSAMv1 with all defaults and lifetime mode for no-financial model
+TEST_F(CMPvsamv1PowerIntegration, DefaultLifetimeNoFinancialModel) {
+
+	std::map<std::string, double> pairs;
+	pairs["system_use_lifetime_output"] = 1;
+	pairs["analysis_period"] = 25;
+
+	double dc_degradation[25];
+	for (size_t i = 0; i < 25; i++) {
+		dc_degradation[i] = 0.5;
+	}
+
+	ssc_data_set_array(data, "dc_degradation", (ssc_number_t*)dc_degradation, 25);
+	ssc_data_set_array(data, "ac_degradation", (ssc_number_t*)dc_degradation, 25);
+
+	int pvsam_errors = modify_ssc_data_and_run_module(data, "pvsamv1", pairs); 
+
+	EXPECT_FALSE(pvsam_errors);
+	if (!pvsam_errors)
+	{
+		ssc_number_t annual_energy;
+		ssc_data_get_number(data, "annual_energy", &annual_energy);
+		EXPECT_NEAR(annual_energy, 8714, m_error_tolerance_hi) << "Annual energy.";
+
+		ssc_number_t capacity_factor;
+		ssc_data_get_number(data, "capacity_factor", &capacity_factor);
+		EXPECT_NEAR(capacity_factor, 21.2, m_error_tolerance_lo) << "Capacity factor";
+
+		ssc_number_t kwh_per_kw;
+		ssc_data_get_number(data, "kwh_per_kw", &kwh_per_kw);
+		EXPECT_NEAR(kwh_per_kw, 1857, m_error_tolerance_hi) << "Energy yield";
+
+		ssc_number_t performance_ratio;
+		ssc_data_get_number(data, "performance_ratio", &performance_ratio);
+		EXPECT_NEAR(performance_ratio, 0.79, m_error_tolerance_lo) << "Energy yield";
+	}
+}
+
+
+/// Test PVSAMv1 with default no-financial model and combinations of module thermal, spectral, and reflection models
+//This test can be expanded when we allow different combinations of thermal, spectral, and reflection models with different module models 
+TEST_F(CMPvsamv1PowerIntegration, NoFinancialModelModuleThermalSpectralReflection)
+{
+	std::vector<double> annual_energy_expected = { 8714, 8749 };
+	std::map<std::string, double> pairs;
+	size_t count = 0;
+
+	// Module thermal models: NOCT, Heat Transfer Method
+	for (int cec_temp_corr_mode = 0; cec_temp_corr_mode < 1; cec_temp_corr_mode++)
+	{
+		pairs["cec_temp_corr_mode"] = cec_temp_corr_mode;
+		int pvsam_errors = modify_ssc_data_and_run_module(data, "pvsamv1", pairs);
+		EXPECT_FALSE(pvsam_errors);
+
+		if (!pvsam_errors)
+		{
+			ssc_number_t annual_energy;
+			ssc_data_get_number(data, "annual_energy", &annual_energy);
+			EXPECT_NEAR(annual_energy, annual_energy_expected[count], m_error_tolerance_hi) << "Annual energy.";
+		}
+		count++;
+	}	
+}
+
+	std::vector<double> subarray2_azimuth = { 180, 180, 180, 0, 90, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180 };
+	std::vector<double> subarray3_azimuth = { 180, 180, 180, 180, 180, 180, 0, 90, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180 };
+	std::vector<double> subarray4_azimuth = { 180, 180, 180, 180, 180, 180, 180, 180, 180, 0, 90, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180 };
+	std::vector<double> enable_mismatch = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	std::vector<double> subarray1_gcr = { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.1, 0.5, 0.9, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+	std::vector<double> subarray2_gcr = { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.1, 0.5, 0.9, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+	std::vector<double> subarray3_gcr = { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.1, 0.5, 0.9, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+	std::vector<double> subarray4_gcr = { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.1, 0.5, 0.9, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+	std::vector<double> subarray1_tilt = { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 0, 45, 90, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20 };
+	std::vector<double> subarray2_tilt = { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 0, 45, 90, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20 };
+	std::vector<double> subarray3_tilt = { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 0, 45, 90, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20 };
+	std::vector<double> subarray4_tilt = { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 0, 45, 90, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20 };
+	std::vector<double> subarray1_rotlim = { 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45 };
+	std::vector<double> subarray2_rotlim = { 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45 };
+	std::vector<double> subarray3_rotlim = { 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45 };
+	std::vector<double> subarray4_rotlim = { 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45 };
+	std::vector<double> subarray1_track_mode = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	std::vector<double> subarray2_track_mode = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	std::vector<double> subarray3_track_mode = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 0, 0, 0, 0, 0 };
+	std::vector<double> subarray4_track_mode = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4 };
+	annual_energy_expected = { 167392, 176331, 183243, 166251, 175833, 183243, 171952, 178321, 183243, 171952, 178321, 183243, 183243, 183235, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 183243, 177310, 182927, 162456, 176883, 182902, 160961, 179014, 183024, 168431, 179014, 183024, 168431, 183243, 183243, 183243, 183243, 183243, 198796, 205187, 192695, 186088, 183243, 201501, 206750, 193370, 186290, 183243, 195419, 198926, 189995, 185277, 183243, 195419, 198926, 189995, 185277 };
+
+	for (int i = 0; i != annual_energy_expected.size(); i++)
+	{
+		pairs["enable_mismatch_vmax_calc"] = enable_mismatch[i];
+		pairs["subarray1_azimuth"] = subarray1_azimuth[i];
+		pairs["subarray2_azimuth"] = subarray2_azimuth[i]; 
+		pairs["subarray3_azimuth"] = subarray3_azimuth[i]; 
+		pairs["subarray4_azimuth"] = subarray4_azimuth[i];
+		pairs["subarray1_gcr"] = subarray1_gcr[i]; 
+		pairs["subarray2_gcr"] = subarray2_gcr[i]; 
+		pairs["subarray3_gcr"] = subarray3_gcr[i]; 
+		pairs["subarray4_gcr"] = subarray4_gcr[i];
+		pairs["subarray1_tilt"] = subarray1_tilt[i]; 
+		pairs["subarray2_tilt"] = subarray2_tilt[i]; 
+		pairs["subarray3_tilt"] = subarray3_tilt[i]; 
+		pairs["subarray4_tilt"] = subarray4_tilt[i];
+		pairs["subarray1_rotlim"] = subarray1_rotlim[i]; 
+		pairs["subarray2_rotlim"] = subarray2_rotlim[i]; 
+		pairs["subarray3_rotlim"] = subarray3_rotlim[i]; 
+		pairs["subarray4_rotlim"] = subarray4_rotlim[i];
+		pairs["subarray1_track_mode"] = subarray1_track_mode[i]; 
+		pairs["subarray2_track_mode"] = subarray2_track_mode[i]; 
+		pairs["subarray3_track_mode"] = subarray3_track_mode[i]; 
+		pairs["subarray4_track_mode"] = subarray4_track_mode[i];
+
+	// 4. Face both in same direction, ensure poa is calculated the same 
+	pairs["subarray1_azimuth"] = 180;
+	pairs["subarray2_azimuth"] = 180;
+	pvsam_errors = modify_ssc_data_and_run_module(data, "pvsamv1", pairs);
+	EXPECT_FALSE(pvsam_errors);
+	if (!pvsam_errors) {
+		int n1, n2;
+		ssc_number_t * subarray1_poa_front = ssc_data_get_array(data, "subarray1_poa_front", &n1);
+		ssc_number_t * subarray2_poa_front = ssc_data_get_array(data, "subarray2_poa_front", &n2);
+		EXPECT_EQ(n1, n2);
+		for (int i = 0; i < n1; i++) {
+			EXPECT_EQ(subarray1_poa_front[i], subarray2_poa_front[i]);
+		}
+	}
+
 
 /// Change half of all temperatures so that inv eff is derated by ~50% for half the year
 /// DC production & inverter efficiency both decrease as result
@@ -526,7 +576,7 @@ TEST_F(CMPvsamv1PowerIntegration, InvTempDerate) {
 	var_data* weatherData = create_weatherdata_array(1);
 	ssc_data_unassign(data, "solar_resource_file");
 	var_table *vt = static_cast<var_table*>(data);
-
+	
 	float temp[8760];
 	for (size_t i = 0; i < 8760; i++) {
 		temp[i] = 26.f;
@@ -534,7 +584,7 @@ TEST_F(CMPvsamv1PowerIntegration, InvTempDerate) {
 	for (size_t i = 0; i < 4380; i++) {
 		temp[i] = 76.6f;
 	}
-
+	
 	var_data tdry_vd = var_data(temp, 8760);
 	tdry_vd = var_data(temp, 8760);
 	weatherData->table.assign("tdry", tdry_vd);

@@ -90,6 +90,9 @@ class voltage_t;
 class capacity_t
 {
 public:
+	
+	capacity_t();
+	capacity_t(double q, double SOC_init, double SOC_max, double SOC_min);
 
 	capacity_t();
 	capacity_t(double q, double SOC_init, double SOC_max, double SOC_min);
@@ -157,7 +160,7 @@ class capacity_kibam_t : public capacity_t
 {
 public:
 
-	// Public APIs
+	// Public APIs 
 	capacity_kibam_t();
 	capacity_kibam_t(double q20, double t1, double q1, double q10, double SOC_init, double SOC_max, double SOC_min);
 	~capacity_kibam_t(){}
@@ -408,7 +411,7 @@ public:
 	double cycle_range();
 
 protected:
-
+	
 	void rainflow_ranges();
 	void rainflow_ranges_circular(int index);
 	int rainflow_compareRanges();
@@ -546,9 +549,8 @@ class thermal_t
 {
 public:
 	thermal_t();
-	thermal_t(double dtHour, double mass, double length, double width, double height,
-		double Cp, double h,
-		std::vector<double> T_room,
+	thermal_t(double mass, double length, double width, double height,
+		double Cp, double h, double T_room,
 		const util::matrix_t<double> &cap_vs_temp);
 
 	// deep copy

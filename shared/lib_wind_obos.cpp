@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -69,11 +69,6 @@
 #endif
 
 using namespace std;
-
-// responsibility of developers of this file to fix these warnings
-#pragma warning (disable : 4458 ) // https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4458?view=vs-2017
-
-
 /*
 // For Python wrapping with c_types
 extern "C" {
@@ -1578,7 +1573,7 @@ double wobos::calculate_substation_cost() {
   
   // calculate the rating in megavolt amperes of a single MPT
   //if the remainder of '((nTurb*turbR*1.15)/nMPT)/10' is greater than 5 round up, else round down
-  double mptRating = (double)(roundf(float((nTurb*turbR*1.15) / nMPT / 10.0)) * 10.0);
+  double mptRating = roundf(((nTurb*turbR*1.15) / nMPT) / 10.0) * 10.0;
 
   //calculate the total cost for all MPTs in dollars
   double mptCost = mptRating * nMPT * mptCR;
@@ -1897,9 +1892,9 @@ void wobos::ElectricalInstCost() {
 // Quick helper function for repeated activities in mobilization-demobilizastion function
 double my_mobilization_cost(vessel myvessel, set<int> *myset) {
   double cost = 0.0;
-  if (myset->find((int)myvessel.identifier) == myset->end()) {
+  if (myset->find(myvessel.identifier) == myset->end()) {
     cost = myvessel.get_mobilization_cost();
-    myset->insert((int)myvessel.identifier);
+    myset->insert(myvessel.identifier);
   }
   return cost;
 }

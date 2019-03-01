@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
-*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
+*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
+*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -46,39 +46,108 @@
 *  IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 *  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************************************/
-
-#ifndef __lib_snowmodel_h
-#define __lib_snowmodel_h
+#ifndef __lib_ondinv_h
+#define __lib_ondinv_h
 
 #include <string>
+#include <vector>
+//#include "mlm_spline.h" // spline interpolator for efficiency curves
+#include "bspline.h"
+using namespace std;
+using namespace SPLINTER;
 
-class pvsnowmodel
+class ond_inverter
 {
 public:
-	pvsnowmodel();
+	ond_inverter();
 
-	// limitTilt requires tilt to be between 10 and 45 degrees
-	bool setup(int, float, bool limitTilt = true);
+	double PNomConv; // [W]
+	double PMaxOUT; // [W]
+	double VOutConv; // [W]
+	double VMppMin; // [V]
+	double VMPPMax; // [V]
+	double VAbsMax; // [V]
+	double PSeuil; // [W]
+	string ModeOper; // [-]
+	string CompPMax; // [-]
+	string CompVMax; // [-]
+	string ModeAffEnum; // [-]
+	double PNomDC; // [W]
+	double PMaxDC; // [W]
+	double IMaxDC; // [A]
+	double INomDC; // [A]
+	double INomAC; // [A]
+	double IMaxAC; // [A]
+	double TPNom; // [°C]
+	double TPMax; // [°C]
+	double TPLim1; // [°C]
+	double TPLimAbs; // [°C]
+	double PLim1; // [kW]
+	double PLimAbs; // [kW]
+	double VNomEff[3]; // [V]
+	int NbInputs; // [-]
+	int NbMPPT; // [-]
+	double Aux_Loss; // [W]
+	double Night_Loss; // [W]
+	double lossRDc; // [V/A]
+	double lossRAc; // [A]
+	int effCurve_elements; // [-]
+	double effCurve_Pdc[3][100]; // [W]
+	double effCurve_Pac[3][100]; // [W]
+	double effCurve_eta[3][100]; // [-]
+	int doAllowOverpower; // [-] // ADDED TO CONSIDER MAX POWER USAGE [2018-06-23, TR]
+	int doUseTemperatureLimit; // [-] // ADDED TO CONSIDER TEMPERATURE LIMIT USAGE [2018-06-23, TR]
 
-	bool getLoss(float poa, float tilt, float wspd, float tdry, float snowDepth, int sunup, float dt, float &returnLoss);
+	bool acpower(	
+		/* inputs */
+		double Pdc,			/* Input power to inverter (Wdc) */
+		double Vdc,			/* Voltage input to inverter (Vdc) */
+		double Tamb,		/* Ambient temperature (°C) */
 
-	float	tilt,		// Surface tilt, degrees
-		baseTilt,		// The default tilt for 1-axis tracking systems
-		mSlope,			// This is a value given by fig. 4 in [1]
-		sSlope,			// This is a value given by fig. 7 in [1]
-		deltaThreshold,	// The minimum change in snow depth required to trigger a snow fall detection
-		depthThreshold,	// The minimum snow depth required to trigger a snow fall detection
-		previousDepth,	// The snow depth from the previous iteration
-		coverage,		// Snow coverage ( 0...1 )
-		pCvg;			// Snow coverage from previous iteration ( 0...1 )
+		/* outputs */
+		double *Pac,		/* AC output power (Wac) */
+		double *Ppar,		/* AC parasitic power consumption (Wac) */
+		double *Plr,		/* Part load ratio (Pdc_in/Pdc_rated, 0..1) */
+		double *Eff,		/* Conversion efficiency (0..1) */
+		double *Pcliploss,	/* Power loss due to clipping loss (Wac) */
+		double *Psoloss,	/* Power loss due to operating power consumption (Wdc) */
+		double *Pntloss,	/* Power loss due to night time tare loss (Wac) */
+		double *dcloss,		/* DC power loss (Wdc) */
+		double *acloss		/* AC power loss (Wac) */
+	);
+	double calcEfficiency(
+		double Pdc,
+		int index_eta
+	);
+	double tempDerateAC(
+		double arrayT[],
+		double arrayPAC[],
+		double T
+	);
+	virtual void initializeManual();
 
-	int nmody,			// number of modules in a row
-		badValues,		// keeps track of the number of detected bad snow depth values
-		maxBadValues;	// The number of maximum bad snow depth values that is acceptable
+private:
+	bool ondIsInitialized;
 
-	std::string msg;		// This is a string used to return error messages
-	bool good;				// This an error flag that will be set to false
-							//  if an error has occured
+	int noOfEfficiencyCurves;
+//	tk::spline effSpline[2][3];
+//	BSpline m_bspline3[2][3];
+	BSpline m_bspline3[3];
+	double x_max[3];
+	double x_lim[3];
+	double Pdc_threshold;
+	double a[3];
+	double b[3];
+
+	double PNomDC_eff;
+	double PMaxDC_eff;
+	double INomDC_eff;
+	double IMaxDC_eff;
+	double T_array[6];
+	double PAC_array[6];
+
+
+
 };
 
 #endif

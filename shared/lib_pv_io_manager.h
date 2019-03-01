@@ -529,7 +529,7 @@ public:
 
 
 	int inverterType;		/// From inverterTypeList
-	size_t nMpptInputs;        /// Number of maximum power point tracking (MPPT) inputs on one inverter
+	int nMpptInputs;        /// Number of maximum power point tracking (MPPT) inputs on one inverter
 	double mpptLowVoltage;  /// Lower limit of inverter voltage range for maximum power point tracking (MPPT) per MPPT input
 	double mpptHiVoltage;   /// Upper limit of inverter voltage range for maximum power point tracking (MPPT) per MPPT input
 	double ratedACOutput;   /// Rated power for one inverter

@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -363,7 +363,7 @@ bool mcsp_celltemp_t::operator() ( pvinput_t &input, pvmodule_t &module, double 
 	double RefrAng1   = asind(sind(THETA)/n2);
 	double TransSurf1 = 1-0.5*( pow(sind(RefrAng1-THETA),2)/pow(sind(RefrAng1+THETA),2)
 			+ pow(tand(RefrAng1-THETA),2)/pow(tand(RefrAng1+THETA),2) );
-	double TransCoverAbs1 = exp(-k_glass*l_glass/cosd(RefrAng1));
+	double TransCoverAbs1 = exp(-k_trans*l_thick/cosd(RefrAng1));
 	double tau1       = TransCoverAbs1*TransSurf1;
         
 	//!Evaluating transmittance at angle Normal to surface (0), use 1 to avoid probs.
@@ -371,7 +371,7 @@ bool mcsp_celltemp_t::operator() ( pvinput_t &input, pvmodule_t &module, double 
 	double RefrAng2   = asind(sind(THETA2)/n2);
 	double TransSurf2 = 1-0.5*( pow(sind(RefrAng2-1),2)/pow(sind(RefrAng2+1),2)
 		+ pow(tand(RefrAng2-1),2)/pow(tand(RefrAng2+1),2) );
-	double TransCoverAbs2 = exp(-k_glass*l_glass/cosd(RefrAng2));
+	double TransCoverAbs2 = exp(-k_trans*l_thick/cosd(RefrAng2));
 	double tau2       = TransCoverAbs2*TransSurf2;
 
 	//!Evaluating transmittance at equivalent angle for diffuse 
@@ -379,7 +379,7 @@ bool mcsp_celltemp_t::operator() ( pvinput_t &input, pvmodule_t &module, double 
 	double RefrAng3   = asind(sind(THETA3)/n2);
 	double TransSurf3 = 1-.5*( pow(sind(RefrAng3-THETA3),2)/pow(sind(RefrAng3+THETA3),2)
 		+ pow(tand(RefrAng3-THETA3),2)/pow(tand(RefrAng3+THETA3),2) );
-	double TransCoverAbs3 = exp(-k_glass*l_glass/cosd(RefrAng3));
+	double TransCoverAbs3 = exp(-k_trans*l_thick/cosd(RefrAng3));
 	double TransCoverDiff = TransCoverAbs3;
 	double tau3       = TransCoverAbs3*TransSurf3;
 	double TADIR      = tau1/tau2;
@@ -391,7 +391,7 @@ bool mcsp_celltemp_t::operator() ( pvinput_t &input, pvmodule_t &module, double 
 	RefrAng3   = asind(sind(THETA3)/n2);
 	TransSurf3 = 1-.5*( pow(sind(RefrAng3-THETA3),2)/pow(sind(RefrAng3+THETA3),2)
 		+ pow(tand(RefrAng3-THETA3),2)/pow(tand(RefrAng3+THETA3),2) );
-	TransCoverAbs3 = exp(-k_glass*l_glass/cosd(RefrAng3));
+	TransCoverAbs3 = exp(-k_trans*l_thick/cosd(RefrAng3));
 	tau3       = TransCoverAbs3*TransSurf3;
 	double TAGND     = tau3/tau2;
       

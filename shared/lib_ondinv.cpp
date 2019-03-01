@@ -240,9 +240,9 @@ void ond_inverter::initializeManual()
 			double atY[3];
 			const int MAX_ELEMENTS = 100; // = effCurve_elements + 5;
 //			x_lim[j] = effCurve_Pdc[j][0];
-			for (int i = 0; i <= MAX_ELEMENTS - 1; i++)
+			for (int i = 0; i <= MAX_ELEMENTS - 1; i++) 
 			{
-
+				
 				if (i <= 2) { // atan
 							  // atan
 					atX[i] = effCurve_Pdc[j][i];
@@ -270,7 +270,7 @@ void ond_inverter::initializeManual()
 					}
 				}
 				// include overlap at i=2
-				if ((i >=2 && i < MAX_ELEMENTS) && (effCurve_Pdc[j][i] > 0))// && effCurve_eta[j][i] > 0))
+				if ((i >=2 && i < MAX_ELEMENTS) && (effCurve_Pdc[j][i] > 0))// && effCurve_eta[j][i] > 0)) 
 				{ // spline
 					ondspl_X.push_back(effCurve_Pdc[j][i]);
 					ondspl_Y.push_back(effCurve_eta[j][i]);
@@ -295,6 +295,7 @@ void ond_inverter::initializeManual()
 				samples.addSample(xSamples, ondspl_Y[k]);
 			}
 			m_bspline3[j] = BSpline::Builder(samples).degree(3).build();
+
 		}
 		ondIsInitialized = true;
 	}
@@ -321,13 +322,13 @@ double ond_inverter::calcEfficiency(double Pdc, int index_eta) {
 	if (Pdc <= 0) {
 		eta = 0;
 	}
-	else if (Pdc >= x_lim[index_eta])
+	else if (Pdc >= x_lim[index_eta]) 
 	{
 //		eta = effSpline[splineIndex][index_eta](Pdc);
 		x(0) = Pdc;
 		eta = (m_bspline3[index_eta]).eval(x);
 	}
-	else
+	else 
 	{
 		eta = a[index_eta] * atan(b[index_eta] * Pdc / PNomDC_eff);
 	}

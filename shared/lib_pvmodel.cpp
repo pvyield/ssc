@@ -107,7 +107,7 @@ pvoutput_t::pvoutput_t()
 
 
 pvoutput_t::pvoutput_t( double p, double v,
-		double c, double e,
+		double c, double e, 
 		double voc, double isc, double t, double aoi_modifier)
 {
 	Power = p;
@@ -164,7 +164,7 @@ bool spe_module_t::operator() ( pvinput_t &input, double TcellC, double , pvoutp
 	double dceff, dcpwr;
 	if( input.radmode != 3  || !input.usePOAFromWF){
 		dceff = eff_interpolate( input.Ibeam + idiff + input.Irear, Rad, Eff );
-		dcpwr = dceff*(input.Ibeam+idiff + input.Irear)*Area;
+		dcpwr = dceff*(input.Ibeam+idiff + input.Irear)*Area;	
 	}
 	else{
 		dceff = eff_interpolate( input.poaIrr, Rad, Eff );
@@ -181,7 +181,7 @@ bool spe_module_t::operator() ( pvinput_t &input, double TcellC, double , pvoutp
 	output.Current = output.Power / output.Voltage;
 	output.Isc_oper = IscRef();
 	output.Voc_oper = VocRef();
-	output.AOIModifier = 1.0; // No model for cover effects in simple efficiency model
+	output.AOIModifier = 1.0; // No model for cover effects in simple efficiency model 
 	return true;
 }
 
@@ -481,10 +481,10 @@ double maxpower_5par_rec( double Voc_ubound, double a, double Il, double Io, dou
 	refdata.Vbi = Vbi;
 
 	int maxiter = 5000;
-
+				
 	if (golden( 0, Voc_ubound, powerfunc_rec, &refdata, 1e-4, &V, &P, maxiter))
 	{
-		P = -P;
+		P = -P;				
 		I = 0;
 		if (V != 0) I=P/V;
 	}
@@ -495,3 +495,4 @@ double maxpower_5par_rec( double Voc_ubound, double a, double Il, double Io, dou
 	if ( __Imp ) *__Imp = I;
 	return P;
 }
+

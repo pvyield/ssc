@@ -475,7 +475,7 @@ struct var_map
     var_optimize opt;
     var_parametric par;
     var_solarfield sf;
-
+    
     std::vector< var_heliostat > hels;
     std::vector< var_receiver > recs;
 

@@ -59,7 +59,7 @@ class pvinput_t
 {
 public:
 	pvinput_t();
-	pvinput_t( double ib, double id, double ig, double irear, double ip,
+	pvinput_t( double ib, double id, double ig, double irear, double ip, 
 		double ta, double td, double ws, double wd, double patm,
 		double zen, double inc,
 		double elv, double tlt, double azi,
@@ -90,7 +90,7 @@ class pvoutput_t
 public:
 	pvoutput_t();
 	pvoutput_t( double p, double v,
-		double c, double e,
+		double c, double e, 
 		double voc, double isc, double t, double aoi_modifier);
 
 	double Power; // output power, Watts
@@ -175,6 +175,7 @@ double openvoltage_5par_rec(double Voc0, double a, double IL, double IO, double 
 double maxpower_5par( double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double *Vmp=0, double *Imp=0);
 double maxpower_5par_rec(double Voc_ubound, double a, double Il, double Io, double Rs, double Rsh, double D2MuTau, double Vbi, double *__Vmp=0, double *__Imp=0);
 double air_mass_modifier( double Zenith_deg, double Elev_m, double a[5] );
+
 
 
 #endif

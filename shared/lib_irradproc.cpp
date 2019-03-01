@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -1000,20 +1000,20 @@ void irrad::set_time( int y, int m, int d, int h, double min, double delt_hr )
 	this->delt = delt_hr;
 }
 
-void irrad::set_location( double latDegrees, double longDegrees, double tz )
+void irrad::set_location( double latitudeDegrees, double longitudeDegrees, double timezone )
 {
-	this->latitudeDegrees = latDegrees;
-	this->longitudeDegrees = longDegrees;
-	this->timezone = tz;
+	this->latitudeDegrees = latitudeDegrees;
+	this->longitudeDegrees = longitudeDegrees;
+	this->timezone = timezone;
 }
 
-void irrad::set_sky_model( int sm, double alb )
+void irrad::set_sky_model( int skyModel, double albedo )
 {
-	this->skyModel = sm;
-	this->albedo = alb;
+	this->skyModel = skyModel;
+	this->albedo = albedo;
 }
 
-void irrad::set_surface( int tracking, double tilt_deg, double azimuth_deg, double rotlim_deg, bool enBacktrack, double gcr )
+void irrad::set_surface( int tracking, double tilt_deg, double azimuth_deg, double rotlim_deg, bool enableBacktrack, double groundCoverageRatio )
 {
 	this->trackingMode = tracking;
 	if (tracking == 4)
@@ -1021,8 +1021,8 @@ void irrad::set_surface( int tracking, double tilt_deg, double azimuth_deg, doub
 	this->tiltDegrees = tilt_deg;
 	this->surfaceAzimuthDegrees = azimuth_deg;
 	this->rotationLimitDegrees = rotlim_deg;
-	this->enableBacktrack = enBacktrack;
-	this->groundCoverageRatio = gcr;
+	this->enableBacktrack = enableBacktrack;
+	this->groundCoverageRatio = groundCoverageRatio;
 }
 	
 void irrad::set_beam_diffuse( double beam, double diffuse )
@@ -1046,13 +1046,13 @@ void irrad::set_global_diffuse(double global, double diffuse)
 	this->radiationMode = irrad::GH_DF;
 }
 
-void irrad::set_poa_reference( double poaIrradianceFront, poaDecompReq* pA){
-	this->weatherFilePOA = poaIrradianceFront;
+void irrad::set_poa_reference( double planeOfArrayIrradianceFront, poaDecompReq* pA){
+	this->weatherFilePOA = planeOfArrayIrradianceFront;
 	this->radiationMode = irrad::POA_R;
 	this->poaAll = pA;
 }
-void irrad::set_poa_pyranometer( double poaIrradianceFront, poaDecompReq* pA ){
-	this->weatherFilePOA = poaIrradianceFront;
+void irrad::set_poa_pyranometer( double planeOfArrayIrradianceFront, poaDecompReq* pA ){
+	this->weatherFilePOA = planeOfArrayIrradianceFront;
 	this->radiationMode = irrad::POA_P;
 	this->poaAll = pA;
 }
@@ -1640,7 +1640,7 @@ void irrad::getFrontSurfaceIrradiances(double pvFrontShadeFraction, double rowTo
 	}
 }
 
-void irrad::getBackSurfaceIrradiances(double pvBackShadeFraction, double rowToRow, double verticalHeight, double clearanceGround, double , double horizontalLength, std::vector<double> rearGroundGHI, std::vector<double> frontGroundGHI, std::vector<double> frontReflected, std::vector<double> & rearIrradiance, double & rearAverageIrradiance)
+void irrad::getBackSurfaceIrradiances(double pvBackShadeFraction, double rowToRow, double verticalHeight, double clearanceGround, double distanceBetweenRows, double horizontalLength, std::vector<double> rearGroundGHI, std::vector<double> frontGroundGHI, std::vector<double> frontReflected, std::vector<double> & rearIrradiance, double & rearAverageIrradiance)
 {
 	// front surface assumed to be glass
 	double n2 = 1.526;
@@ -1661,9 +1661,9 @@ void irrad::getBackSurfaceIrradiances(double pvBackShadeFraction, double rowToRo
 	double isotropicSkyDiffuse = diffuseIrradianceRear[0];
 
 	// Calculate components for a 90 degree tilt 
-	double surfaceAnglesRadians90[5] = { 0,0,0,0,0 };
-	incidence(0, 90.0, 180.0, 45.0, solarZenithRadians, solarAzimuthRadians, this->enableBacktrack, this->groundCoverageRatio, surfaceAnglesRadians90);
-	perez(0, calculatedDirectNormal, calculatedDiffuseHorizontal, albedo, surfaceAnglesRadians90[0], surfaceAnglesRadians90[1], solarZenithRadians, planeOfArrayIrradianceRear, diffuseIrradianceRear);
+	double surfaceAnglesRadians[5] = { 0,0,0,0,0 };
+	incidence(0, 90.0, 180.0, 45.0, solarZenithRadians, solarAzimuthRadians, this->enableBacktrack, this->groundCoverageRatio, surfaceAnglesRadians);
+	perez(0, calculatedDirectNormal, calculatedDiffuseHorizontal, albedo, surfaceAnglesRadians[0], surfaceAnglesRadians[1], solarZenithRadians, planeOfArrayIrradianceRear, diffuseIrradianceRear);
 	double horizonDiffuse = diffuseIrradianceRear[2];
 
 	// Calculate x,y coordinates of bottom and top edges of PV row in back of desired PV row so that portions of sky and ground viewed by the 

@@ -2,7 +2,7 @@
 *  Copyright 2017 Alliance for Sustainable Energy, LLC
 *
 *  NOTICE: This software was developed at least in part by Alliance for Sustainable Energy, LLC
-*  (“Alliance”) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
+*  (ï¿½Allianceï¿½) under Contract No. DE-AC36-08GO28308 with the U.S. Department of Energy and the U.S.
 *  The Government retains for itself and others acting on its behalf a nonexclusive, paid-up,
 *  irrevocable worldwide license in the software to reproduce, prepare derivative works, distribute
 *  copies to the public, perform publicly and display publicly, and to permit others to do so.
@@ -26,8 +26,8 @@
 *  4. Redistribution of this software, without modification, must refer to the software by the same
 *  designation. Redistribution of a modified version of this software (i) may not refer to the modified
 *  version by the same designation, or by any confusingly similar designation, and (ii) must refer to
-*  the underlying software originally provided by Alliance as “System Advisor Model” or “SAM”. Except
-*  to comply with the foregoing, the terms “System Advisor Model”, “SAM”, or any confusingly similar
+*  the underlying software originally provided by Alliance as ï¿½System Advisor Modelï¿½ or ï¿½SAMï¿½. Except
+*  to comply with the foregoing, the terms ï¿½System Advisor Modelï¿½, ï¿½SAMï¿½, or any confusingly similar
 *  designation may not be used to refer to any modified version of this software or any modified
 *  version of the underlying software originally provided by Alliance without the prior written consent
 *  of Alliance.
@@ -227,6 +227,7 @@ enum{
     O_T_FIELD_OUT_AT_DSN,
     O_P_FIELD_IN_AT_DSN,
 	O_T_SYS_H,
+    O_RECIRC,
 	O_M_DOT_AVAIL,
     O_M_DOT_FIELD_HTF,
 	O_Q_AVAIL,
@@ -439,6 +440,7 @@ tcsvarinfo sam_mw_trough_type250_variables[] = {
     { TCS_OUTPUT,          TCS_NUMBER, O_P_FIELD_IN_AT_DSN,     "P_field_in_at_des",		                                "Field/runner inlet pressure at design conditions",          "bar",             "",             "",             "" },
 
 	{ TCS_OUTPUT,          TCS_NUMBER,           O_T_SYS_H,                "T_sys_h",                                                      "Solar field HTF outlet temperature",            "C",             "",             "",             "" },
+    { TCS_OUTPUT,          TCS_NUMBER,            O_RECIRC,          "recirculating",                                                 "Field recirculating (bypass valve open)",         "none",             "",             "",             "" },
 	{ TCS_OUTPUT,          TCS_NUMBER,       O_M_DOT_AVAIL,            "m_dot_avail",                                                       "HTF mass flow rate from the field",        "kg/hr",             "",             "",             "" },
     { TCS_OUTPUT,          TCS_NUMBER,   O_M_DOT_FIELD_HTF,        "m_dot_field_htf",                         "HTF mass flow rate from the field, including when recirculating",        "kg/hr",             "",             "",             "" },
 	{ TCS_OUTPUT,          TCS_NUMBER,           O_Q_AVAIL,                "q_avail",                                                     "Thermal power produced by the field",          "MWt",             "",             "",             "" },
@@ -1830,7 +1832,6 @@ public:
             value(I_T_COLD_IN, T_loop_in_des - 273.15); // HTF return temperature, to the field [C]
             value(I_M_DOT_IN, m_dot_design * 3600);     // HTF mass flow rate at the inlet to the field  [kg/hr]
             value(I_DEFOCUS, 1);		        // Defocus control  [none] (1 = no defocus)
-            value(I_RECIRC, 0.);
             value(I_SOLARAZ, ColAz*r2d + 180);	// Solar azimuth angle, 0 = North [deg], before SolarAz is converted so to make them equal
             latitude = value(I_LATITUDE);		// Site latitude read from weather file [deg]
             longitude = value(I_LONGITUDE);		// Site longitude read from weather file [deg]
@@ -2549,7 +2550,7 @@ freeze_prot_flag: //7   continue
 
 				E_field_loss_tot *= 1.e-6 * dt;
 
-				double E_field_pipe_hl = 2*Runner_hl_hot_tot + float(nfsec)*Header_hl_hot_tot + 2*Runner_hl_cold_tot + float(nfsec)*Header_hl_cold_tot + float(nLoops)*Intc_hl;
+				double E_field_pipe_hl = 2*Runner_hl_hot_tot + float(nfsec)*Header_hl_hot_tot + 2*Runner_hl_cold_tot + float(nfsec)*Header_hl_cold_tot + Intc_hl;
 
 				E_field_pipe_hl *= dt;		//[J]
 
@@ -3242,7 +3243,7 @@ calc_final_metrics_goto:
 			Pipe_hl_hot = 2*Runner_hl_hot_tot + float(nfsec)*Header_hl_hot_tot;
 			Pipe_hl_cold = 2*Runner_hl_cold_tot + float(nfsec)*Header_hl_cold_tot;
 
-			Pipe_hl = Pipe_hl_hot + Pipe_hl_cold + float(nLoops)*Intc_hl;
+			Pipe_hl = Pipe_hl_hot + Pipe_hl_cold + Intc_hl;
 
 			if( !is_using_input_gen )
 				E_avail_tot = max(E_avail_tot - Pipe_hl*dt, 0.0);    //[J] 11/1/11 TN: Include hot and cold piping losses in available energy calculation
@@ -3264,8 +3265,9 @@ calc_final_metrics_goto:
 			//Calculate the available mass flow of HTF
 			m_dot_avail = max(q_avail*1.e6 / (c_htf_ave*(T_sys_h - T_cold_in_1)), 0.0); //[kg/s]
             m_dot_field_htf = m_dot_avail;
-            if (recirculating == true)
+			if( T_sys_h < T_recirc )   // MJW 12.14.2010 Limit field production to above startup temps. Otherwise we get strange results during startup. Does this affect turbine startup?
 			{
+                recirculating = true;
                 q_avail = 0.0;
 				m_dot_avail = 0.0;
                 m_dot_field_htf = m_dot_htf_tot;
@@ -3409,6 +3411,7 @@ set_outputs_and_return:
 
 		//Set outputs
 		value(O_T_SYS_H, T_sys_h_out);				//[C] Solar field HTF outlet temperature
+        value(O_RECIRC, recirculating);             //[none] field recirculating (bypass valve open)
 		value(O_M_DOT_AVAIL, m_dot_avail_out);		//[kg/hr] HTF mass flow rate from the field
         value(O_M_DOT_FIELD_HTF, m_dot_field_htf_out);  //[kg/hr] HTF mass flow rate from the field, including when recirculating
 		value(O_Q_AVAIL, q_avail);					//[MWt] Thermal power produced by the field
@@ -5062,7 +5065,7 @@ lab_keep_guess:
 	 following document:
 
 	   Parabolic Trough Solar System Piping Model
-	   Final Report May 13, 2002 — December 31, 2004
+	   Final Report May 13, 2002 ï¿½ December 31, 2004
 
 	   B. Kelly
 	   Nexant, Inc. San Francisco, California
