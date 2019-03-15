@@ -58,7 +58,7 @@
 
 SSCEXPORT int ssc_version()
 {
-	return 205;
+	return 207;
 }
 
 

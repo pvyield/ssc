@@ -52,11 +52,7 @@
 #include "cmod_battery.h"
 #include "common.h"
 #include "core.h"
-#include "lib_battery.h"
-#include "lib_battery_dispatch.h"
-#include "lib_battery_powerflow.h"
-#include "lib_power_electronics.h"
-#include "lib_shared_inverter.h"
+#include "lib_time.h"
 #include "lib_util.h"
 #include "lib_utility_rate.h"
 
@@ -163,10 +159,10 @@ var_info vtab_battery_inputs[] = {
 	{ SSC_INPUT,        SSC_ARRAY,      "dispatch_manual_percent_gridcharge",          "Periods 1-6 gridcharge percent",                         "%",        "",                     "Battery",       "en_batt=1&batt_dispatch_choice=4",                           "",                             "" },
 	{ SSC_INPUT,        SSC_MATRIX,     "dispatch_manual_sched",                       "Battery dispatch schedule for weekday",                  "",         "",                     "Battery",       "en_batt=1&batt_dispatch_choice=4",                           "",                             "" },
 	{ SSC_INPUT,        SSC_MATRIX,     "dispatch_manual_sched_weekend",               "Battery dispatch schedule for weekend",                  "",         "",                     "Battery",       "en_batt=1&batt_dispatch_choice=4",                           "",                             "" },
-	{ SSC_INPUT,        SSC_ARRAY,      "batt_target_power",                           "Grid target power for every time step",                  "kW",       "",                     "Battery",       "en_batt=1&batt_meter_position=0&batt_dispatch_choice=2",                        "",                             "" },
-	{ SSC_INPUT,        SSC_ARRAY,      "batt_target_power_monthly",                   "Grid target power on monthly basis",                     "kW",       "",                     "Battery",       "en_batt=1&batt_meter_position=0&batt_dispatch_choice=2",                        "",                             "" },
+	{ SSC_INPUT,        SSC_ARRAY,      "batt_target_power",                           "Grid target power (AC) for every time step",             "kWac",     "",                     "Battery",       "en_batt=1&batt_meter_position=0&batt_dispatch_choice=2",                        "",                             "" },
+	{ SSC_INPUT,        SSC_ARRAY,      "batt_target_power_monthly",                   "Grid target power (AC) on monthly basis",                "kWac",     "",                     "Battery",       "en_batt=1&batt_meter_position=0&batt_dispatch_choice=2",                        "",                             "" },
 	{ SSC_INPUT,        SSC_NUMBER,     "batt_target_choice",                          "Target power input option",                              "0/1",      "0=InputMonthlyTarget,1=InputFullTimeSeries", "Battery", "en_batt=1&batt_meter_position=0&batt_dispatch_choice=2",                        "",                             "" },
-	{ SSC_INPUT,        SSC_ARRAY,      "batt_custom_dispatch",                        "Custom battery power for every time step",               "kW",       "",                     "Battery",       "en_batt=1&batt_dispatch_choice=3","",                         "" },
+	{ SSC_INPUT,        SSC_ARRAY,      "batt_custom_dispatch",                        "Custom battery power (DC) for every time step",          "kWdc",     "",                     "Battery",       "en_batt=1&batt_dispatch_choice=3","",                         "" },
 	{ SSC_INPUT,        SSC_NUMBER,     "batt_dispatch_choice",                        "Battery dispatch algorithm",                             "0/1/2/3/4", "If behind the meter: 0=PeakShavingLookAhead,1=PeakShavingLookBehind,2=InputGridTarget,3=InputBatteryPower,4=ManualDispatch, if front of meter: 0=AutomatedLookAhead,1=AutomatedLookBehind,2=AutomatedInputForecast,3=InputBatteryPower,4=ManualDispatch",                    "Battery",       "en_batt=1",                        "",                             "" },
 	{ SSC_INPUT,        SSC_ARRAY,      "batt_pv_clipping_forecast",                   "PV clipping forecast",                                   "kW",       "",                     "Battery",       "en_batt=1&batt_meter_position=1&batt_dispatch_choice=2",  "",          "" },
 	{ SSC_INPUT,        SSC_ARRAY,      "batt_pv_dc_forecast",                         "PV dc power forecast",                                   "kW",       "",                     "Battery",       "en_batt=1&batt_meter_position=1&batt_dispatch_choice=2",  "",          "" },
@@ -1112,7 +1108,7 @@ void battstor::check_replacement_schedule()
 		bool replace = false;
 		if (year < batt_vars->batt_replacement_schedule.size())
 		{
-			size_t num_repl = (size_t)batt_vars->batt_replacement_schedule[year];
+			size_t num_repl = batt_vars->batt_replacement_schedule[year];
 			for (size_t j_repl = 0; j_repl < num_repl; j_repl++)
 			{
 				if ((hour == (j_repl * 8760 / num_repl)) && step == 0)
@@ -1343,7 +1339,13 @@ static var_info _cm_vtab_battery[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "system_use_lifetime_output",                 "Lifetime simulation",                                     "0/1",       "0=SingleYearRepeated,1=RunEveryYear",   "",        "?=0",                   "BOOLEAN",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "analysis_period",                            "Lifetime analysis period",                                "years",     "The number of years in the simulation", "",        "system_use_lifetime_output=1","",                               "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "en_batt",                                    "Enable battery storage model",                            "0/1",        "",                     "Battery",                      "?=0",                    "",                               "" },
-	{ SSC_INOUT,        SSC_ARRAY,       "gen",										   "System power generated",                                  "kW",         "",                     "",                             "",                       "",                               "" },
+
+	// simulation inputs - required only if lifetime analysis
+	{ SSC_INPUT,        SSC_NUMBER,      "system_use_lifetime_output",                 "PV lifetime simulation",                                  "0/1",     "0=SingleYearRepeated,1=RunEveryYear",                     "",             "?=0",                        "BOOLEAN",                        "" },
+	{ SSC_INPUT,        SSC_NUMBER,      "analysis_period",                            "Lifetime analysis period",                                "years",   "The number of years in the simulation",                   "",             "system_use_lifetime_output=1",   "",                               "" },
+
+
+	{ SSC_INPUT,        SSC_ARRAY,       "gen",										   "System power generated (lifetime)",                         "kW",         "",                     "",                             "",                       "",                               "" },
 	{ SSC_INPUT,		SSC_ARRAY,	     "load",			                           "Electricity load (year 1)",                               "kW",	        "",				        "",                             "",	                      "",	                            "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "batt_replacement_option",                    "Enable battery replacement?",                              "0=none,1=capacity based,2=user schedule", "", "Battery",             "?=0",                    "INTEGER,MIN=0,MAX=2",           "" },
 	{ SSC_INOUT,        SSC_NUMBER,      "capacity_factor",                            "Capacity factor",                                         "%",          "",                     "",                             "?=0",                    "",                               "" },
@@ -1367,104 +1369,61 @@ public:
 	{
 		if (as_boolean("en_batt"))
 		{
-			// Power from generation sources feeding into battery
-			std::vector<ssc_number_t> power_input = as_vector_ssc_number_t("gen");
-
-			// Set up time
-			size_t nyears = 1;
-			if (as_boolean("system_use_lifetime_output")) {
-				nyears = as_unsigned_long("analysis_period");
-			}
-			size_t nrec = power_input.size() / nyears;
-			size_t nrec_lifetime = nrec * nyears;
-			double dtHour = static_cast<double>(8760. / nrec);
-
-			// Setup battery model
-			battstor batt(*this, true, nrec, dtHour);
-
-			// Allocate outputs
-			ssc_number_t * p_gen = allocate("gen", nrec * batt.nyears);
-
-			// Parse "Load input", which comes in as a single year
-			std::vector<ssc_number_t> power_load_single_year;
-			std::vector<ssc_number_t> power_load;
-
-			if (batt.batt_vars->batt_meter_position == dispatch_t::BEHIND)
-			{
-				power_load_single_year = as_vector_ssc_number_t("load");
-				size_t nload = power_load_single_year.size();
-
-				if (nload != nrec && nload != 8760) {
-					throw exec_error("battery", "electric load profile must have same number of values as weather file, or 8760");
-				}
-
-				power_load.reserve(nrec_lifetime);
-				for (size_t y = 0; y < nyears; y++) {
-					// Load = generation size
-					if (nload == nrec) {
-						for (size_t t = 0; t < nrec; t++) {
-							power_load.push_back(power_load_single_year[t]);
-						}
-					}
-					// Assume load is constant across hour
-					else {
-						for (size_t h = 0; h < 8760; h++) {
-							ssc_number_t loadHour = power_load_single_year[h];
-							for (size_t s = 0; s < batt.step_per_hour; s++) {
-								power_load.push_back(loadHour);
-							}
-						}
-					}
-				}
-				batt.initialize_automated_dispatch(power_input, power_load);
-			}
-			else
-			{
-				for (size_t i = 0; i != power_input.size(); i++)
-					power_load.push_back(0);
+			// System generation output, which is lifetime (if system_lifetime_output == true);
+			std::vector<ssc_number_t> power_input_lifetime = as_vector_ssc_number_t("gen");
+			std::vector<ssc_number_t> load_lifetime, load_year_one;
+			size_t n_rec_lifetime;
+			size_t n_rec_single_year;
+			double dt_hour_gen;
+			if (is_assigned("load")) {
+				load_year_one = as_vector_ssc_number_t("load");
 			}
 
-			// Prepare annual outputs
+			 single_year_to_lifetime_interpolated<ssc_number_t>(
+				(bool)as_integer("system_use_lifetime_output"),
+				(size_t)as_integer("analysis_period"),
+				power_input_lifetime, 
+				load_year_one,
+				load_lifetime,
+				n_rec_lifetime, 
+				n_rec_single_year,
+				dt_hour_gen);
+
+			// Create battery structure and initialize
+			battstor batt(*this, true, n_rec_single_year, dt_hour_gen);
+
+			if (batt.batt_vars->batt_meter_position == dispatch_t::BEHIND){
+				batt.initialize_automated_dispatch(power_input_lifetime, load_lifetime);
+			}
+
+			if (load_lifetime.size() != n_rec_lifetime) {
+				throw exec_error("battery", "Load length does not match system generation length");
+			}
+			if (batt.batt_vars->batt_topology == ChargeController::DC_CONNECTED) {
+				batt.batt_vars->batt_topology = ChargeController::AC_CONNECTED;
+				throw exec_error("battery", "Generic System must be AC connected to battery");
+			}
+			
+			// Prepare outputs
+			ssc_number_t * p_gen = allocate("gen", n_rec_lifetime);
 			double capacity_factor_in, annual_energy_in, nameplate_in;
 			capacity_factor_in = annual_energy_in = nameplate_in = 0;
 
 			if (is_assigned("capacity_factor") && is_assigned("annual_energy")) {
 				capacity_factor_in = as_double("capacity_factor");
 				annual_energy_in = as_double("annual_energy");
-				nameplate_in = (annual_energy_in / (capacity_factor_in * util::percent_to_fraction)) / 8760.;
+				nameplate_in = (annual_energy_in / (capacity_factor_in * 0.01)) / util::hours_per_year;
 			}
 	
-			// Error checking
-			if (power_input.size() != nrec_lifetime)
-				throw exec_error("battery", "Load and PV power do not match weatherfile length");
-
 			
-			if (batt.step_per_hour > 60 || batt.total_steps != power_input.size())
-				throw exec_error("battery", util::format("invalid number of data records (%u): must be an integer multiple of 8760", batt.total_steps));
-
-			// Battery cannot be run in DC-connected mode for generic system.  
-			// We don't have detailed inverter voltage info or clipping info (if PV)
-			if (batt.batt_vars->batt_topology == ChargeController::DC_CONNECTED) {
-				batt.batt_vars->batt_topology = ChargeController::AC_CONNECTED;
-				throw exec_error("battery", "Generic System must be AC connected to battery");
-			}
-
 			/* *********************************************************************************************
 			Run Simulation
 			*********************************************************************************************** */
 			double annual_energy = 0;
-			float percent_complete = 0.0;
-			float percent = 0.0;
-			size_t nStatusUpdates = 50;
-
-			if (is_assigned("percent_complete")) {
-				percent_complete = as_float("percent_complete");
-			}
-
-			int lifetime_idx = 0;
+			size_t lifetime_idx = 0;
 			for (size_t year = 0; year != batt.nyears; year++)
 			{
-				int year_idx = 0; 
+				size_t year_idx = 0; 
 				for (size_t hour = 0; hour < 8760; hour++)
 				{
 					// status bar
@@ -1480,16 +1439,13 @@ public:
 
 					for (size_t jj = 0; jj < batt.step_per_hour; jj++)
 					{
-	
 						batt.initialize_time(year, hour, jj);
 						batt.check_replacement_schedule();
-						batt.advance(*this, power_input[lifetime_idx], 0, power_load[year_idx], 0);
+						batt.advance(*this, power_input_lifetime[year_idx], 0, load_lifetime[year_idx], 0);
 						p_gen[lifetime_idx] = batt.outGenPower[lifetime_idx];
-
 						if (year == 0) {
 							annual_energy += p_gen[lifetime_idx] * batt._dt_hour;
 						}
-
 						lifetime_idx++;
 						year_idx++;
 					}
@@ -1498,7 +1454,7 @@ public:
 			batt.calculate_monthly_and_annual_outputs(*this);
 
 			// update capacity factor and annual energy
-			assign("capacity_factor", var_data(static_cast<ssc_number_t>(annual_energy * 100.0 / (nameplate_in * 8760.))));
+			assign("capacity_factor", var_data(static_cast<ssc_number_t>(annual_energy * 100.0 / (nameplate_in * util::hours_per_year))));
 			assign("annual_energy", var_data(static_cast<ssc_number_t>(annual_energy)));
 			assign("percent_complete", var_data((ssc_number_t)percent));
 		}
