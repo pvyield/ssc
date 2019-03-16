@@ -1,20 +1,20 @@
 #include <gtest/gtest.h>
 
 #include "core.h"
-#ifndef _CMOD_TCSMOLTEN_SALT_TEST_H_
-#define _CMOD_TCSMOLTEN_SALT_TEST_H_
+#ifndef _CMOD_TROUGH_PHYSICAL_TEST_H_
+#define _CMOD_TROUGH_PHYSICAL_TEST_H_
 
 #include "../ssc/vartab.h"
 #include "../ssc/common.h"
-#include "../tcs_test/tcsmolten_salt_cases.h"
+#include "../tcs_test/trough_physical_cases.h"
 
 /**
- * CMtcsMoltenSalt tests the cmod_tcsmolten_salt using the SAM code generator to generate data
+ * CMTroughPhysical tests the cmod_trough_physical using the SAM code generator to generate data
  * Eventually a method can be written to write this data to a vartable so that lower-level methods of
- * tcsmolten_salt can be tested
+ * trough_physical can be tested
  * For now, this uses the SSCAPI interfaces to run the compute module and compare results
  */
-class CMTcsMoltenSalt : public ::testing::Test{
+class CMTroughPhysical : public ::testing::Test{
 
 public:
 
@@ -27,7 +27,7 @@ public:
 	void SetUp()
 	{
 		data = ssc_data_create();
-        tcsmolten_salt_default(data);
+        trough_physical_default(data);
 		calculated_array = new ssc_number_t[8760];
 	}
 	void TearDown() {
@@ -37,6 +37,7 @@ public:
 		}
 		if (calculated_array) {
 			delete[] calculated_array;
+			calculated_array = nullptr;
 		}
 	}
 	void SetCalculated(std::string name)
@@ -50,4 +51,4 @@ public:
 	}
 };
 
-#endif // !_CMOD_TCSMOLTEN_SALT_TEST_H_
+#endif // !_CMOD_TROUGH_PHYSICAL_TEST_H_

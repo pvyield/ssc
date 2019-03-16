@@ -52,10 +52,14 @@
 #include "cmod_battery.h"
 #include "common.h"
 #include "core.h"
+#include "lib_battery.h"
+#include "lib_battery_dispatch.h"
+#include "lib_battery_powerflow.h"
+#include "lib_power_electronics.h"
+#include "lib_shared_inverter.h"
 #include "lib_time.h"
 #include "lib_util.h"
 #include "lib_utility_rate.h"
-
 
 var_info vtab_battery_inputs[] = {
 	/*   VARTYPE           DATATYPE         NAME                                            LABEL                                                   UNITS      META                   GROUP           REQUIRED_IF                 CONSTRAINTS                      UI_HINTS*/
@@ -159,10 +163,10 @@ var_info vtab_battery_inputs[] = {
 	{ SSC_INPUT,        SSC_ARRAY,      "dispatch_manual_percent_gridcharge",          "Periods 1-6 gridcharge percent",                         "%",        "",                     "Battery",       "en_batt=1&batt_dispatch_choice=4",                           "",                             "" },
 	{ SSC_INPUT,        SSC_MATRIX,     "dispatch_manual_sched",                       "Battery dispatch schedule for weekday",                  "",         "",                     "Battery",       "en_batt=1&batt_dispatch_choice=4",                           "",                             "" },
 	{ SSC_INPUT,        SSC_MATRIX,     "dispatch_manual_sched_weekend",               "Battery dispatch schedule for weekend",                  "",         "",                     "Battery",       "en_batt=1&batt_dispatch_choice=4",                           "",                             "" },
-	{ SSC_INPUT,        SSC_ARRAY,      "batt_target_power",                           "Grid target power (AC) for every time step",             "kWac",     "",                     "Battery",       "en_batt=1&batt_meter_position=0&batt_dispatch_choice=2",                        "",                             "" },
-	{ SSC_INPUT,        SSC_ARRAY,      "batt_target_power_monthly",                   "Grid target power (AC) on monthly basis",                "kWac",     "",                     "Battery",       "en_batt=1&batt_meter_position=0&batt_dispatch_choice=2",                        "",                             "" },
+	{ SSC_INPUT,        SSC_ARRAY,      "batt_target_power",                           "Grid target power for every time step",                  "kW",       "",                     "Battery",       "en_batt=1&batt_meter_position=0&batt_dispatch_choice=2",                        "",                             "" },
+	{ SSC_INPUT,        SSC_ARRAY,      "batt_target_power_monthly",                   "Grid target power on monthly basis",                     "kW",       "",                     "Battery",       "en_batt=1&batt_meter_position=0&batt_dispatch_choice=2",                        "",                             "" },
 	{ SSC_INPUT,        SSC_NUMBER,     "batt_target_choice",                          "Target power input option",                              "0/1",      "0=InputMonthlyTarget,1=InputFullTimeSeries", "Battery", "en_batt=1&batt_meter_position=0&batt_dispatch_choice=2",                        "",                             "" },
-	{ SSC_INPUT,        SSC_ARRAY,      "batt_custom_dispatch",                        "Custom battery power (DC) for every time step",          "kWdc",     "",                     "Battery",       "en_batt=1&batt_dispatch_choice=3","",                         "" },
+	{ SSC_INPUT,        SSC_ARRAY,      "batt_custom_dispatch",                        "Custom battery power for every time step",               "kW",       "",                     "Battery",       "en_batt=1&batt_dispatch_choice=3","",                         "" },
 	{ SSC_INPUT,        SSC_NUMBER,     "batt_dispatch_choice",                        "Battery dispatch algorithm",                             "0/1/2/3/4", "If behind the meter: 0=PeakShavingLookAhead,1=PeakShavingLookBehind,2=InputGridTarget,3=InputBatteryPower,4=ManualDispatch, if front of meter: 0=AutomatedLookAhead,1=AutomatedLookBehind,2=AutomatedInputForecast,3=InputBatteryPower,4=ManualDispatch",                    "Battery",       "en_batt=1",                        "",                             "" },
 	{ SSC_INPUT,        SSC_ARRAY,      "batt_pv_clipping_forecast",                   "PV clipping forecast",                                   "kW",       "",                     "Battery",       "en_batt=1&batt_meter_position=1&batt_dispatch_choice=2",  "",          "" },
 	{ SSC_INPUT,        SSC_ARRAY,      "batt_pv_dc_forecast",                         "PV dc power forecast",                                   "kW",       "",                     "Battery",       "en_batt=1&batt_meter_position=1&batt_dispatch_choice=2",  "",          "" },
@@ -1108,7 +1112,7 @@ void battstor::check_replacement_schedule()
 		bool replace = false;
 		if (year < batt_vars->batt_replacement_schedule.size())
 		{
-			size_t num_repl = batt_vars->batt_replacement_schedule[year];
+			size_t num_repl = (size_t)batt_vars->batt_replacement_schedule[year];
 			for (size_t j_repl = 0; j_repl < num_repl; j_repl++)
 			{
 				if ((hour == (j_repl * 8760 / num_repl)) && step == 0)
@@ -1339,13 +1343,7 @@ static var_info _cm_vtab_battery[] = {
 	{ SSC_INPUT,        SSC_NUMBER,      "system_use_lifetime_output",                 "Lifetime simulation",                                     "0/1",       "0=SingleYearRepeated,1=RunEveryYear",   "",        "?=0",                   "BOOLEAN",                              "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "analysis_period",                            "Lifetime analysis period",                                "years",     "The number of years in the simulation", "",        "system_use_lifetime_output=1","",                               "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "en_batt",                                    "Enable battery storage model",                            "0/1",        "",                     "Battery",                      "?=0",                    "",                               "" },
-
-	// simulation inputs - required only if lifetime analysis
-	{ SSC_INPUT,        SSC_NUMBER,      "system_use_lifetime_output",                 "PV lifetime simulation",                                  "0/1",     "0=SingleYearRepeated,1=RunEveryYear",                     "",             "?=0",                        "BOOLEAN",                        "" },
-	{ SSC_INPUT,        SSC_NUMBER,      "analysis_period",                            "Lifetime analysis period",                                "years",   "The number of years in the simulation",                   "",             "system_use_lifetime_output=1",   "",                               "" },
-
-
-	{ SSC_INPUT,        SSC_ARRAY,       "gen",										   "System power generated (lifetime)",                         "kW",         "",                     "",                             "",                       "",                               "" },
+	{ SSC_INOUT,        SSC_ARRAY,       "gen",										   "System power generated",                                  "kW",         "",                     "",                             "",                       "",                               "" },
 	{ SSC_INPUT,		SSC_ARRAY,	     "load",			                           "Electricity load (year 1)",                               "kW",	        "",				        "",                             "",	                      "",	                            "" },
 	{ SSC_INPUT,        SSC_NUMBER,      "batt_replacement_option",                    "Enable battery replacement?",                              "0=none,1=capacity based,2=user schedule", "", "Battery",             "?=0",                    "INTEGER,MIN=0,MAX=2",           "" },
 	{ SSC_INOUT,        SSC_NUMBER,      "capacity_factor",                            "Capacity factor",                                         "%",          "",                     "",                             "?=0",                    "",                               "" },
@@ -1420,6 +1418,14 @@ public:
 			Run Simulation
 			*********************************************************************************************** */
 			double annual_energy = 0;
+			float percent_complete = 0.0;
+			float percent = 0.0;
+			size_t nStatusUpdates = 50;
+
+			if (is_assigned("percent_complete")) {
+				percent_complete = as_float("percent_complete");
+			}
+
 			size_t lifetime_idx = 0;
 			for (size_t year = 0; year != batt.nyears; year++)
 			{
@@ -1431,7 +1437,7 @@ public:
 					{
 						// assume that anyone using this module is chaining with two techs
 						float techs = 3;
-						percent = percent_complete + 100.0f * ((float)lifetime_idx + 1) / ((float)nrec_lifetime) / techs;
+						percent = percent_complete + 100.0f * ((float)lifetime_idx + 1) / ((float)n_rec_lifetime) / techs;
 						if (!update("", percent, (float)hour)) {
 							throw exec_error("battery", "simulation canceled at hour " + util::to_string(hour + 1.0));
 						}
@@ -1439,6 +1445,7 @@ public:
 
 					for (size_t jj = 0; jj < batt.step_per_hour; jj++)
 					{
+	
 						batt.initialize_time(year, hour, jj);
 						batt.check_replacement_schedule();
 						batt.advance(*this, power_input_lifetime[year_idx], 0, load_lifetime[year_idx], 0);

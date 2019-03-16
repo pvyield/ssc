@@ -6,14 +6,17 @@
 
 namespace generictest {
 	const char * SSCDIR = std::getenv("SSCDIR");
-	char load_profile_path_60min[100];
-	char load_profile_path_30min[100];
-	char gen_path_60min[100];
-	char gen_path_30min[100];
-	char batt_dispatch_path_30min[100];
-	char batt_dispatch_path_60min[100];
-	char dispatch_factors_unused[100];
-	char sell_rate_unused[100];
+	char load_profile_path_60min[256];
+	char load_profile_path_30min[256];
+	char gen_path_60min[256];
+	char gen_path_30min[256];
+	char batt_dispatch_path_30min[256];
+	char batt_dispatch_path_60min[256];
+	char dispatch_factors_unused[256];
+	char sell_rate_unused[256];
+	char temperature_path[256];
+	char temperature_path_30min[256];
+
 
 	int n1 = sprintf(load_profile_path_60min, "%s/test/input_cases/generic_system_data/load_60min.csv", generictest::SSCDIR);
 	int n2 = sprintf(load_profile_path_30min, "%s/test/input_cases/generic_system_data/load_30min.csv", generictest::SSCDIR);
@@ -23,6 +26,8 @@ namespace generictest {
 	int n6 = sprintf(batt_dispatch_path_60min, "%s/test/input_cases/generic_system_data/batt_custom_dispatch_60min.csv", generictest::SSCDIR);
 	int n7 = sprintf(dispatch_factors_unused, "%s/test/input_cases/generic_system_data/dispatch_factors_ts.csv", generictest::SSCDIR);
 	int n8 = sprintf(sell_rate_unused, "%s/test/input_cases/generic_system_data/ur_ts_sell_rate.csv", generictest::SSCDIR);
+	int n9 = sprintf(temperature_path, "%s/test/input_cases/battery_data/batt_room_temperature_celsius_60min.csv", generictest::SSCDIR);
+	int n10 = sprintf(temperature_path_30min, "%s/test/input_cases/battery_data/batt_room_temperature_celsius_30min.csv", generictest::SSCDIR);
 }
 
 
@@ -99,14 +104,15 @@ void generic_singleowner_battery_60min(ssc_data_t &data)
 	ssc_data_set_number( data, "batt_replacement_capacity", 0 );
 	ssc_number_t p_batt_replacement_schedule[1] ={ 0 };
 	ssc_data_set_array( data, "batt_replacement_schedule", p_batt_replacement_schedule, 1 );
-	ssc_data_set_number( data, "batt_replacement_cost", 600 );
+	ssc_number_t p_replacement_cost[1] = { 600 };
+	ssc_data_set_array(data, "om_replacement_cost1", p_replacement_cost, 1);
 	ssc_data_set_number( data, "batt_mass", 21489202 );
 	ssc_data_set_number( data, "batt_length", 21.196117401123047 );
 	ssc_data_set_number( data, "batt_width", 21.196117401123047 );
 	ssc_data_set_number( data, "batt_height", 21.196117401123047 );
 	ssc_data_set_number( data, "batt_Cp", 1004 );
 	ssc_data_set_number( data, "batt_h_to_ambient", 5 );
-	ssc_data_set_number( data, "T_room", 20 );
+	set_array(data, "batt_room_temperature_celsius", generictest::temperature_path, 8760);
 	ssc_number_t p_cap_vs_temp[8] ={ -10, 60, 0, 80, 25, 100, 40, 100 };
 	ssc_data_set_matrix( data, "cap_vs_temp", p_cap_vs_temp, 4, 2 );
 	ssc_number_t p_dispatch_manual_charge[6] ={ 1, 1, 1, 0, 0, 0 };
@@ -456,14 +462,15 @@ void generic_commerical_battery_60min(ssc_data_t &data)
 	ssc_data_set_number(data, "batt_replacement_capacity", 0);
 	ssc_number_t p_batt_replacement_schedule[1] = { 0 };
 	ssc_data_set_array(data, "batt_replacement_schedule", p_batt_replacement_schedule, 1);
-	ssc_data_set_number(data, "batt_replacement_cost", 600);
+	ssc_number_t p_replacement_cost[1] = { 600 };
+	ssc_data_set_array(data, "om_replacement_cost1", p_replacement_cost, 1);
 	ssc_data_set_number(data, "batt_mass", 507.8046875);
 	ssc_data_set_number(data, "batt_length", 0.58471626043319702);
 	ssc_data_set_number(data, "batt_width", 0.58471626043319702);
 	ssc_data_set_number(data, "batt_height", 0.58471626043319702);
 	ssc_data_set_number(data, "batt_Cp", 4183);
 	ssc_data_set_number(data, "batt_h_to_ambient", 5);
-	ssc_data_set_number(data, "T_room", 20);
+	set_array(data, "batt_room_temperature_celsius", generictest::temperature_path, 8760);
 	ssc_number_t p_cap_vs_temp[8] = { -15, 65, 0, 85, 25, 100, 40, 104 };
 	ssc_data_set_matrix(data, "cap_vs_temp", p_cap_vs_temp, 4, 2);
 	ssc_number_t p_dispatch_manual_charge[6] = { 1, 1, 1, 0, 0, 0 };
